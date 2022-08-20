@@ -60,10 +60,13 @@ class App {
       this.controllers.mainPage.getData(LS.token, LS.name);
     } 
     // else if (LS && LS.page === 'audio-game'){
-    //   this.controllers.textBook.getData();
+    //   this.controllers.audioGame.getData();
     // }
     // else if (LS && LS.page === 'sprint'){
-    //   this.controllers.textBook.getData();
+    //   this.controllers.sprintGame.getData();
+    // }
+    // else if (LS && LS.page === 'statistics'){
+    //   this.controllers.statistics.getData();
     // }
     // else if (LS && LS.page === 'textbook'){
     //   this.controllers.textBook.getData();
