@@ -1,17 +1,15 @@
-import ViewMainPage from './view';
+import ViewHeader from "./view";
 
-export default class ControllerMainPage {
-  views: {
-    mainPage: ViewMainPage;
-  }
+export default class ControllerHeader {
+  viewHeader: ViewHeader;
 
   constructor() {
-    this.views = {
-      mainPage: new ViewMainPage(),
-    }
+    this.viewHeader = new ViewHeader();
   }
 
-  getData(token?: string, userName?: string) {
+  getData(token?: string) {
+    // static
+
     let auth = false;
     if (token) {
       // Нужно будет обратиться к контроллеру авторизации для проверки токена
@@ -19,7 +17,7 @@ export default class ControllerMainPage {
       // добавить async / await
       auth = this.checkAuth(token);
     }
-    this.views.mainPage.drewHeader(auth, userName);
+    this.viewHeader.drewHeader(auth);
   }
 
   checkAuth(token: string) {

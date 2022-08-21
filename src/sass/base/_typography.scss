@@ -1,0 +1,26 @@
+h1 {
+  @include typography($size: 3.2rem, $height: 110%);
+}
+
+h2 {
+  @include typography($size: 4.4rem, $letter-spacing: 0);
+}
+
+h3 {
+  @include typography($size: 3.5rem);
+}
+
+h4 {
+  @include typography($height: 115%);
+}
+
+h5 {
+  @include typography($size: 1.5rem, $height: 110%);
+}
+
+li,
+p,
+button {
+  @include typography($family: $font-additional, $size: 15px, $height: 160%, $letter-spacing: 0);
+  list-style-type: none;
+}

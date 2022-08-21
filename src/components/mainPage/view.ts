@@ -1,53 +1,57 @@
 export default class ViewMainPage {
-  drewHeader(auth: boolean, name?: string) {
-    (document.querySelector('body') as HTMLElement).innerHTML = '';
-
-    const header = document.createElement('header');
-    const logo = document.createElement('div');
-    const nav = this.drewNav();
-    const userArea = this.drewUserArea(auth, name);
-
-    logo.className = 'logo';
-    logo.innerHTML = '<h1>VICTORY</h1>';
-
-    header.append(logo, nav, userArea);
-    document.body.prepend(header);
-    
+  drewMainBlock() {
+    const mainBlock = document.createElement('div');
+    mainBlock.className = 'main-block';
+    mainBlock.innerHTML = `<div class='main-block__content'>
+                            <h2>VICTORY</h2>
+                            <h4>Обучение английскому никогда еще не было таким простым</h4>
+                            <p>Запоминай английские слова играя! На твой выбор есть 2 игры: 
+                            на скорость реакции, где ты будешь тренировать быстроту своего мышления или
+                            на распознование английской речи, где мы выберешь перевод услышанного слова.
+                            Выбери уровень сложности, и попробуй!</p>
+                            <button class="additional-button">Попробуй!</button>
+                          </div>
+                          <div class='main-block__img'></div>`;
+    return mainBlock;
   }
 
-  drewUserArea(auth: boolean, name?: string) {
-    const userArea = document.createElement('div');
+  drewBenefits() {
+    const benefitCards = document.createElement('div');
+    const benefitCardContent = document.createElement('div');
+    benefitCardContent.className = 'benefit-card__content'
+    benefitCards.className = 'benefit-cards';
+    const benefitCount = 4;
+    benefitCards.innerHTML = `<h3>Оцените преимущества приложения</h3>
+                              <h4>Зарегистрируйтесь, чтобы использовать все возможности</h4>`;
+    const img = ['1.png', '1.png', '1.png', '1.png'];
+    const paragraphHeaders = ['Учебник', 'Сложные слова', 'Статистика', 'Игры'];
+    const paragraph = [
+      'Коллекция из 3 600 наиболее употребляемых английских слов, разбитых по уровню сложности',
+      'Есть слова, которые все никак не даются? Помести их в свой персональный словарь и сможешь уделять им особое внимание',
+      'Отслеживай свой прогресс в индивидуальной статистике! Смотри свои успехи за каждый день или все время',
+      'Увлекательные игры, которые помогут тебе лучше воспринимать слова на слух, а также быстрее запомнить их',
+    ];
 
-    userArea.className = 'user-area';
+    for (let i = 0; i < benefitCount; i += 1) {
+      const benefitCard = document.createElement('div');
+      benefitCard.className = 'benefit-card';
+      benefitCard.innerHTML = `<div class='benefit-card__img ${img[i]}'></div>
+                               <h4>${paragraphHeaders[i]}</h4>
+                               <p>${paragraph[i]}</p>`;
 
-    if (auth && name) {
-      userArea.innerHTML = `<p>Добрый день, ${name}!</p>
-                            <button>Log out</button>`
-    } else if (auth) {
-      userArea.innerHTML = '<p>Добро пожаловать!</p>' +
-                            '<button>Log out</button>';
-    } else {
-      userArea.innerHTML = '<p>Будем рады познакомиться!</p>' +
-                           '<button>Sing in</button>' +
-                           '<button>Log in</button>'
+      benefitCardContent.append(benefitCard);
     }
-    return userArea;
+
+    benefitCards.append(benefitCardContent);
+    return benefitCards;
   }
 
-  drewNav() {
-    const nav = document.createElement('nav');
+  drewMain() {
+    const mainBlock = this.drewMainBlock();
+    const benefits = this.drewBenefits();
+    const main = document.createElement('main');
 
-    nav.className = 'nav';
-
-    nav.innerHTML = '<ul>' +
-                      '<li class="main-page">Главная</li>' +
-                      '<li class="about">О нас</li>' +
-                      '<li class="textbook">Учебник</li>' +
-                      // разместить игры в выпадающем меню
-                      '<li class="audio-game">Аудиовызов</li>' +
-                      '<li class="sprint">Спринт</li>' +
-                      '<li class="statistics">Статистика</li>' +
-                    '</ul>'
-    return nav;
+    main.append(mainBlock, benefits);
+    document.body.append(main);
   }
 }

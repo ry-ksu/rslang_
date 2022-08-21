@@ -1,0 +1,17 @@
+.primary-button {
+  background-color: $color-primary;
+  color: $color-light-xl;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 15%;
+  cursor: pointer;
+}
+
+.additional-button {
+  background-color: $color-additional;
+  color: $color-light-xl;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 15%;
+  cursor: pointer;
+}
