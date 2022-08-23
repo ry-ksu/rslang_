@@ -1,80 +1,11 @@
 // API types & interfaces
 
-export type TEndpointWord = 'getWords' | 'getWordsPage' | 'getWord';
-
-export type TEndpointUser = 'newUser' | 'getUser' | 'getToken' | 'signin';
-
-export type TEndpointUserWord =
-  | 'getUserWords'
-  | 'getUserWord'
-  | 'newUserWord'
-  | 'updateUserWord'
-  | 'deleteUserWord';
-
-export type TEndpointStatistics = 'getUserStatistics' | 'updateUserStatistics';
-
-export type TEndpoints = TEndpointWord | TEndpointUser | TEndpointUserWord | TEndpointStatistics;
-
-export type TQueryString = {
-  [key in TEndpoints]: string;
-};
-
-export type TUserOption = {
-  userID?: string;
-  wordID?: string;
-};
-
-export type TWordPageOption = {
-  wordGroup?: string;
-  wordPage?: string;
-};
-
-export type TAuthOption = {
-  name?: string;
-  email?: string;
-  password?: string;
-  token?: string;
-};
-
-export type TUserWord = {
-  userWord?: {
-    difficulty?: string;
-    optional?: {
-      isLearned: boolean;
-      maxProgress: number;
-      maxHardProgress: number;
-      currentProgress: number;
-    };
-  };
-};
-
-export type TUserStatistics = {
-  userStatistics?: {
-    learnedWords?: number;
-    optional?: {
-      [key: string]: string;
-    };
-  };
-};
-
-export type TQueryOptions = TUserOption &
-  TWordPageOption &
-  TAuthOption &
-  TUserWord &
-  TUserStatistics;
-
 export interface ILoader {
-  getResponse<T>({
-    endpoint,
-    options,
-  }: {
-    endpoint: TEndpoints;
-    options: TQueryOptions;
-  }): Promise<T | string>;
+  makeRequest<T>({ url, options }: { url: string; options?: RequestInit }): Promise<T | string>;
 }
 
 export interface ILoaderContructable {
-  new (url: string): ILoader;
+  new (): ILoader;
 }
 
 export interface IWord {
@@ -107,4 +38,43 @@ export interface IUserToken {
   refreshToken: string;
   userId: string;
   name: string;
+}
+
+export interface IUserWord {
+  difficulty: 'weak' | 'hard';
+  optional: {
+    isLearned: boolean;
+    currentProgress: number;
+  };
+}
+
+export interface IUserStatistics {
+  learnedWords: number;
+  optional: {
+    todayStatistics: {
+      date: number;
+      learnedWords: number;
+      audioGame: {
+        newWords: number;
+        sucsessWords: number;
+        failWords: number;
+        rightSeries: number;
+      };
+      sprint: {
+        newWords: number;
+        sucsessWords: number;
+        failWords: number;
+        rightSeries: number;
+      };
+    };
+    longStatistics: {
+      days: [
+        {
+          date: number;
+          newWords: number;
+          learnedWords: number;
+        }
+      ];
+    };
+  };
 }

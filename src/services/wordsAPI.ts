@@ -1,76 +1,126 @@
 import {
-  TQueryOptions,
   ILoader,
   ILoaderContructable,
   IWord,
   IUser,
   IUserToken,
-  TUserStatistics,
-  TUserWord,
+  IUserStatistics,
+  IUserWord,
 } from '../components/types/types';
 
 export class WordsApi {
-  private url: string;
+  private baseUrl: string;
 
   private loader: ILoader;
 
-  // url = 'https://rslang-learnwords-api.herokuapp.com/'
   constructor({
     LoaderService,
-    url = 'http://localhost:3002',
+    url = 'https://rslang-learnwords-api.herokuapp.com',
   }: {
     LoaderService: ILoaderContructable;
     url?: string;
   }) {
-    this.url = url;
-    this.loader = new LoaderService(url);
+    this.baseUrl = url;
+    this.loader = new LoaderService();
   }
 
-  async getWords({ wordGroup, wordPage }: TQueryOptions): Promise<IWord[] | string> {
-    const result = await this.loader.getResponse<IWord[]>({
-      endpoint: 'getWordsPage',
-      options: { wordGroup, wordPage },
-    });
+  async getWords({
+    wordGroup,
+    wordPage,
+  }: {
+    wordGroup: number;
+    wordPage: number;
+  }): Promise<IWord[] | string> {
+    const url = `${this.baseUrl}/words?group=${wordGroup}&page=${wordPage}`;
+    const options: RequestInit = {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    };
+    const result = await this.loader.makeRequest<IWord[]>({ url, options });
     return result;
   }
 
-  async getWord({ wordID }: TQueryOptions): Promise<IWord | string> {
-    const result = await this.loader.getResponse<IWord>({
-      endpoint: 'getWord',
-      options: { wordID },
-    });
+  async getWord({ wordID }: { wordID: string }): Promise<IWord | string> {
+    const url = `${this.baseUrl}/words/${wordID}`;
+    const options: RequestInit = {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    };
+    const result = await this.loader.makeRequest<IWord>({ url, options });
     return result;
   }
 
-  async createUser({ name, email, password }: TQueryOptions): Promise<IUser | string> {
-    const result = await this.loader.getResponse<IUser>({
-      endpoint: 'newUser',
-      options: { name, email, password },
-    });
+  async createUser({
+    name,
+    email,
+    password,
+  }: {
+    name: string;
+    email: string;
+    password: string;
+  }): Promise<IUser | string> {
+    const url = `${this.baseUrl}/users`;
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, email, password }),
+    };
+    const result = await this.loader.makeRequest<IUser>({ url, options });
     return result;
   }
 
-  async getUser({ userID, token }: TQueryOptions): Promise<IUser | string> {
-    const result = await this.loader.getResponse<IUser>({
-      endpoint: 'getUser',
-      options: { userID, token },
-    });
+  async signUser({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }): Promise<IUserToken | string> {
+    const url = `${this.baseUrl}/signin`;
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    };
+    const result = await this.loader.makeRequest<IUserToken>({ url, options });
     return result;
   }
 
-  async signUser({ email, password }: TQueryOptions): Promise<IUserToken | string> {
-    const result = await this.loader.getResponse<IUserToken>({
-      endpoint: 'signin',
-      options: { email, password },
-    });
+  async getUser({ userID, token }: { userID: string; token: string }): Promise<IUser | string> {
+    const url = `${this.baseUrl}/users/${userID}`;
+    const options: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    };
+    const result = await this.loader.makeRequest<IUser>({ url, options });
     return result;
   }
 
-  async getNewUserToken({ userID, token }: TQueryOptions): Promise<IUserToken | string> {
-    const result = await this.loader.getResponse<IUserToken>({
-      endpoint: 'getToken',
-      options: { userID, token },
-    });
+  async getNewUserToken({
+    userID,
+    refreshToken,
+  }: {
+    userID: string;
+    refreshToken: string;
+  }): Promise<IUserToken | string> {
+    const url = `${this.baseUrl}/users/${userID}/tokens`;
+    const options: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${refreshToken}`,
+        Accept: 'application/json',
+      },
+    };
+    const result = await this.loader.makeRequest<IUserToken>({ url, options });
     return result;
   }
 
@@ -79,27 +129,63 @@ export class WordsApi {
     wordID,
     userWord,
     token,
-  }: TQueryOptions): Promise<TUserWord | string> {
-    const result = await this.loader.getResponse<TUserWord>({
-      endpoint: 'newUserWord',
-      options: { userID, wordID, userWord, token },
-    });
+  }: {
+    userID: string;
+    wordID: string;
+    userWord: IUserWord;
+    token: string;
+  }): Promise<IUserWord | string> {
+    const url = `${this.baseUrl}/users/${userID}/words/${wordID}`;
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userWord),
+    };
+    const result = await this.loader.makeRequest<IUserWord>({ url, options });
     return result;
   }
 
-  async getUserWords({ userID, token }: TQueryOptions): Promise<TUserWord[] | string> {
-    const result = await this.loader.getResponse<TUserWord[]>({
-      endpoint: 'getUserWords',
-      options: { userID, token },
-    });
+  async getUserWords({
+    userID,
+    token,
+  }: {
+    userID: string;
+    token: string;
+  }): Promise<IUserWord[] | string> {
+    const url = `${this.baseUrl}/users/${userID}/words`;
+    const options: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    };
+    const result = await this.loader.makeRequest<IUserWord[]>({ url, options });
     return result;
   }
 
-  async getUserWord({ userID, wordID, token }: TQueryOptions): Promise<TUserWord | string> {
-    const result = await this.loader.getResponse<TUserWord>({
-      endpoint: 'getUserWord',
-      options: { userID, wordID, token },
-    });
+  async getUserWord({
+    userID,
+    wordID,
+    token,
+  }: {
+    userID: string;
+    wordID: string;
+    token: string;
+  }): Promise<IUserWord | string> {
+    const url = `${this.baseUrl}/users/${userID}/words/${wordID}`;
+    const options: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    };
+    const result = await this.loader.makeRequest<IUserWord>({ url, options });
     return result;
   }
 
@@ -108,11 +194,23 @@ export class WordsApi {
     wordID,
     userWord,
     token,
-  }: TQueryOptions): Promise<TUserWord | string> {
-    const result = await this.loader.getResponse<TUserWord>({
-      endpoint: 'updateUserWord',
-      options: { userID, wordID, userWord, token },
-    });
+  }: {
+    userID: string;
+    wordID: string;
+    userWord: IUserWord;
+    token: string;
+  }): Promise<IUserWord | string> {
+    const url = `${this.baseUrl}/users/${userID}/words/${wordID}`;
+    const options: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userWord),
+    };
+    const result = await this.loader.makeRequest<IUserWord>({ url, options });
     return result;
   }
 
@@ -120,19 +218,41 @@ export class WordsApi {
     userID,
     userStatistics,
     token,
-  }: TQueryOptions): Promise<TUserStatistics | string> {
-    const result = await this.loader.getResponse<TUserStatistics>({
-      endpoint: 'updateUserStatistics',
-      options: { userID, userStatistics, token },
-    });
+  }: {
+    userID: string;
+    userStatistics: IUserStatistics;
+    token: string;
+  }): Promise<IUserStatistics | string> {
+    const url = `${this.baseUrl}/users/${userID}/statistics`;
+    const options: RequestInit = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userStatistics),
+    };
+    const result = await this.loader.makeRequest<IUserStatistics>({ url, options });
     return result;
   }
 
-  async getUserStatistics({ userID, token }: TQueryOptions): Promise<TUserStatistics | string> {
-    const result = await this.loader.getResponse<TUserStatistics>({
-      endpoint: 'getUserStatistics',
-      options: { userID, token },
-    });
+  async getUserStatistics({
+    userID,
+    token,
+  }: {
+    userID: string;
+    token: string;
+  }): Promise<IUserStatistics | string> {
+    const url = `${this.baseUrl}/users/${userID}/statistics`;
+    const options: RequestInit = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    };
+    const result = await this.loader.makeRequest<IUserStatistics>({ url, options });
     return result;
   }
 }
