@@ -22,10 +22,11 @@ export default class ViewHeader {
     userArea.className = 'user-area';
 
     if (auth) {
-      userArea.innerHTML = '<button class="primary-button">Выйти</button>'
+      userArea.innerHTML = '<button class="primary-button" data-auth>Выйти</button>'
     } else {
-      userArea.innerHTML = '<button class="primary-button">Войти</button>'
+      userArea.innerHTML = '<button class="primary-button" data-auth>Войти</button>'
     }
+    userArea.setAttribute('data', 'auth');
     return userArea;
   }
 

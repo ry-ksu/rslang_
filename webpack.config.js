@@ -1,6 +1,7 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const config = {
   entry: path.resolve(__dirname, './src/index.ts'),
@@ -16,6 +17,9 @@ const config = {
       filename: 'index.html',
     }),
     new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "css/[name].css",
+    }),
   ],
   module: {
     rules: [
@@ -23,6 +27,10 @@ const config = {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/i,
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
         test: /\.s[ac]ss$/i,
