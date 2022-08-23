@@ -28,16 +28,15 @@ export const togglePopupState = ():void => {
 export const hidePopup = (): void => {
   document.addEventListener('click', (e: Event) => {
     const target = e.target as HTMLElement;
-    const popup = document.querySelector<HTMLElement>('.popup') as HTMLElement;
+    const popup = document.querySelector<HTMLElement>('.popup');
     const outside = document.querySelector<HTMLElement>('.outside');
 
-    if (!outside?.classList.contains('show') || popup.matches('.animate__animated')) {
+    if (!outside?.classList.contains('show') || popup?.matches('.animate__animated')) {
       return;
     }
 
     if (!target.closest('.popup') || target.matches('.popup__close')) {
-      
-      animateCSS(popup, 'zoomOut')
+      animateCSS(popup as HTMLElement, 'zoomOut', '0.7s')
         .then(() => {
           togglePopupAppearance();
           updatePopup('signIn');
