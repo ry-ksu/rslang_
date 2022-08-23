@@ -45,6 +45,8 @@ export interface IUserWord {
   optional: {
     isLearned: boolean;
     currentProgress: number;
+    rightAnswerCount: number;
+    wrongAnswerCount: number;
   };
 }
 
