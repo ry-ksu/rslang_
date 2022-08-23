@@ -10,12 +10,9 @@ export class Loader implements ILoader {
   }): Promise<T | string> {
     try {
       const response = await fetch(url, options);
-      if (!response.ok) throw response;
+      if (!response.ok) return Promise.reject(response);
       return response.json() as Promise<T>;
     } catch (result) {
-      if (result instanceof Response) {
-        return Promise.reject(result);
-      }
       throw new Error((result as Error).message);
     }
   }
