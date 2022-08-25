@@ -1,7 +1,7 @@
 // API types & interfaces
 
 export interface ILoader {
-  makeRequest<T>({ url, options }: { url: string; options?: RequestInit }): Promise<T | string>;
+  makeRequest<T>({ url, options }: { url: string; options?: RequestInit }): Promise<T>;
 }
 
 export interface ILoaderContructable {
