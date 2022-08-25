@@ -30,7 +30,7 @@ export class WordsApi {
   }: {
     wordGroup: number;
     wordPage: number;
-  }): Promise<IWord[] | string> {
+  }): Promise<IWord[]> {
     const url = `${this.baseUrl}/words?group=${wordGroup}&page=${wordPage}`;
     const options: RequestInit = {
       method: 'GET',
@@ -40,7 +40,7 @@ export class WordsApi {
     return result;
   }
 
-  async getWord({ wordID }: { wordID: string }): Promise<IWord | string> {
+  async getWord({ wordID }: { wordID: string }): Promise<IWord> {
     const url = `${this.baseUrl}/words/${wordID}`;
     const options: RequestInit = {
       method: 'GET',
@@ -58,7 +58,7 @@ export class WordsApi {
     name: string;
     email: string;
     password: string;
-  }): Promise<IUser | string> {
+  }): Promise<IUser> {
     const url = `${this.baseUrl}/users`;
     const options: RequestInit = {
       method: 'POST',
@@ -78,7 +78,7 @@ export class WordsApi {
   }: {
     email: string;
     password: string;
-  }): Promise<IUserToken | string> {
+  }): Promise<IUserToken> {
     const url = `${this.baseUrl}/signin`;
     const options: RequestInit = {
       method: 'POST',
@@ -92,7 +92,7 @@ export class WordsApi {
     return result;
   }
 
-  async getUser({ userID, token }: { userID: string; token: string }): Promise<IUser | string> {
+  async getUser({ userID, token }: { userID: string; token: string }): Promise<IUser> {
     const url = `${this.baseUrl}/users/${userID}`;
     const options: RequestInit = {
       method: 'GET',
@@ -111,7 +111,7 @@ export class WordsApi {
   }: {
     userID: string;
     refreshToken: string;
-  }): Promise<IUserToken | string> {
+  }): Promise<IUserToken> {
     const url = `${this.baseUrl}/users/${userID}/tokens`;
     const options: RequestInit = {
       method: 'GET',
@@ -134,7 +134,7 @@ export class WordsApi {
     wordID: string;
     userWord: IUserWord;
     token: string;
-  }): Promise<IUserWord | string> {
+  }): Promise<IUserWord> {
     const url = `${this.baseUrl}/users/${userID}/words/${wordID}`;
     const options: RequestInit = {
       method: 'POST',
@@ -155,7 +155,7 @@ export class WordsApi {
   }: {
     userID: string;
     token: string;
-  }): Promise<IUserWord[] | string> {
+  }): Promise<IUserWord[]> {
     const url = `${this.baseUrl}/users/${userID}/words`;
     const options: RequestInit = {
       method: 'GET',
@@ -176,7 +176,7 @@ export class WordsApi {
     userID: string;
     wordID: string;
     token: string;
-  }): Promise<IUserWord | string> {
+  }): Promise<IUserWord> {
     const url = `${this.baseUrl}/users/${userID}/words/${wordID}`;
     const options: RequestInit = {
       method: 'GET',
@@ -199,7 +199,7 @@ export class WordsApi {
     wordID: string;
     userWord: IUserWord;
     token: string;
-  }): Promise<IUserWord | string> {
+  }): Promise<IUserWord> {
     const url = `${this.baseUrl}/users/${userID}/words/${wordID}`;
     const options: RequestInit = {
       method: 'PUT',
@@ -222,7 +222,7 @@ export class WordsApi {
     userID: string;
     userStatistics: IUserStatistics;
     token: string;
-  }): Promise<IUserStatistics | string> {
+  }): Promise<IUserStatistics> {
     const url = `${this.baseUrl}/users/${userID}/statistics`;
     const options: RequestInit = {
       method: 'PUT',
@@ -243,7 +243,7 @@ export class WordsApi {
   }: {
     userID: string;
     token: string;
-  }): Promise<IUserStatistics | string> {
+  }): Promise<IUserStatistics> {
     const url = `${this.baseUrl}/users/${userID}/statistics`;
     const options: RequestInit = {
       method: 'GET',

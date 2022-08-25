@@ -7,7 +7,7 @@ export class Loader implements ILoader {
   }: {
     url: string;
     options?: RequestInit;
-  }): Promise<T | string> {
+  }): Promise<T> {
     try {
       const response = await fetch(url, options);
       if (!response.ok) return Promise.reject(response);
