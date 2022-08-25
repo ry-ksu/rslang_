@@ -1,5 +1,3 @@
-import '../../sass/style.scss';
-
 export default class ViewHeader {
   drewHeader(auth: boolean) {
     (document.querySelector('body') as HTMLElement).innerHTML = '';
@@ -37,7 +35,7 @@ export default class ViewHeader {
                       '<li class="about">О нас</li>' +
                       '<li class="textbook">Учебник</li>' +
                       // разместить игры в выпадающем меню
-                      '<li class="audio-game">Аудиовызов</li>' +
+                      '<li class="audioGame">Аудиовызов</li>' +
                       '<li class="sprint">Спринт</li>' +
                       '<li class="statistics">Статистика</li>' +
                     '</ul>'

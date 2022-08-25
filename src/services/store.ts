@@ -5,7 +5,7 @@ export default class LocalStorage {
     return (JSON.parse(localStorage.getItem('victory') as string) || {}) as ILocalStorage;
   }
 
-  changeLS(name: string, value: string | number) {
+  changeLS(name: string, value: string) {
     const LS = this.getLS();
     LS[name as keyof ILocalStorage] = value;
     localStorage.setItem('victory', JSON.stringify(LS));

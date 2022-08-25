@@ -40,10 +40,9 @@ export default class ViewAbout {
     const teamHeader = document.createElement('h3');
     teamHeader.innerHTML = 'Наша команда:'
     component.append(teamHeader);
-    document.body.append(component);
 
     for (let i = 0; i < teamCount; i += 1) {
-      document.body.append(this.drewTeamCard(
+      component.append(this.drewTeamCard(
         teamImgs[i],
         teamNames[i],
         teamGithub[i],
@@ -52,5 +51,6 @@ export default class ViewAbout {
         teamWorks[i],
       ))
     }
+    document.body.append(component);
   }
 }

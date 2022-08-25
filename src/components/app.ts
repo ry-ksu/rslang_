@@ -8,9 +8,9 @@ import ControllerMainPage from './mainPage/controller';
 // import ControllerTeamPage from './teamPage/controller';
 // import ControllerTextBook from './textBook/controller';
 
-import { ILocalStorage } from './types/types';
-
+// import { ILocalStorage } from './types/types';
 import LocalStorage from '../services/store';
+import '../sass/style.scss';
 
 class App {
   localStorage: LocalStorage;
@@ -45,12 +45,9 @@ class App {
     }
   }
 
-  // перенести в services.store
   changeLSPageAndRenderThisPage(e: Event) {
     if ((e.target as HTMLElement).nodeName === 'LI') {
       this.localStorage.changeLS('page', (e.target as HTMLElement).className)
-      // LS.page = (e.target as HTMLElement).className;
-      // localStorage.setItem('victory', JSON.stringify(LS));
 
       this.render();
     }
@@ -69,30 +66,38 @@ class App {
   }
 
   render() {
-    const LS = (JSON.parse(localStorage.getItem('victory') as string) || {}) as ILocalStorage;
-    this.detachEvents();
-    // добавить словарь как объект (пример от Халида)
-
-    if (Object.keys(LS).length === 0 || LS.page === 'mainPage') {
-      this.controllers.header.getData(LS.token);
-      this.controllers.mainPage.getData();
-    } 
-    else if (LS.page === 'about'){
-      this.controllers.header.getData(LS.token);
-      this.controllers.about.getData();
+    this.component.innerHTML = '';
+    const LS = this.localStorage.getLS();
+    const dictionary = {
+      mainPage: () => {
+        this.controllers.header.getData(LS.token);
+        this.controllers.mainPage.getData();
+      },
+      about: () => {
+        this.controllers.header.getData(LS.token);
+        this.controllers.about.getData();
+      },
+      // audioGame: () => {
+      //   this.controllers.audioGame.getData();
+      // },
+      // sprint: () => {
+      //   this.controllers.sprintGame.getData();
+      // },
+      // statistics: () => {
+      //   this.controllers.statistics.getData();
+      // },
+      // textbook: () => {
+      //   this.controllers.textBook.getData();
+      // },
     }
-    // else if (LS.page === 'audio-game'){
-    //   this.controllers.audioGame.getData();
-    // }
-    // else if (LS.page === 'sprint'){
-    //   this.controllers.sprintGame.getData();
-    // }
-    // else if (LS.page === 'statistics'){
-    //   this.controllers.statistics.getData();
-    // }
-    // else if (LS.page === 'textbook'){
-    //   this.controllers.textBook.getData();
-    // }
+
+    this.detachEvents();
+
+    if (Object.keys(LS).length === 0) {
+      dictionary.mainPage();
+    } else {
+      dictionary[(LS.page as keyof typeof dictionary)]();
+    }
 
     this.attachEvents();
   }
