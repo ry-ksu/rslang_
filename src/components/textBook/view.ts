@@ -1,4 +1,5 @@
-import { IWord } from "../types/types";
+import './style.scss';
+import { IWord } from '../types/types';
 
 export default class ViewTextBook {
   container: HTMLDivElement;
@@ -10,53 +11,42 @@ export default class ViewTextBook {
   drawCard(word: IWord) {
     const baseUrl = 'https://rslang-learnwords-api.herokuapp.com'; // temporary
     const cardWord = document.createElement('div');
+    cardWord.dataset.wordid = word.id;
     cardWord.classList.add('card-word');
     this.container.appendChild(cardWord);
 
-    const mainWrapper = document.createElement('div');
-    mainWrapper.classList.add('main-wrapper');
-    cardWord.appendChild(mainWrapper);
-
-    const pictureContainer = document.createElement('div');
-    pictureContainer.classList.add('picture-container');
-    const wordPicture = document.createElement('img');
-    pictureContainer.appendChild(wordPicture);
-    wordPicture.classList.add('word-picture');
-    wordPicture.src = `${baseUrl}/${word.image}`;
-    wordPicture.alt = 'word picture';
-    const cardControls = document.createElement('div');
-    cardControls.classList.add('card-controls');
-    mainWrapper.append(pictureContainer, cardControls);
-
-    const wordContainer = document.createElement('div');
-    wordContainer.classList.add('word-container');
-
-    const wordTranslate = document.createElement('word-translate');
-    wordTranslate.classList.add('word-translate');
-    wordTranslate.innerText = `${word.word} - [${word.transcription}] - ${word.wordTranslate}`;
-    wordContainer.appendChild(wordTranslate);
-
-    const sentenseContainer = document.createElement('div');
-    sentenseContainer.classList.add('sentense-container');
-    const textMeaning = document.createElement('p');
-    textMeaning.classList.add('text-meaning');
-    textMeaning.innerHTML = `<i>${word.textMeaning}</i><br>${word.textMeaningTranslate}`;
-    const textExample = document.createElement('p');
-    textExample.classList.add('text-example');
-    textExample.innerHTML = `<i>${word.textExample}</i><br>${word.textExampleTranslate}`;
-    sentenseContainer.append(textMeaning, textExample);
-
-    const soundBtn = document.createElement('button');
-    soundBtn.classList.add('sound-btn');
-
-    const btnsContainer = document.createElement('div');
-    btnsContainer.classList.add('btns-container');
-    const btnHard = document.createElement('button');
-    btnHard.classList.add('btn-hard');
-    const btnLearned = document.createElement('button');
-    btnLearned.classList.add('btn-learned');
-    btnsContainer.append(btnHard, btnLearned);
-
-    cardControls.append(wordContainer, sentenseContainer, soundBtn, btnsContainer);
+    cardWord.innerHTML = `
+      <div class="main-wrapper">
+        <img class="word-picture" src="${baseUrl}/${word.image}" alt="${word.word}">
+        <div class="card-content">
+          <audio src="${baseUrl}/${word.audio}" preload="auto"></audio>
+          <audio src="${baseUrl}/${word.audioMeaning}" preload="auto"></audio>
+          <audio src="${baseUrl}/${word.audioExample}" preload="auto"></audio>
+          <div class="word-container">
+            <span class="word-translate"><b>${word.word} - ${word.transcription} - ${word.wordTranslate}</b></span>
+          </div>
+          <div class="sentense-container">
+            <p class="text-meaning">${word.textMeaning}<br>${word.textMeaningTranslate}</p>
+            <p class="text-example">${word.textExample}<br>${word.textExampleTranslate}</p>
+          </div>
+          <button class="sound-btn" title="audio"></button>
+        </div>
+      </div>
+      <div class="user-wrapper">
+        <div class="btns-container">
+          <button class="btn-hard">Сложное</button>
+          <button class="btn-learned">Изучено</button>
+        </div>
+        <div class="footer-wrapper">
+          <div class="right-container">
+            <span class="right-symbol">✔</span>
+            <span class="right-count">0</span>
+          </div>
+          <div class="wrong-container">
+            <span class="wrong-symbol">✖</span>
+            <span class="wrong-count">0</span>
+          </div>
+        </div>
+      </div>`;
   }
 }
