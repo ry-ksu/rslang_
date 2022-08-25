@@ -33,7 +33,7 @@ export default class ViewHeader {
     const nav = document.createElement('nav');
     nav.className = 'nav';
     nav.innerHTML = '<ul>' +
-                      '<li class="main-page">Главная</li>' +
+                      '<li class="mainPage">Главная</li>' +
                       '<li class="about">О нас</li>' +
                       '<li class="textbook">Учебник</li>' +
                       // разместить игры в выпадающем меню

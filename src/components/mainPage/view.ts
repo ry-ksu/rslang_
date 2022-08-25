@@ -46,12 +46,11 @@ export default class ViewMainPage {
     return benefitCards;
   }
 
-  drewMain() {
+  drewMain(component: HTMLElement) {
     const mainBlock = this.drewMainBlock();
     const benefits = this.drewBenefits();
-    const main = document.createElement('main');
 
-    main.append(mainBlock, benefits);
-    document.body.append(main);
+    component.append(mainBlock, benefits);
+    document.body.append(component);
   }
 }

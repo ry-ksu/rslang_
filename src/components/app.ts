@@ -1,56 +1,56 @@
-// import ControllerAudioGame from '../components/audioGame/controller';
-// import ControllerAuthorization from '../components/authorization/controller';
+import ControllerAbout from './about/controller';
+// import ControllerAudioGame from './audioGame/controller';
+// import ControllerAuthorization from './authorization/controller';
 import ControllerHeader from './header/controller';
-// import ControllerSprintGame from '../components/sprintGame/controller';
-// import ControllerStatistics from '../components/statistics/controller';
-// import ControllerTeamPage from '../components/teamPage/controller';
-// import ControllerTextBook from '../components/textBook/controller';
-
-import ViewAbout from './about/view';
-import ViewMainPage from './mainPage/view';
+import ControllerMainPage from './mainPage/controller';
+// import ControllerSprintGame from './sprintGame/controller';
+// import ControllerStatistics from './statistics/controller';
+// import ControllerTeamPage from './teamPage/controller';
+// import ControllerTextBook from './textBook/controller';
 
 import { ILocalStorage } from './types/types';
 
+import LocalStorage from '../services/store';
+
 class App {
+  localStorage: LocalStorage;
+
+  component: HTMLElement;
+
   controllers: {
+    about: ControllerAbout;
     // audioGame: ControllerAudioGame;
     // authorization: ControllerAuthorization;
     header: ControllerHeader;
+    mainPage: ControllerMainPage;
     // sprintGame: ControllerSprintGame;
     // statistics: ControllerStatistics;
     // teamPage: ControllerTeamPage;
     // textBook: ControllerTextBook
   };
 
-  views: {
-    about: ViewAbout;
-    mainPage: ViewMainPage;
-  }
-
   constructor() {
+    this.localStorage = new LocalStorage();
+    this.component = document.createElement('main');
     this.controllers = {
+      about: new ControllerAbout(this.component),
       // audioGame: new ControllerAudioGame(),
       // authorization: new ControllerAuthorization(),
       header: new ControllerHeader(),
+      mainPage: new ControllerMainPage(this.component),
       // sprintGame: new ControllerSprintGame(),
       // statistics: new ControllerStatistics(),
       // teamPage: new ControllerTeamPage(),
       // textBook: new ControllerTextBook(),
     }
-
-    this.views = {
-      about: new ViewAbout(),
-      mainPage: new ViewMainPage(),
-    }
   }
-
 
   // перенести в services.store
   changeLSPageAndRenderThisPage(e: Event) {
     if ((e.target as HTMLElement).nodeName === 'LI') {
-      const LS = (JSON.parse(localStorage.getItem('victory') as string) || {}) as ILocalStorage;
-      LS.page = (e.target as HTMLElement).className;
-      localStorage.setItem('victory', JSON.stringify(LS));
+      this.localStorage.changeLS('page', (e.target as HTMLElement).className)
+      // LS.page = (e.target as HTMLElement).className;
+      // localStorage.setItem('victory', JSON.stringify(LS));
 
       this.render();
     }
@@ -73,13 +73,13 @@ class App {
     this.detachEvents();
     // добавить словарь как объект (пример от Халида)
 
-    if (Object.keys(LS).length === 0 || LS.page === 'main-page') {
+    if (Object.keys(LS).length === 0 || LS.page === 'mainPage') {
       this.controllers.header.getData(LS.token);
-      this.views.mainPage.drewMain();
+      this.controllers.mainPage.getData();
     } 
     else if (LS.page === 'about'){
       this.controllers.header.getData(LS.token);
-      this.views.about.drewTeamCards();
+      this.controllers.about.getData();
     }
     // else if (LS.page === 'audio-game'){
     //   this.controllers.audioGame.getData();

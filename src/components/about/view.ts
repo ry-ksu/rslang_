@@ -20,7 +20,7 @@ export default class ViewAbout {
     return card;
   }
 
-  drewTeamCards() {
+  drewTeamCards(component: HTMLElement) {
     const teamCount = 3;
     const teamImgs = ['1.png', '2.png', '3.png'];
     const teamNames = ['Ярослав', 'Ксения', 'Халид'];
@@ -39,7 +39,8 @@ export default class ViewAbout {
 
     const teamHeader = document.createElement('h3');
     teamHeader.innerHTML = 'Наша команда:'
-    document.body.append(teamHeader);
+    component.append(teamHeader);
+    document.body.append(component);
 
     for (let i = 0; i < teamCount; i += 1) {
       document.body.append(this.drewTeamCard(
