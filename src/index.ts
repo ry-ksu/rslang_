@@ -16,3 +16,4 @@ const auth = new Auth();
 auth.renderAuth()
 
 popup();
+
