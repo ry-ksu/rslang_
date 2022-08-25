@@ -26,7 +26,6 @@ export default class ViewHeader {
     } else {
       userArea.innerHTML = '<button class="primary-button" data-auth>Войти</button>'
     }
-    userArea.setAttribute('data', 'auth');
     return userArea;
   }
 
