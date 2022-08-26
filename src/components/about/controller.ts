@@ -1,16 +1,13 @@
 import ViewAbout from './view';
 
 export default class ControllerAbout {
-  component: HTMLElement;
-
   viewAbout: ViewAbout;
 
-  constructor(component: HTMLElement) {
-    this.component = component;
+  constructor() {
     this.viewAbout = new ViewAbout();
   }
 
-  getData() {
-    this.viewAbout.drewTeamCards(this.component);
+  getDate(component: HTMLElement) {
+    this.viewAbout.drewTeamCards(component);
   }
 }

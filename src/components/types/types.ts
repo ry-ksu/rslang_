@@ -1,3 +1,6 @@
+import WordsApi from "../../services/wordsAPI";
+import LocalStorage from "../../services/store";
+
 // API types & interfaces
 
 export type ILocalStorage = {
@@ -88,3 +91,17 @@ export interface IUserStatistics {
     };
   };
 }
+
+export type IGamePack = {
+  rightWord: string;
+  sound: string;
+  wrongWords: string[];
+  mixWords: string[];
+};
+
+export type IAttributes = {
+  baseURL: string;
+  wordsApi: WordsApi;
+  localStorage: LocalStorage;
+  component: HTMLElement;
+};
