@@ -253,6 +253,7 @@
     text-align: center;
     border-radius: 50%;
     cursor: pointer;
+    background-color: $color-light-s;
 
     &:hover {
       background-color: $color-primary-light;
@@ -260,6 +261,13 @@
 
     &:active {
       transform: scale(98%);
+    }
+
+    &:disabled:hover,
+    &:disabled:active {
+      background-color: $color-light-s;
+      transform: none;
+      cursor: default;
     }
   }
 

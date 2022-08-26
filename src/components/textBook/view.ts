@@ -2,17 +2,19 @@ import './style.scss';
 import { IWord } from '../types/types';
 
 export default class ViewTextBook {
-  container: HTMLDivElement;
+  private container: HTMLDivElement;
 
   textBookContainer: HTMLDivElement;
 
-  headerContainer: HTMLDivElement;
+  private headerContainer: HTMLDivElement;
 
-  pageContainer: HTMLDivElement;
+  private pageContainer: HTMLDivElement;
 
-  paginationContainer: HTMLDivElement;
+  private paginationContainer: HTMLDivElement;
 
-  baseURL: string;
+  private baseURL: string;
+
+  private static wordGroup: number;
 
   constructor(container: HTMLDivElement) {
     this.container = container;
@@ -29,10 +31,12 @@ export default class ViewTextBook {
     this.container.append(this.textBookContainer);
   }
 
-  draw({words, pageNumber, maxPageNumber}: {words: IWord[], pageNumber: number, maxPageNumber: number}) {
+  draw({words, wordPage, maxWordPage}:
+    {words: IWord[], wordPage: number, maxWordPage: number}) {
+
     this.drawHeader();
     this.drawPage(words);
-    this.drawPagination({pageNumber, maxPageNumber});
+    this.drawPagination({wordPage, maxWordPage});
   }
 
   drawHeader() {
@@ -77,7 +81,7 @@ export default class ViewTextBook {
 
     cardWord.innerHTML = `
       <div class="main-wrapper">
-        <img class="word-picture" src="${this.baseURL}/${word.image}" alt="${word.word}">
+        <img class="word-picture" src="${this.baseURL}/${word.image}" alt="${word.word}" width="390" height="234">
         <div class="card-content">
           <audio src="${this.baseURL}/${word.audio}" preload="auto"></audio>
           <audio src="${this.baseURL}/${word.audioMeaning}" preload="auto"></audio>
@@ -112,14 +116,17 @@ export default class ViewTextBook {
     return cardWord;
   }
 
-  drawPagination({pageNumber, maxPageNumber}: {pageNumber: number, maxPageNumber: number}) {
+  drawPagination({wordPage, maxWordPage}: {wordPage: number, maxWordPage: number}) {
     this.paginationContainer.innerHTML = '';
     const btnLeftPage = document.createElement('button');
     btnLeftPage.classList.add('tb-leftpage-btn');
     const pageNumberText = document.createElement('span');
-    pageNumberText.innerText = `${pageNumber} / ${maxPageNumber}`;
+    pageNumberText.innerText = `${wordPage + 1} / ${maxWordPage + 1}`;
     const btnRightPage = document.createElement('button');
     btnRightPage.classList.add('tb-rightpage-btn');
     this.paginationContainer.append(btnLeftPage, pageNumberText, btnRightPage);
+
+    if(wordPage === 0) btnLeftPage.disabled = true;
+    if(wordPage === maxWordPage) btnRightPage.disabled = true;
   }
 }
