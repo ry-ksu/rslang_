@@ -8,10 +8,99 @@
   box-sizing: border-box;
 }
 
-.card-word {
-  max-width: 400px;
-  min-width: 430px;
-  min-height: 300px;
+.textbook-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.tb-header {
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+
+  @media screen and (max-width: 1024px) {
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .tb-group-btns {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .tb-group-btn,
+  .tb-group-hardbtn {
+    padding: 10px;
+    background-color: $color-light-s;
+    border-radius: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: $color-primary-light;
+    }
+
+    &.pressed {
+      color: $color-light-xl;
+      background-color: $color-primary;
+    }
+
+    &:active {
+      transform: translateY(1px);
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+    }
+  }
+
+  .tb-games-btns {
+    display: flex;
+    gap: 10px;
+  }
+
+  .tb-sprintgame-btn,
+  .tb-audiogame-btn {
+    @include button(
+      $background-color: $color-primary-light,
+      $color: $color-light-xl,
+      $width: 140px,
+    );
+    font-weight: bold;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: $color-primary;
+    }
+
+    &:active {
+      transform: scale(98%);
+    }
+  }
+}
+
+.tb-page {
+  display: flex;
+  padding: 10px 0;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  align-content: space-around;
+  gap: 2rem;
+}
+
+.tb-card-word {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 430px;
+  min-height: 610px;
   padding: 20px 20px 10px;
   font-size: 16px;
   border-radius: 1rem;
@@ -52,10 +141,12 @@
   }
 
   .sentense-container {
+    height: 150px;
     padding: 5px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    overflow: auto;
     background-color: $color-primary-light;
     border-radius: 1rem;
   }
@@ -77,11 +168,6 @@
       transform: scale(98%);
     }
 
-  }
-
-  .user-wrapper {
-    display: none;
-    padding-top: 10px;
   }
 
   .btns-container {
@@ -149,4 +235,40 @@
   .wrong-symbol {
     background-color: #DA572D;
   }
+}
+
+.tb-pagination {
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  .tb-leftpage-btn,
+  .tb-rightpage-btn {
+    font-size: inherit;
+    font-weight: inherit;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    border-radius: 50%;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $color-primary-light;
+    }
+
+    &:active {
+      transform: scale(98%);
+    }
+  }
+
+  .tb-leftpage-btn {
+    background: $color-light-s url('../../assets/img/card-word-arrow-left.svg') center / 70% no-repeat;
+  }
+
+  .tb-rightpage-btn {
+    background: $color-light-s url('../../assets/img/card-word-arrow-right.svg') center / 70% no-repeat;
+  }
+
 }
