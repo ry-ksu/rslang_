@@ -23,12 +23,12 @@
   $padding: 5px 10px,
   $border-radius: 15%,
   $cursor: pointer,
-  $width: 150px,
+  $width: 150px
 ) {
   background-color: $background-color;
   color: $color;
   border: $border;
-  padding:  $padding;
+  padding: $padding;
   border-radius: $border-radius;
   cursor: $cursor;
   width: $width;
@@ -45,4 +45,3 @@
     @content;
   }
 }
-

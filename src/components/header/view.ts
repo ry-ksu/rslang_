@@ -20,9 +20,9 @@ export default class ViewHeader {
     userArea.className = 'user-area';
 
     if (auth) {
-      userArea.innerHTML = '<button class="auth-btn primary-button">Выйти</button>'
+      userArea.innerHTML = '<button class="auth-btn primary-button">Выйти</button>';
     } else {
-      userArea.innerHTML = '<button class="auth-btn primary-button">Войти</button>'
+      userArea.innerHTML = '<button class="auth-btn primary-button">Войти</button>';
     }
     return userArea;
   }
@@ -30,15 +30,16 @@ export default class ViewHeader {
   drewNav() {
     const nav = document.createElement('nav');
     nav.className = 'nav';
-    nav.innerHTML = '<ul>' +
-                      '<li class="mainPage">Главная</li>' +
-                      '<li class="about">О нас</li>' +
-                      '<li class="textbook">Учебник</li>' +
-                      // разместить игры в выпадающем меню
-                      '<li class="audioGame">Аудиовызов</li>' +
-                      '<li class="sprint">Спринт</li>' +
-                      '<li class="statistics">Статистика</li>' +
-                    '</ul>'
+    nav.innerHTML =
+      '<ul>' +
+      '<li class="mainPage">Главная</li>' +
+      '<li class="about">О нас</li>' +
+      '<li class="textbook">Учебник</li>' +
+      // разместить игры в выпадающем меню
+      '<li class="audioGame">Аудиовызов</li>' +
+      '<li class="sprint">Спринт</li>' +
+      '<li class="statistics">Статистика</li>' +
+      '</ul>';
     return nav;
   }
 }

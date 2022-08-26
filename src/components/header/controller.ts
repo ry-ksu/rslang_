@@ -1,4 +1,4 @@
-import ViewHeader from "./view";
+import ViewHeader from './view';
 
 export default class ControllerHeader {
   viewHeader: ViewHeader;

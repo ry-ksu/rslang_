@@ -66,13 +66,13 @@ export interface IUserStatistics {
       learnedWords: number;
       audioGame: {
         newWords: number;
-        sucsessWords: number;
+        successWords: number;
         failWords: number;
         rightSeries: number;
       };
       sprint: {
         newWords: number;
-        sucsessWords: number;
+        successWords: number;
         failWords: number;
         rightSeries: number;
       };

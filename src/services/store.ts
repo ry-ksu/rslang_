@@ -1,4 +1,4 @@
-import { ILocalStorage } from "../components/types/types";
+import { ILocalStorage } from '../components/types/types';
 
 export default class LocalStorage {
   getLS(): ILocalStorage {

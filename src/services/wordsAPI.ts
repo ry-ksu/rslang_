@@ -72,13 +72,7 @@ export class WordsApi {
     return result;
   }
 
-  async signUser({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }): Promise<IUserToken> {
+  async signUser({ email, password }: { email: string; password: string }): Promise<IUserToken> {
     const url = `${this.baseUrl}/signin`;
     const options: RequestInit = {
       method: 'POST',
@@ -149,13 +143,7 @@ export class WordsApi {
     return result;
   }
 
-  async getUserWords({
-    userID,
-    token,
-  }: {
-    userID: string;
-    token: string;
-  }): Promise<IUserWord[]> {
+  async getUserWords({ userID, token }: { userID: string; token: string }): Promise<IUserWord[]> {
     const url = `${this.baseUrl}/users/${userID}/words`;
     const options: RequestInit = {
       method: 'GET',

@@ -18,7 +18,7 @@ export default class ViewMainPage {
   drewBenefits() {
     const benefitCards = document.createElement('div');
     const benefitCardContent = document.createElement('div');
-    benefitCardContent.className = 'benefit-card__content'
+    benefitCardContent.className = 'benefit-card__content';
     benefitCards.className = 'benefit-cards';
     const benefitCount = 4;
     benefitCards.innerHTML = `<h3>Оцените преимущества приложения</h3>
