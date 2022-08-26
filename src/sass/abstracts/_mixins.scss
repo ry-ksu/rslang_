@@ -1,0 +1,47 @@
+@mixin typography(
+  $family: $font-main,
+  $size: 20px,
+  $style: normal,
+  $weight: 400,
+  $height: 130%,
+  $letter-spacing: 0.06em
+) {
+  margin: 0;
+  padding: 0;
+  font-family: $family;
+  font-size: $size;
+  font-style: $style;
+  font-weight: $weight;
+  line-height: $height;
+  letter-spacing: $letter-spacing;
+}
+
+@mixin button(
+  $background-color: $color-primary,
+  $color: $color-light-xl,
+  $border: none,
+  $padding: 5px 10px,
+  $border-radius: 15%,
+  $cursor: pointer,
+  $width: 150px
+) {
+  background-color: $background-color;
+  color: $color;
+  border: $border;
+  padding: $padding;
+  border-radius: $border-radius;
+  cursor: $cursor;
+  width: $width;
+}
+
+@mixin media-desktop {
+  @media (min-width: calc($tablet-width + 1px)) {
+    @content;
+  }
+}
+
+@mixin media-tablet {
+  @media (max-width: $tablet-width) {
+    @content;
+  }
+}

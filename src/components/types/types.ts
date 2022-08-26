@@ -1,5 +1,13 @@
 // API types & interfaces
 
+export type ILocalStorage = {
+  token: string;
+  name: string;
+  page: string;
+  groupTB: string;
+  pageTB: string;
+};
+
 export interface ILoader {
   makeRequest<T>({ url, options }: { url: string; options?: RequestInit }): Promise<T>;
 }
@@ -58,13 +66,13 @@ export interface IUserStatistics {
       learnedWords: number;
       audioGame: {
         newWords: number;
-        sucsessWords: number;
+        successWords: number;
         failWords: number;
         rightSeries: number;
       };
       sprint: {
         newWords: number;
-        sucsessWords: number;
+        successWords: number;
         failWords: number;
         rightSeries: number;
       };
