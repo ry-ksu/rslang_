@@ -1,7 +1,8 @@
 import animateCSS from "./animate";
-import { PopupOption, updatePopup } from "./view";
+import { AuthOption } from "./contrats";
+import { updatePopup } from "./view";
 
-const togglePopupAppearance = (): void => {
+export const togglePopupAppearance = (): void => {
   const outside = document.querySelector<HTMLElement>('.outside');
   const popup = document.querySelector<HTMLElement>('.popup');
   outside?.classList.toggle('show');
@@ -15,7 +16,7 @@ export const togglePopupState = ():void => {
       return;
     }
     const popup = document.querySelector('.popup') as HTMLElement;
-    const option = (target.getAttribute('data') ?? 'signIn') as PopupOption;
+    const option = (target.getAttribute('data') ?? 'signIn') as AuthOption;
     if (document.querySelector('.popup')?.getAttribute('data') === option) {
       return;
     }

@@ -1,6 +1,6 @@
+import { AuthOption } from "./contrats";
 import { createHtmlEl } from "./helpers";
 
-export type PopupOption = 'signIn' | 'signUp';
 
 const renderInputEl = (title: string): HTMLElement => {
   const wrapper = createHtmlEl('div', 'body__item');
@@ -35,13 +35,13 @@ const renderButtons = (option: string): HTMLElement => {
 }
 
 const renderSignIn = (body: HTMLElement): void => {
-  const login = renderInputEl('login');
-  login.classList.add('login');
+  const mail = renderInputEl('mail');
+  mail.classList.add('mail');
 
   const password = renderInputEl('password');
   password.classList.add('password');
 
-  body.appendChild(login);
+  body.appendChild(mail);
   body.appendChild(password);
   body.appendChild(renderButtons('signIn'));
 }
@@ -50,24 +50,24 @@ const renderSignUp = (body: HTMLElement): void => {
   const name = renderInputEl('name');
   name.classList.add('name');
 
-  const login = renderInputEl('login');
-  login.classList.add('login');
+  const mail = renderInputEl('mail');
+  mail.classList.add('mail');
 
   const password = renderInputEl('password');
   password.classList.add('password');
 
   body.appendChild(name);
-  body.appendChild(login);
+  body.appendChild(mail);
   body.appendChild(password);
   body.appendChild(renderButtons('signUp'));
 }
 
-const fillPopupByOption: Record<PopupOption, (body: HTMLElement) => void> = {
+const fillPopupByOption: Record<AuthOption, (body: HTMLElement) => void> = {
   signIn: (body) => renderSignIn(body),
   signUp: (body) => renderSignUp(body)
 }
 
-const renderPopup = (option: PopupOption): HTMLElement => {
+const renderPopup = (option: AuthOption): HTMLElement => {
   const wrapper = createHtmlEl('div', 'outside');
   const popup = createHtmlEl('div', 'popup');
   popup.setAttribute('data', option);
@@ -85,7 +85,7 @@ const renderPopup = (option: PopupOption): HTMLElement => {
 }
 
 
-export const updatePopup = (option: PopupOption): void => {
+export const updatePopup = (option: AuthOption): void => {
   const popupBody = document.querySelector('.popup__body') as HTMLElement;
   popupBody.innerHTML = '';
 
@@ -93,7 +93,7 @@ export const updatePopup = (option: PopupOption): void => {
   document.querySelector('.popup')?.setAttribute('data', option);
 }
 
-export default function renderAuth(option = 'signIn' as PopupOption): void {
+export default function renderAuth(option = 'signIn' as AuthOption): void {
   const popup = renderPopup(option);
   document.querySelector<HTMLElement>('main')?.appendChild(popup);
 }

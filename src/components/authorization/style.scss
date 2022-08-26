@@ -26,20 +26,14 @@
   visibility: hidden;
 }
 
-.show {
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
-}
-
 .body__item {
   &:not(:last-child) {
     margin-bottom: 1rem;
   }
 }
 
-.login {
-  margin-left: 34px;
+.mail {
+  margin-left: 40px;
 }
 
 .name {
@@ -88,4 +82,20 @@ label {
 
 .popup__btn:first-child {
   margin-right: 2rem;
+}
+
+.popup__body {
+  position: relative;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  font-size: 12px;
+}
+
+.show {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
 }
