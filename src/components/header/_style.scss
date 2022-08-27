@@ -1,0 +1,30 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: $color-primary;
+  cursor: pointer;
+}
+
+.nav {
+  margin-left: 25px;
+  flex-grow: 1;
+}
+
+ul {
+  display: flex;
+  gap: 15px;
+  color: $color-dark-xl;
+  li {
+    cursor: pointer;
+  }
+}
+
+.user-area {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}

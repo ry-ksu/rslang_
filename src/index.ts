@@ -1,6 +1,4 @@
-import ControllerTextBook from "./components/textBook/controller";
+import App from './components/app';
 
-const tb = new ControllerTextBook();
-tb.getData().catch((err) => console.log(err));
-
-console.log('VICTORY');
+const app = new App();
+app.render();

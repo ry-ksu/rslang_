@@ -1,16 +1,16 @@
-import ViewMainPage from './view';
+import ViewAbout from './view';
 
 export default class ControllerAbout {
   component: HTMLElement;
 
-  viewMainPage: ViewMainPage;
+  viewAbout: ViewAbout;
 
   constructor(component: HTMLElement) {
     this.component = component;
-    this.viewMainPage = new ViewMainPage();
+    this.viewAbout = new ViewAbout();
   }
 
   getData() {
-    this.viewMainPage.drewMain(this.component);
+    this.viewAbout.drewTeamCards(this.component);
   }
 }

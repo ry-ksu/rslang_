@@ -1,0 +1,7 @@
+.primary-button {
+  @include button($width: 70px);
+}
+
+.additional-button {
+  @include button($background-color: $color-additional);
+}
