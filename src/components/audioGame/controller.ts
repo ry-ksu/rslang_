@@ -13,15 +13,8 @@ export default class ControllerAudioGame {
     this.gamePack = gamePack;
     this.viewAudioGame = new ViewAudioGame();
   }
-
-  async getDate(): Promise<void> {
-    
-    // Нужно получать все слова, а не запрашивать их
-    const date: IWord[] = await this.attributes.wordsApi.getWords({
-      wordGroup: 1,
-      wordPage: 1,
-    });
-
+  
+  createGamePack(date: IWord[]) {
     const randomDate = date.sort(() => Math.random() - 0.5);
 
     for (let i = 0; i < randomDate.length; i += 1) {
@@ -51,5 +44,38 @@ export default class ControllerAudioGame {
       })
     }
     this.viewAudioGame.draw(this.gamePack[0], this.attributes);
+  }
+
+  getServerWordsData(lvl: number){
+    this.attributes.wordsApi.getWords({
+      wordGroup: lvl,
+      wordPage: Math.ceil(Math.random() * 30),
+    }).then((result: IWord[])=> this.createGamePack(result)).catch((err)=> console.log(err));
+  }
+
+  checkDataLvlAttribute(e: Event){
+    if ((e.target as HTMLElement).hasAttribute('data-lvl')) {
+
+      this.getServerWordsData(Number((e.target as HTMLElement).getAttribute('data-lvl')));
+    }
+  }
+
+  attachEvents(){
+    if (document.querySelector('.audioGame__lvls')) {
+      (document.querySelector('.audioGame__lvls') as HTMLElement).addEventListener('click', this.checkDataLvlAttribute.bind(this));
+    }
+  }
+
+  detachEvents() {
+    //
+  }  
+
+  getDate(gameWords: IWord[] = []) {
+    if (gameWords.length !== 0) {
+      // this.getData();
+    } else {
+      this.viewAudioGame.drawLevelWindow(this.attributes.component);
+      this.attachEvents();
+    }
   }
 }

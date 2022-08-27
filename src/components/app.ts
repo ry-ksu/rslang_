@@ -59,9 +59,9 @@ class App {
 
   render() {
 
-    if (!document.querySelector('main')) {
-      document.body.append(this.attributes.component);
-    }
+    // if (!document.querySelector('main')) {
+    document.body.append(this.attributes.component);
+    // }
     this.attributes.component.innerHTML = '';
     const LS = this.attributes.localStorage.getLS();
 
@@ -73,7 +73,7 @@ class App {
         this.controllers.about.getDate();
       },
       audioGame: (): void => {
-        this.controllers.audioGame.getDate().catch((err) => console.log(err));
+        this.controllers.audioGame.getDate();
       }
     }
 
