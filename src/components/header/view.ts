@@ -11,7 +11,7 @@ export default class ViewHeader {
     logo.innerHTML = '<h1>VICTORY</h1>';
 
     header.append(logo, nav, userArea);
-    document.body.prepend(header);
+    document.body.prepend(header); 
   }
 
   drewUserArea(auth: boolean) {
@@ -30,15 +30,16 @@ export default class ViewHeader {
   drewNav() {
     const nav = document.createElement('nav');
     nav.className = 'nav';
+    // тут data-атрибуты лучше, чем матчится на css-классы
     nav.innerHTML =
       '<ul>' +
-      '<li class="mainPage">Главная</li>' +
-      '<li class="about">О нас</li>' +
-      '<li class="textbook">Учебник</li>' +
+      '<li data-page="mainPage">Главная</li>' +
+      '<li data-page="about">О нас</li>' +
+      '<li data-page="textbook">Учебник</li>' +
       // разместить игры в выпадающем меню
-      '<li class="audioGame">Аудиовызов</li>' +
-      '<li class="sprint">Спринт</li>' +
-      '<li class="statistics">Статистика</li>' +
+      '<li data-page="audioGame">Аудиовызов</li>' +
+      '<li data-page="sprint">Спринт</li>' +
+      '<li data-page="statistics">Статистика</li>' +
       '</ul>';
     return nav;
   }

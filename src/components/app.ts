@@ -39,11 +39,11 @@ class App {
       component: document.createElement('main'),
     }
     this.controllers = {
-      about: new ControllerAbout(),
-      audioGame: new ControllerAudioGame(),
+      about: new ControllerAbout(this.attributes),
+      audioGame: new ControllerAudioGame(this.attributes),
       // authorization: new ControllerAuthorization(),
-      header: new ControllerHeader(),
-      mainPage: new ControllerMainPage(),
+      header: new ControllerHeader(this.changeLSPageAndRenderThisPage.bind(this)),
+      mainPage: new ControllerMainPage(this.attributes),
       // sprintGame: new ControllerSprintGame(),
       // statistics: new ControllerStatistics(),
       // teamPage: new ControllerTeamPage(),
@@ -51,73 +51,38 @@ class App {
     }
   }
 
-  changeLSPageAndRenderThisPage(e: Event) {
-    if ((e.target as HTMLElement).nodeName === 'LI') {
-      this.attributes.localStorage.changeLS('page', (e.target as HTMLElement).className)
+  changeLSPageAndRenderThisPage(page: string) {// тут следует добавить остальные параметры нужные для отрисовки
+    this.attributes.localStorage.changeLS('page', page)
 
-      this.render();
-    }
-  } 
-
-  detachEvents(){
-    // Header
-    if (document.querySelector('.nav')) {
-      (document.querySelector('.nav') as HTMLElement).removeEventListener('click', this.changeLSPageAndRenderThisPage.bind(this));
-    }
-  }
-
-  attachEvents() {
-    // Header
-    if (document.querySelector('.nav')) {
-      (document.querySelector('.nav') as HTMLElement).addEventListener('click', this.changeLSPageAndRenderThisPage.bind(this));
-    }
+    this.render();
   }
 
   render() {
 
+    if (!document.querySelector('main')) {
+      document.body.append(this.attributes.component);
+    }
     this.attributes.component.innerHTML = '';
     const LS = this.attributes.localStorage.getLS();
-    
+
     const dictionary = {
       mainPage: (): void => {
-        this.controllers.mainPage.getDate(this.attributes.component);
+        this.controllers.mainPage.getDate();
       },
       about: (): void => {
-        this.controllers.about.getDate(this.attributes.component);
+        this.controllers.about.getDate();
       },
+      audioGame: (): void => {
+        this.controllers.audioGame.getDate().catch((err) => console.log(err));
+      }
     }
-  
-    const dictionaryPromise = {
-      audioGame: async (): Promise<void> => {
-        await this.controllers.audioGame.getDate(this.attributes);
-      },
-      // sprint: () => {
-      //   this.controllers.sprintGame.getData();
-      // },
-      // statistics: () => {
-      //   this.controllers.statistics.getData();
-      // },
-      // textbook: () => {
-      //   this.controllers.textBook.getData();
-      // },
-    }
-  
-    this.detachEvents();
+
     this.controllers.header.getData(LS.token);
 
     if (Object.keys(LS).length === 0) {
       dictionary.mainPage();
-      this.attachEvents();
-    } else if (Object.keys(dictionary).includes(LS.page)) {
-      dictionary[(LS.page as keyof typeof dictionary)]();
-      this.attachEvents();
     } else {
-      const result = dictionaryPromise[(LS.page as keyof typeof dictionaryPromise)]();
-      result.then(
-        () => this.attachEvents()
-      ).catch(
-        err => console.error(err)
-      );
+      dictionary[(LS.page as keyof typeof dictionary)]();
     }
   }
 }

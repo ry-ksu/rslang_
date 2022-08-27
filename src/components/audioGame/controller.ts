@@ -6,15 +6,18 @@ export default class ControllerAudioGame {
 
   gamePack: IGamePack[];
 
-  constructor(gamePack = []) {
+  attributes: IAttributes;
+
+  constructor(attributes: IAttributes, gamePack = []) {
+    this.attributes = attributes;
     this.gamePack = gamePack;
     this.viewAudioGame = new ViewAudioGame();
   }
 
-  async getDate(attributes: IAttributes): Promise<void> {
+  async getDate(): Promise<void> {
     
     // Нужно получать все слова, а не запрашивать их
-    const date: IWord[] = await attributes.wordsApi.getWords({
+    const date: IWord[] = await this.attributes.wordsApi.getWords({
       wordGroup: 1,
       wordPage: 1,
     });
@@ -47,6 +50,6 @@ export default class ControllerAudioGame {
         mixWords,
       })
     }
-    this.viewAudioGame.draw(this.gamePack[0], attributes);
+    this.viewAudioGame.draw(this.gamePack[0], this.attributes);
   }
 }
