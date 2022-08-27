@@ -2,7 +2,7 @@ import LocalStorage from '../../services/store';
 import WordsApi from '../../services/wordsAPI';
 import { IUserToken } from '../types/types';
 import animateCSS from './animate';
-import { AuthOption, checkValueFn, SignUpOptions } from './contrats';
+import { AuthOption, checkValueFn, SignUpOptions } from './contracts';
 import { createHtmlEl } from './helpers';
 import { togglePopupAppearance } from './togglePopupState';
 import { updatePopup } from './view';

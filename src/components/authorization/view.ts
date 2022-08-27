@@ -1,4 +1,4 @@
-import { AuthOption } from './contrats';
+import { AuthOption } from './contracts';
 import { createHtmlEl } from './helpers';
 
 const renderInputEl = (title: string): HTMLElement => {

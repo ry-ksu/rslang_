@@ -1,5 +1,5 @@
 import { IUserToken } from '../types/types';
-import { ITocen } from './contrats';
+import { IToken } from './contracts';
 
 function getLocalStoreUser() {
   const user = localStorage.getItem('user') ?? '{}';
@@ -19,8 +19,8 @@ function parseJWT(token: string) {
   };
 }
 
-function getJWTPayload(token: string): ITocen {
-  return parseJWT(token).payload as ITocen;
+function getJWTPayload(token: string): IToken {
+  return parseJWT(token).payload as IToken;
 }
 
 export { getLocalStoreUser, getJWTPayload };

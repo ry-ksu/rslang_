@@ -1,5 +1,5 @@
 import animateCSS from './animate';
-import { AuthOption } from './contrats';
+import { AuthOption } from './contracts';
 import { updatePopup } from './view';
 
 export const togglePopupAppearance = (): void => {
