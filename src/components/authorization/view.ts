@@ -1,6 +1,5 @@
-import { AuthOption } from "./contrats";
-import { createHtmlEl } from "./helpers";
-
+import { AuthOption } from './contrats';
+import { createHtmlEl } from './helpers';
 
 const renderInputEl = (title: string): HTMLElement => {
   const wrapper = createHtmlEl('div', 'body__item');
@@ -8,15 +7,15 @@ const renderInputEl = (title: string): HTMLElement => {
   const label = createHtmlEl('label', '', `${title}: `) as HTMLLabelElement;
   label.htmlFor = title;
   const loginInput = createHtmlEl('input', 'popup__input') as HTMLInputElement;
-  loginInput.id = title;  
+  loginInput.id = title;
 
   wrapper.appendChild(label);
   wrapper.appendChild(loginInput);
-  return wrapper
-}
+  return wrapper;
+};
 
 const renderButtons = (option: string): HTMLElement => {
-  const wrapper = createHtmlEl('div', 'popupButtons')
+  const wrapper = createHtmlEl('div', 'popupButtons');
   const signIn = createHtmlEl('button', 'popup__btn', 'Войти');
   signIn.setAttribute('data', 'signIn');
   const signUp = createHtmlEl('button', 'popup__btn', 'Зарегестрироваться');
@@ -32,7 +31,7 @@ const renderButtons = (option: string): HTMLElement => {
   wrapper.appendChild(signIn);
   wrapper.appendChild(signUp);
   return wrapper;
-}
+};
 
 const renderSignIn = (body: HTMLElement): void => {
   const mail = renderInputEl('mail');
@@ -44,7 +43,7 @@ const renderSignIn = (body: HTMLElement): void => {
   body.appendChild(mail);
   body.appendChild(password);
   body.appendChild(renderButtons('signIn'));
-}
+};
 
 const renderSignUp = (body: HTMLElement): void => {
   const name = renderInputEl('name');
@@ -60,12 +59,12 @@ const renderSignUp = (body: HTMLElement): void => {
   body.appendChild(mail);
   body.appendChild(password);
   body.appendChild(renderButtons('signUp'));
-}
+};
 
 const fillPopupByOption: Record<AuthOption, (body: HTMLElement) => void> = {
   signIn: (body) => renderSignIn(body),
-  signUp: (body) => renderSignUp(body)
-}
+  signUp: (body) => renderSignUp(body),
+};
 
 const renderPopup = (option: AuthOption): HTMLElement => {
   const wrapper = createHtmlEl('div', 'outside');
@@ -74,16 +73,14 @@ const renderPopup = (option: AuthOption): HTMLElement => {
 
   const close = createHtmlEl('div', 'popup__close', 'X');
   const body = createHtmlEl('div', 'popup__body');
-  
-  
+
   fillPopupByOption[option](body);
 
   popup.appendChild(body);
   popup.appendChild(close);
   wrapper.appendChild(popup);
   return wrapper;
-}
-
+};
 
 export const updatePopup = (option: AuthOption): void => {
   const popupBody = document.querySelector('.popup__body') as HTMLElement;
@@ -91,7 +88,7 @@ export const updatePopup = (option: AuthOption): void => {
 
   fillPopupByOption[option](popupBody);
   document.querySelector('.popup')?.setAttribute('data', option);
-}
+};
 
 export default function renderAuth(option = 'signIn' as AuthOption): void {
   const popup = renderPopup(option);

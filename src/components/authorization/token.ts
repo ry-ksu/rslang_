@@ -1,8 +1,8 @@
-import { IUserToken } from "../types/types";
-import { ITocen } from "./contrats";
+import { IUserToken } from '../types/types';
+import { ITocen } from './contrats';
 
-function getLocalStoreUser(){
-  const user = localStorage.getItem('user') ??  '{}';
+function getLocalStoreUser() {
+  const user = localStorage.getItem('user') ?? '{}';
   return JSON.parse(user) as IUserToken;
 }
 
@@ -15,12 +15,12 @@ function parseJWT(token: string) {
   return {
     header: parsePart(parts[0]),
     payload: parsePart(parts[1]),
-    sign: parts[2]
+    sign: parts[2],
   };
 }
 
 function getJWTPayload(token: string): ITocen {
-  return parseJWT(token).payload as ITocen; 
+  return parseJWT(token).payload as ITocen;
 }
 
-export { getLocalStoreUser, getJWTPayload }
+export { getLocalStoreUser, getJWTPayload };

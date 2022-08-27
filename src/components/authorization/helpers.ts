@@ -1,7 +1,7 @@
 export const createHtmlEl = (
   elName: string,
   className?: string,
-  innxerText?: string,
+  innxerText?: string
 ): HTMLElement => {
   const el = document.createElement(elName);
   if (className) {
@@ -13,10 +13,7 @@ export const createHtmlEl = (
   return el;
 };
 
-export const addClasses = (
-  el: HTMLElement,
-  classNames: string[],
-): void => {
+export const addClasses = (el: HTMLElement, classNames: string[]): void => {
   classNames.forEach((className) => el.classList.add(className));
 };
 

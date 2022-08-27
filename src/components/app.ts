@@ -14,6 +14,7 @@ import ControllerMainPage from './mainPage/controller';
 
 // import { ILocalStorage } from './types/types';
 import '../sass/style.scss';
+import ControllerAuthorization from './authorization/controller';
 
 class App {
   attributes: {
@@ -26,7 +27,7 @@ class App {
   controllers: {
     about: ControllerAbout;
     // audioGame: ControllerAudioGame;
-    // authorization: ControllerAuthorization;
+    authorization: ControllerAuthorization;
     header: ControllerHeader;
     mainPage: ControllerMainPage;
     // sprintGame: ControllerSprintGame;
@@ -45,7 +46,10 @@ class App {
     this.controllers = {
       about: new ControllerAbout(this.attributes.component),
       // audioGame: new ControllerAudioGame(this.attributes.component),
-      // authorization: new ControllerAuthorization(),
+      authorization: new ControllerAuthorization(
+        this.attributes.wordsApi,
+        this.attributes.localStorage
+      ),
       header: new ControllerHeader(),
       mainPage: new ControllerMainPage(this.attributes.component),
       // sprintGame: new ControllerSprintGame(),
@@ -112,8 +116,7 @@ class App {
     if (Object.keys(LS).length === 0) {
       dictionary.mainPage();
     } else {
-      dictionary.mainPage();
-      // dictionary[LS.page as keyof typeof dictionary]();
+      dictionary[LS.page as keyof typeof dictionary]();
     }
 
     this.attachEvents();

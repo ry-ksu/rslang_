@@ -1,6 +1,6 @@
-import animateCSS from "./animate";
-import { AuthOption } from "./contrats";
-import { updatePopup } from "./view";
+import animateCSS from './animate';
+import { AuthOption } from './contrats';
+import { updatePopup } from './view';
 
 export const togglePopupAppearance = (): void => {
   const outside = document.querySelector<HTMLElement>('.outside');
@@ -9,7 +9,7 @@ export const togglePopupAppearance = (): void => {
   popup?.classList.toggle('show');
 };
 
-export const togglePopupState = ():void => {
+export const togglePopupState = (): void => {
   document.addEventListener('click', (e: Event) => {
     const target = e.target as HTMLElement;
     if (!target.matches('.popup__btn')) {
@@ -22,9 +22,9 @@ export const togglePopupState = ():void => {
     }
     animateCSS(popup, 'pulse')
       .then(() => updatePopup(option))
-      .catch((err) => console.log(err))
+      .catch((err) => console.log(err));
   });
-} 
+};
 
 export const hidePopup = (): void => {
   document.addEventListener('click', (e: Event) => {
@@ -42,7 +42,7 @@ export const hidePopup = (): void => {
           togglePopupAppearance();
           updatePopup('signIn');
         })
-        .catch((err) => console.log(err))
+        .catch((err) => console.log(err));
     }
   });
 };
@@ -55,9 +55,8 @@ export const showPopup = (): void => {
     if (!target.matches('[data-login]' || popup.matches('.animate__animated'))) {
       return;
     }
-    
+
     togglePopupAppearance();
-    animateCSS(popup, 'zoomIn')
-      .catch((err) => console.log(err))
+    animateCSS(popup, 'zoomIn').catch((err) => console.log(err));
   });
 };

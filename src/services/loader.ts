@@ -6,7 +6,7 @@ export class Loader implements ILoader {
       const response = await fetch(url, options);
       if (!response.ok) {
         return Promise.reject(response);
-      } 
+      }
       return response.json() as Promise<T>;
     } catch (result) {
       console.log(result);

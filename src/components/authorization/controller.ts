@@ -1,13 +1,13 @@
-import { hidePopup, showPopup, togglePopupState } from "./togglePopupState";
-import renderAuth from "./view";
+import { hidePopup, showPopup, togglePopupState } from './togglePopupState';
+import renderAuth from './view';
 import authorization from './auth';
-import WordsApi from "../../services/wordsAPI";
-import LocalStorage from "../../services/store";
+import WordsApi from '../../services/wordsAPI';
+import LocalStorage from '../../services/store';
 
-export default class Auth {
-  api: WordsApi
+export default class ControllerAuthorization {
+  api: WordsApi;
 
-  localStoarge: LocalStorage
+  localStoarge: LocalStorage;
 
   constructor(api: WordsApi, localStorage: LocalStorage) {
     this.api = api;
@@ -28,7 +28,7 @@ export default class Auth {
   public async checkAuth(): Promise<void> {
     const LS = this.localStoarge.getLS();
     if (Object.keys(LS).length > 0) {
-      const { userId: userID, token, refreshToken} = LS;
+      const { userId: userID, token, refreshToken } = LS;
       try {
         await this.api.getUser({ userID, token });
       } catch (err) {
@@ -41,13 +41,14 @@ export default class Auth {
 
   public async tryRefresh(userID: string, refreshToken: string): Promise<void> {
     try {
-      const newToken: { 
-        token: string, 
-        refreshToken: string } = await this.api.getNewUserToken({ userID, refreshToken });
+      const newToken: {
+        token: string;
+        refreshToken: string;
+      } = await this.api.getNewUserToken({ userID, refreshToken });
       this.localStoarge.changeLS('token', newToken.token);
       this.localStoarge.changeLS('refreshToken', newToken.refreshToken);
-    } catch(err) {
-      throw new Error('can\'t refresh', err as Error);
+    } catch (err) {
+      throw new Error("can't refresh", err as Error);
     }
   }
 }
