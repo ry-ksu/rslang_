@@ -1,6 +1,3 @@
-@import '../../sass/abstracts/variables';
-@import '../../sass/abstracts/mixins';
-
 * {
   padding: 0;
   margin: 0;
@@ -9,6 +6,7 @@
 }
 
 .textbook-container {
+  padding: 5px;
   min-height: 100%;
   max-width: 1180px;
   margin: 0 auto;
@@ -264,7 +262,8 @@
     text-align: center;
     border-radius: 50%;
     cursor: pointer;
-    background-color: $color-light-s;
+    border-radius: 50%;
+    border: solid 2px $color-dark-xl;
 
     &:hover {
       background-color: $color-primary-light;
@@ -276,19 +275,19 @@
 
     &:disabled:hover,
     &:disabled:active {
-      background-color: $color-light-s;
+      background-color: transparent;
       transform: none;
       cursor: default;
     }
   }
 
   .tb-prevPage-btn {
-    background: $color-light-s url('../../assets/img/card-word-arrow-left.svg') center / 70%
+    background: transparent url('../../assets/img/card-word-arrow-left.svg') center / 70%
       no-repeat;
   }
 
   .tb-nextPage-btn {
-    background: $color-light-s url('../../assets/img/card-word-arrow-right.svg') center / 70%
+    background: transparent url('../../assets/img/card-word-arrow-right.svg') center / 70%
       no-repeat;
   }
 }

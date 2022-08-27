@@ -66,15 +66,15 @@ export default class ViewTextBook {
     wordPage: number;
     maxWordPage: number;
   }) {
-    this.drawHeader(wordGroup);
+    this.drawHeader({ wordGroup });
     this.drawPage(words);
     this.drawPagination({ wordPage, maxWordPage });
     document.body.appendChild(this.component);
   }
 
-  drawHeader(wordGroup: number) {
+  drawHeader({ wordGroup }: { wordGroup: number }) {
     this.headerContainer.innerHTML = '';
-    const tbGroupBtns = this.getHeaderBtns(wordGroup);
+    const tbGroupBtns = this.getHeaderBtns({ wordGroup });
     const btnGames = document.createElement('div');
     btnGames.classList.add('tb-games-btns');
     const btnSprintGame = document.createElement('button');
@@ -87,7 +87,7 @@ export default class ViewTextBook {
     this.headerContainer.append(tbGroupBtns, btnGames);
   }
 
-  private getHeaderBtns(wordGroup: number): HTMLDivElement {
+  private getHeaderBtns({ wordGroup }: { wordGroup: number}): HTMLDivElement {
     const tbGroupBtns = document.createElement('div');
     tbGroupBtns.classList.add('tb-group-btns');
     const btnsCount = 7;

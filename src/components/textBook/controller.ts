@@ -5,11 +5,11 @@ import LocalStorage from '../../services/store';
 export default class ControllerTextBook {
   private viewTextBook: ViewTextBook;
 
-  private wordPage: number;
+  // private wordPage: number;
 
   private maxWordPage: number;
 
-  private wordGroup: number;
+  // private wordGroup: number;
 
   private wordsApi: WordsApi;
 
@@ -31,8 +31,6 @@ export default class ControllerTextBook {
 
     this.viewTextBook = new ViewTextBook({ controller: this, component: main });
 
-    this.wordGroup = 0;
-    this.wordPage = 0;
     this.maxWordPage = 29;
     this.wordsApi = attributes.wordsApi;
     this.baseURL = attributes.baseURL;
@@ -41,51 +39,73 @@ export default class ControllerTextBook {
   }
 
   async getData() {
+    const ls = this.localStorage.getLS();
+    let wordGroup = 0; 
+    let wordPage = 0;
+    if (ls.groupTB && ls.pageTB) {
+      wordGroup = parseInt(ls.groupTB, 10);
+      wordPage = parseInt(ls.pageTB, 10);
+    } else {
+      this.localStorage.changeLS('groupTB', '0');
+      this.localStorage.changeLS('pageTB', '0');
+    }
+
     const words = await this.wordsApi.getWords({
-      wordGroup: this.wordGroup,
-      wordPage: this.wordPage,
+      wordGroup,
+      wordPage,
     });
+
     this.viewTextBook.draw({
       words,
-      wordGroup: this.wordGroup,
-      wordPage: this.wordPage,
+      wordGroup,
+      wordPage,
       maxWordPage: this.maxWordPage,
     });
   }
 
   getNextPage() {
-    console.log('getNextPage');
-    if (this.wordPage < this.maxWordPage) {
-      this.wordPage += 1;
-      const wordGroup = 0;
+    const ls = this.localStorage.getLS();
+    const wordGroup = parseInt(ls.groupTB, 10);
+    let wordPage = parseInt(ls.pageTB, 10);
+
+    if (wordPage < this.maxWordPage) {
+      wordPage += 1;
+      this.localStorage.changeLS('pageTB', `${ wordPage }`);
       this.wordsApi
-        .getWords({ wordGroup, wordPage: this.wordPage })
+        .getWords({ wordGroup, wordPage })
         .then((words) => {
           this.viewTextBook.drawPage(words);
         })
         .catch((error) => console.error(error));
-      this.viewTextBook.drawPagination({ wordPage: this.wordPage, maxWordPage: this.maxWordPage });
+      this.viewTextBook.drawPagination({ wordPage, maxWordPage: this.maxWordPage });
     }
   }
 
   getPrevPage() {
-    if (this.wordPage > 0) {
-      this.wordPage -= 1;
-      const wordGroup = 0;
+    const ls = this.localStorage.getLS();
+    const wordGroup = parseInt(ls.groupTB, 10);
+    let wordPage = parseInt(ls.pageTB, 10);
+
+    if (wordPage > 0) {
+      wordPage -= 1;
+      this.localStorage.changeLS('pageTB', `${ wordPage }`);
       this.wordsApi
-        .getWords({ wordGroup, wordPage: this.wordPage })
+        .getWords({ wordGroup, wordPage })
         .then((words) => {
           this.viewTextBook.drawPage(words);
         })
         .catch((error) => console.error(error));
-      this.viewTextBook.drawPagination({ wordPage: this.wordPage, maxWordPage: this.maxWordPage });
+      this.viewTextBook.drawPagination({ wordPage, maxWordPage: this.maxWordPage });
     }
   }
 
   getGroup({ wordGroup, wordPage }: { wordGroup: number; wordPage: number }) {
+
     this.wordsApi
       .getWords({ wordGroup, wordPage })
       .then((words) => {
+        this.localStorage.changeLS('groupTB', `${wordGroup}`);
+        this.localStorage.changeLS('pageTB', `${wordPage}`);
         this.viewTextBook.drawPage(words);
       })
       .catch((error) => console.error(error));
