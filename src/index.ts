@@ -7,5 +7,6 @@ app.render();
 
 const auth = new Auth();
 auth.renderAuth()
-auth.authenification();
+auth.authorization();
 
+auth.checkAuth().then(() => console.log('success')).catch((err) => console.log('failed', err))

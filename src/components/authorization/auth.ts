@@ -1,4 +1,3 @@
-import Loader from "../../services/loader";
 import WordsApi from "../../services/wordsAPI";
 import { IUserToken } from "../types/types";
 import { AuthOption, checkValueFn, SignUpOptions } from "./contrats";
@@ -71,9 +70,14 @@ const unBlockButtons = (): void => {
 }
 
 const authorization = async (email: string, password: string, api: WordsApi): Promise<void> => {
-  const user: IUserToken = await api.signUser({ email, password });
-  localStorage.setItem('user', JSON.stringify(user));
-  togglePopupAppearance();
+  try {
+    const user: IUserToken = await api.signUser({ email, password });
+    localStorage.setItem('user', JSON.stringify(user));
+    togglePopupAppearance();
+    unBlockButtons();
+  } catch (err) {
+    throw new Error('Failed in authorization');
+  }
 }
 
 const singIn = async (api: WordsApi): Promise<void> => {
@@ -86,16 +90,15 @@ const singIn = async (api: WordsApi): Promise<void> => {
   try {
     blockButtons();
     await authorization(email.value, password.value, api);
-    unBlockButtons();
   }
   catch (err) {
-    console.log('signIn');
+    email.value = '';
+    password.value = '';
     document.querySelector<HTMLElement>('.password')
       ?.appendChild(createHtmlEl('div', 'error', 'mail or password incorrect'));
-    unBlockButtons();
+    
+    throw new Error('incorrect mail or password');
   }
-  email.value = '';
-  password.value = '';
 }
 
 const singUp = async (api: WordsApi): Promise<void> => {
@@ -117,21 +120,20 @@ const singUp = async (api: WordsApi): Promise<void> => {
     name.value = '';
     email.value = '';
     password.value = '';
-    unBlockButtons();
   }
   catch (err) {
     document.querySelector<HTMLElement>('.mail')
       ?.appendChild(createHtmlEl('div', 'error', 'enter another email'));
-    unBlockButtons();
+    throw new Error('incorrect mail');
   }
 }
 
 const authByOption: Record<AuthOption, (api: WordsApi) => Promise<void>> = {
-  signIn: (api) => singIn(api),
-  signUp: (api) => singUp(api)
+  signIn: async (api) => singIn(api),
+  signUp: async (api) => singUp(api)
 }
 
-export default () => {
+export default (api: WordsApi, callback: (value: boolean) => void) => {
   document.addEventListener('click', (e: Event) => {
     const target = e.target as HTMLElement;
     if (!target.matches('.popup__btn')) {
@@ -144,9 +146,10 @@ export default () => {
       return;
     }
 
-    const api = new WordsApi({ LoaderService: Loader });
-
     const option = popup.getAttribute('data') as AuthOption;
-    authByOption[option](api).catch(err => console.log(err)) 
+    
+    authByOption[option](api)
+      .then(() => callback(true))
+      .catch(() => unBlockButtons()) 
   });
 }
