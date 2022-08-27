@@ -2,6 +2,8 @@
 
 export type ILocalStorage = {
   token: string;
+  refreshToken: string;
+  userId: string;
   name: string;
   page: string;
   groupTB: string;
