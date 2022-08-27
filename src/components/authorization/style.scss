@@ -65,14 +65,14 @@ label {
   width: 52px;
   height: 52px;
   color: black;
-  border: 2px solid $color-primary;
+  border: 2px solid #3a5199;
   border-radius: 100px;
   transition: background .3s linear;
 
   &:hover {
     cursor: pointer;
-    border: 2px solid $color-primary-light;
-    background: $color-primary-light;
+    border: 2px solid #FDDCC4;
+    background: #FDDCC4;
   }
 }
 
