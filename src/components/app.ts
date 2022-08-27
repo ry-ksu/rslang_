@@ -10,7 +10,7 @@ import ControllerMainPage from './mainPage/controller';
 // import ControllerSprintGame from './sprintGame/controller';
 // import ControllerStatistics from './statistics/controller';
 // import ControllerTeamPage from './teamPage/controller';
-// import ControllerTextBook from './textBook/controller';
+import ControllerTextBook from './textBook/controller';
 
 // import { ILocalStorage } from './types/types';
 import '../sass/style.scss';
@@ -32,7 +32,7 @@ class App {
     // sprintGame: ControllerSprintGame;
     // statistics: ControllerStatistics;
     // teamPage: ControllerTeamPage;
-    // textBook: ControllerTextBook
+    textBook: ControllerTextBook;
   };
 
   constructor() {
@@ -51,7 +51,7 @@ class App {
       // sprintGame: new ControllerSprintGame(),
       // statistics: new ControllerStatistics(),
       // teamPage: new ControllerTeamPage(),
-      // textBook: new ControllerTextBook(),
+      textBook: new ControllerTextBook(this.attributes),
     };
   }
 
@@ -107,12 +107,32 @@ class App {
       // },
     };
 
+    const dictionaryPromise = {
+      // audioGame: async (): Promise<void> => {
+      //   await this.controllers.audioGame.getDate(this.attributes);
+      // },
+      // sprint: () => {
+      //   this.controllers.sprintGame.getData();
+      // },
+      // statistics: () => {
+      //   this.controllers.statistics.getData();
+      // },
+      textbook: async () => {
+        await this.controllers.textBook.getData();
+      },
+    };
+
     this.detachEvents();
 
     if (Object.keys(LS).length === 0) {
       dictionary.mainPage();
-    } else {
+      this.attachEvents();
+    } else if (Object.keys(dictionary).includes(LS.page)) {
       dictionary[LS.page as keyof typeof dictionary]();
+      this.attachEvents();
+    } else {
+      const result = dictionaryPromise[LS.page as keyof typeof dictionaryPromise]();
+      result.then(() => this.attachEvents()).catch((err) => console.error(err));
     }
 
     this.attachEvents();

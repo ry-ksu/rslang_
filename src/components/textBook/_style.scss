@@ -9,14 +9,18 @@
 }
 
 .textbook-container {
+  min-height: 100%;
   max-width: 1180px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  font-family: $font-main;
   gap: 2rem;
+  border-radius: 1rem;
 }
 
 .tb-header {
+  flex: 0 0 auto;
   padding: 5px;
   display: flex;
   justify-content: space-between;
@@ -30,25 +34,26 @@
   .tb-group-btns {
     display: flex;
     justify-content: center;
-    gap: 5px;
+    gap: 10px;
     flex-wrap: wrap;
   }
 
   .tb-group-btn,
   .tb-group-hardbtn {
     padding: 10px;
-    background-color: $color-light-s;
     border-radius: 1rem;
     cursor: pointer;
     font-weight: bold;
-    transition: all 0.3s;
+    transition: all 0.2s;
+    outline: 2px solid $color-light-xl;
 
     &:hover {
       background-color: $color-primary-light;
     }
 
     &.pressed {
-      color: $color-light-xl;
+      transform: translateY(2px);
+      outline: 2px solid $color-primary;
       background-color: $color-primary;
     }
 
@@ -70,7 +75,7 @@
     @include button(
       $background-color: $color-primary-light,
       $color: $color-light-xl,
-      $width: 140px,
+      $width: 140px
     );
     font-weight: bold;
     transition: all 0.3s;
@@ -86,6 +91,7 @@
 }
 
 .tb-page {
+  flex: 1 0 auto;
   display: flex;
   padding: 10px 0;
   flex-wrap: wrap;
@@ -105,6 +111,7 @@
   font-size: 16px;
   border-radius: 1rem;
   outline: 1px solid $color-primary;
+  background-color: $color-light-xl;
   -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
   -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
@@ -149,6 +156,11 @@
     overflow: auto;
     background-color: $color-primary-light;
     border-radius: 1rem;
+
+    & > p {
+      font-size: 1.5rem;
+      line-height: 1.8rem;
+    }
   }
 
   .sound-btn {
@@ -156,10 +168,11 @@
     width: 100px;
     height: 60px;
     border-radius: 1rem;
-    background: $color-primary-light url('../../assets/img/card-word-sound-btn.svg') center / 80%  no-repeat;
+    background: $color-primary-light url('../../assets/img/card-word-sound-btn.svg') center / 80%
+      no-repeat;
     cursor: pointer;
     transition: all 0.3s;
-  
+
     &:hover {
       background-color: $color-primary;
     }
@@ -167,7 +180,6 @@
     &:active {
       transform: scale(98%);
     }
-
   }
 
   .btns-container {
@@ -177,10 +189,7 @@
 
   .btn-hard,
   .btn-learned {
-    @include button(
-      $background-color: $color-light-s,
-      $color: $color-dark-xl
-    );
+    @include button($background-color: $color-light-s, $color: $color-dark-xl);
     transition: all 0.3s;
     font-weight: bold;
     -webkit-box-shadow: 2px 2px 2px 0px #223c5033;
@@ -192,7 +201,7 @@
     }
 
     &.pressed {
-      color: #FFF;
+      color: #fff;
       background-color: $color-primary-light;
       transform: translateY(1px);
     }
@@ -218,9 +227,9 @@
 
   .right-symbol,
   .wrong-symbol {
-    color: #FFF;
+    color: #fff;
     display: inline-flex;
-    align-items: center; 
+    align-items: center;
     justify-content: center;
     height: 25px;
     width: 25px;
@@ -229,23 +238,25 @@
   }
 
   .right-symbol {
-    background-color: #3BDA2D;
+    background-color: #3bda2d;
   }
 
   .wrong-symbol {
-    background-color: #DA572D;
+    background-color: #da572d;
   }
 }
 
 .tb-pagination {
+  flex: 0 0 auto;
+  margin-top: auto;
   font-size: 20px;
   font-weight: bold;
   display: flex;
   justify-content: center;
   gap: 10px;
 
-  .tb-leftpage-btn,
-  .tb-rightpage-btn {
+  .tb-prevPage-btn,
+  .tb-nextPage-btn {
     font-size: inherit;
     font-weight: inherit;
     height: 30px;
@@ -271,12 +282,13 @@
     }
   }
 
-  .tb-leftpage-btn {
-    background: $color-light-s url('../../assets/img/card-word-arrow-left.svg') center / 70% no-repeat;
+  .tb-prevPage-btn {
+    background: $color-light-s url('../../assets/img/card-word-arrow-left.svg') center / 70%
+      no-repeat;
   }
 
-  .tb-rightpage-btn {
-    background: $color-light-s url('../../assets/img/card-word-arrow-right.svg') center / 70% no-repeat;
+  .tb-nextPage-btn {
+    background: $color-light-s url('../../assets/img/card-word-arrow-right.svg') center / 70%
+      no-repeat;
   }
-
 }

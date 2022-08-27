@@ -1,10 +1,12 @@
-import './style.scss';
 import { IWord } from '../types/types';
+import ControllerTextBook from './controller';
 
 export default class ViewTextBook {
-  private container: HTMLDivElement;
+  private controllerTextBook: ControllerTextBook;
 
-  textBookContainer: HTMLDivElement;
+  private component: HTMLElement;
+
+  private textBookContainer: HTMLDivElement;
 
   private headerContainer: HTMLDivElement;
 
@@ -14,10 +16,19 @@ export default class ViewTextBook {
 
   private baseURL: string;
 
-  private static wordGroup: number;
+  private colors: {
+    [key: string]: string;
+  };
 
-  constructor(container: HTMLDivElement) {
-    this.container = container;
+  constructor({
+    controller,
+    component,
+  }: {
+    controller: ControllerTextBook;
+    component: HTMLElement;
+  }) {
+    this.controllerTextBook = controller;
+    this.component = component;
     this.baseURL = 'https://rslang-learnwords-api.herokuapp.com';
     this.textBookContainer = document.createElement('div');
     this.textBookContainer.classList.add('textbook-container');
@@ -27,34 +38,43 @@ export default class ViewTextBook {
     this.pageContainer.classList.add('tb-page');
     this.paginationContainer = document.createElement('div');
     this.paginationContainer.classList.add('tb-pagination');
-    this.textBookContainer.append(this.headerContainer, this.pageContainer, this.paginationContainer);
-    this.container.append(this.textBookContainer);
+    this.textBookContainer.append(
+      this.headerContainer,
+      this.pageContainer,
+      this.paginationContainer
+    );
+    this.component.append(this.textBookContainer);
+    this.colors = {
+      0: '#b7eee0',
+      1: '#eee1b7',
+      2: '#b7eeb7',
+      3: '#cab7ee',
+      4: '#b7e3ee',
+      5: '#f2f7d5',
+      6: '#e2a6a6',
+    };
   }
 
-  draw({words, wordPage, maxWordPage}:
-    {words: IWord[], wordPage: number, maxWordPage: number}) {
-
-    this.drawHeader();
+  draw({
+    words,
+    wordGroup,
+    wordPage,
+    maxWordPage,
+  }: {
+    words: IWord[];
+    wordGroup: number;
+    wordPage: number;
+    maxWordPage: number;
+  }) {
+    this.drawHeader(wordGroup);
     this.drawPage(words);
-    this.drawPagination({wordPage, maxWordPage});
+    this.drawPagination({ wordPage, maxWordPage });
+    document.body.appendChild(this.component);
   }
 
-  drawHeader() {
-    const tbGroupBtns = document.createElement('div');
-    tbGroupBtns.classList.add('tb-group-btns');
-    const btnsCount = 6;
-    for(let i = 0; i < btnsCount; i += 1) {
-      const btn = document.createElement('button');
-      btn.dataset.tbgroup = `${i}`;
-      btn.classList.add('tb-group-btn');
-      btn.innerText = `Группа ${i + 1}`
-      tbGroupBtns.appendChild(btn);
-    }
-    const btnHardGroup = document.createElement('button');
-    btnHardGroup.classList.add('tb-group-hardbtn');
-    btnHardGroup.innerText = `Сложные`;
-    tbGroupBtns.appendChild(btnHardGroup);
-
+  drawHeader(wordGroup: number) {
+    this.headerContainer.innerHTML = '';
+    const tbGroupBtns = this.getHeaderBtns(wordGroup);
     const btnGames = document.createElement('div');
     btnGames.classList.add('tb-games-btns');
     const btnSprintGame = document.createElement('button');
@@ -67,14 +87,45 @@ export default class ViewTextBook {
     this.headerContainer.append(tbGroupBtns, btnGames);
   }
 
+  private getHeaderBtns(wordGroup: number): HTMLDivElement {
+    const tbGroupBtns = document.createElement('div');
+    tbGroupBtns.classList.add('tb-group-btns');
+    const btnsCount = 7;
+    for (let i = 0; i < btnsCount; i += 1) {
+      const btn = document.createElement('button');
+      btn.dataset.tbgroup = `${i}`;
+      btn.classList.add('tb-group-btn', 'group-btn');
+      btn.innerText = `Группа ${i + 1}`;
+      btn.style.backgroundColor = this.colors[`${i}`];
+      btn.addEventListener('click', () => {
+        this.component
+          .querySelectorAll('.group-btn')
+          .forEach((item) => item.classList.remove('pressed'));
+        btn.classList.add('pressed');
+        this.textBookContainer.style.backgroundColor = this.colors[`${i}`];
+        this.controllerTextBook.getGroup({ wordGroup: i, wordPage: 0 });
+      });
+      if (i === wordGroup) {
+        btn.classList.add('pressed');
+        this.textBookContainer.style.backgroundColor = this.colors[`${i}`];
+      }
+      if (i === btnsCount - 1) {
+        btn.innerText = 'Сложные';
+        btn.classList.add('tb-group-hardbtn');
+      }
+      tbGroupBtns.appendChild(btn);
+    }
+    return tbGroupBtns;
+  }
+
   drawPage(words: IWord[]) {
     this.pageContainer.innerHTML = '';
     words.forEach((word) => {
       this.pageContainer.appendChild(this.getCard(word));
-    })
+    });
   }
 
-  getCard(word: IWord): HTMLDivElement {
+  private getCard(word: IWord): HTMLDivElement {
     const cardWord = document.createElement('div');
     cardWord.dataset.tbwordid = word.id;
     cardWord.classList.add('tb-card-word');
@@ -112,21 +163,25 @@ export default class ViewTextBook {
           </div>
         </div>
       </div>`;
-    
     return cardWord;
   }
 
-  drawPagination({wordPage, maxWordPage}: {wordPage: number, maxWordPage: number}) {
+  drawPagination({ wordPage, maxWordPage }: { wordPage: number; maxWordPage: number }) {
     this.paginationContainer.innerHTML = '';
-    const btnLeftPage = document.createElement('button');
-    btnLeftPage.classList.add('tb-leftpage-btn');
+
+    const btnPrevPage = document.createElement('button');
+    btnPrevPage.classList.add('tb-prevPage-btn');
+    btnPrevPage.addEventListener('click', () => this.controllerTextBook.getPrevPage());
+
     const pageNumberText = document.createElement('span');
     pageNumberText.innerText = `${wordPage + 1} / ${maxWordPage + 1}`;
-    const btnRightPage = document.createElement('button');
-    btnRightPage.classList.add('tb-rightpage-btn');
-    this.paginationContainer.append(btnLeftPage, pageNumberText, btnRightPage);
 
-    if(wordPage === 0) btnLeftPage.disabled = true;
-    if(wordPage === maxWordPage) btnRightPage.disabled = true;
+    const btnNextPage = document.createElement('button');
+    btnNextPage.classList.add('tb-nextPage-btn');
+    btnNextPage.addEventListener('click', () => this.controllerTextBook.getNextPage());
+    this.paginationContainer.append(btnPrevPage, pageNumberText, btnNextPage);
+
+    if (wordPage === 0) btnPrevPage.disabled = true;
+    if (wordPage === maxWordPage) btnNextPage.disabled = true;
   }
 }
