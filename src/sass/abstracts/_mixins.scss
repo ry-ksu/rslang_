@@ -16,6 +16,24 @@
   letter-spacing: $letter-spacing;
 }
 
+@mixin button(
+  $background-color: $color-primary,
+  $color: $color-light-xl,
+  $border: none,
+  $padding: 5px 10px,
+  $border-radius: 15%,
+  $cursor: pointer,
+  $width: 150px
+) {
+  background-color: $background-color;
+  color: $color;
+  border: $border;
+  padding: $padding;
+  border-radius: $border-radius;
+  cursor: $cursor;
+  width: $width;
+}
+
 @mixin media-desktop {
   @media (min-width: calc($tablet-width + 1px)) {
     @content;
@@ -27,4 +45,3 @@
     @content;
   }
 }
-

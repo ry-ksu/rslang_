@@ -1,98 +1,119 @@
-// import ControllerAudioGame from '../components/audioGame/controller';
-// import ControllerAuthorization from '../components/authorization/controller';
+import WordsApi from '../services/wordsAPI';
+import Loader from '../services/loader';
+import LocalStorage from '../services/store';
+
+import ControllerAbout from './about/controller';
+// import ControllerAudioGame from './audioGame/controller';
+// import ControllerAuthorization from './authorization/controller';
 import ControllerHeader from './header/controller';
-// import ControllerSprintGame from '../components/sprintGame/controller';
-// import ControllerStatistics from '../components/statistics/controller';
-// import ControllerTeamPage from '../components/teamPage/controller';
-// import ControllerTextBook from '../components/textBook/controller';
+import ControllerMainPage from './mainPage/controller';
+// import ControllerSprintGame from './sprintGame/controller';
+// import ControllerStatistics from './statistics/controller';
+// import ControllerTeamPage from './teamPage/controller';
+// import ControllerTextBook from './textBook/controller';
 
-import ViewAbout from './about/view';
-import ViewMainPage from './mainPage/view';
-
-import { ILocalStorage } from './types/types';
+// import { ILocalStorage } from './types/types';
+import '../sass/style.scss';
 
 class App {
+  attributes: {
+    baseURL: string;
+    wordsApi: WordsApi;
+    localStorage: LocalStorage;
+    component: HTMLElement;
+  };
+
   controllers: {
+    about: ControllerAbout;
     // audioGame: ControllerAudioGame;
     // authorization: ControllerAuthorization;
     header: ControllerHeader;
+    mainPage: ControllerMainPage;
     // sprintGame: ControllerSprintGame;
     // statistics: ControllerStatistics;
     // teamPage: ControllerTeamPage;
     // textBook: ControllerTextBook
   };
 
-  views: {
-    about: ViewAbout;
-    mainPage: ViewMainPage;
-  }
-
   constructor() {
+    this.attributes = {
+      baseURL: 'https://rslang-learnwords-api.herokuapp.com',
+      wordsApi: new WordsApi({ LoaderService: Loader }),
+      localStorage: new LocalStorage(),
+      component: document.createElement('main'),
+    };
     this.controllers = {
-      // audioGame: new ControllerAudioGame(),
+      about: new ControllerAbout(this.attributes.component),
+      // audioGame: new ControllerAudioGame(this.attributes.component),
       // authorization: new ControllerAuthorization(),
       header: new ControllerHeader(),
+      mainPage: new ControllerMainPage(this.attributes.component),
       // sprintGame: new ControllerSprintGame(),
       // statistics: new ControllerStatistics(),
       // teamPage: new ControllerTeamPage(),
       // textBook: new ControllerTextBook(),
-    }
-
-    this.views = {
-      about: new ViewAbout(),
-      mainPage: new ViewMainPage(),
-    }
+    };
   }
 
-
-  // перенести в services.store
   changeLSPageAndRenderThisPage(e: Event) {
     if ((e.target as HTMLElement).nodeName === 'LI') {
-      const LS = (JSON.parse(localStorage.getItem('victory') as string) || {}) as ILocalStorage;
-      LS.page = (e.target as HTMLElement).className;
-      localStorage.setItem('victory', JSON.stringify(LS));
+      this.attributes.localStorage.changeLS('page', (e.target as HTMLElement).className);
 
       this.render();
     }
-  } 
+  }
 
-  detachEvents(){
+  detachEvents() {
     if (document.querySelector('.nav')) {
-      (document.querySelector('.nav') as HTMLElement).removeEventListener('click', this.changeLSPageAndRenderThisPage.bind(this));
+      (document.querySelector('.nav') as HTMLElement).removeEventListener(
+        'click',
+        this.changeLSPageAndRenderThisPage.bind(this)
+      );
     }
   }
 
   attachEvents() {
     if (document.querySelector('.nav')) {
-      (document.querySelector('.nav') as HTMLElement).addEventListener('click', this.changeLSPageAndRenderThisPage.bind(this));
+      (document.querySelector('.nav') as HTMLElement).addEventListener(
+        'click',
+        this.changeLSPageAndRenderThisPage.bind(this)
+      );
     }
   }
 
   render() {
-    const LS = (JSON.parse(localStorage.getItem('victory') as string) || {}) as ILocalStorage;
-    this.detachEvents();
-    // добавить словарь как объект (пример от Халида)
+    this.attributes.component.innerHTML = '';
+    const LS = this.attributes.localStorage.getLS();
+    const dictionary = {
+      mainPage: () => {
+        this.controllers.header.getData(LS.token);
+        this.controllers.mainPage.getData();
+      },
+      about: () => {
+        this.controllers.header.getData(LS.token);
+        this.controllers.about.getData();
+      },
+      // audioGame: () => {
+      //   this.controllers.audioGame.getData(this.attributes);
+      // },
+      // sprint: () => {
+      //   this.controllers.sprintGame.getData();
+      // },
+      // statistics: () => {
+      //   this.controllers.statistics.getData();
+      // },
+      // textbook: () => {
+      //   this.controllers.textBook.getData();
+      // },
+    };
 
-    if (Object.keys(LS).length === 0 || LS.page === 'main-page') {
-      this.controllers.header.getData(LS.token);
-      this.views.mainPage.drewMain();
-    } 
-    else if (LS.page === 'about'){
-      this.controllers.header.getData(LS.token);
-      this.views.about.drewTeamCards();
+    this.detachEvents();
+
+    if (Object.keys(LS).length === 0) {
+      dictionary.mainPage();
+    } else {
+      dictionary[LS.page as keyof typeof dictionary]();
     }
-    // else if (LS.page === 'audio-game'){
-    //   this.controllers.audioGame.getData();
-    // }
-    // else if (LS.page === 'sprint'){
-    //   this.controllers.sprintGame.getData();
-    // }
-    // else if (LS.page === 'statistics'){
-    //   this.controllers.statistics.getData();
-    // }
-    // else if (LS.page === 'textbook'){
-    //   this.controllers.textBook.getData();
-    // }
 
     this.attachEvents();
   }

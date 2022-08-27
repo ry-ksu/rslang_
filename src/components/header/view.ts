@@ -1,5 +1,3 @@
-import '../../sass/style.scss';
-
 export default class ViewHeader {
   drewHeader(auth: boolean) {
     (document.querySelector('body') as HTMLElement).innerHTML = '';
@@ -22,9 +20,9 @@ export default class ViewHeader {
     userArea.className = 'user-area';
 
     if (auth) {
-      userArea.innerHTML = '<button class="primary-button" data-auth>Выйти</button>'
+      userArea.innerHTML = '<button class="auth-btn primary-button">Выйти</button>';
     } else {
-      userArea.innerHTML = '<button class="primary-button" data-auth>Войти</button>'
+      userArea.innerHTML = '<button class="auth-btn primary-button">Войти</button>';
     }
     return userArea;
   }
@@ -32,15 +30,16 @@ export default class ViewHeader {
   drewNav() {
     const nav = document.createElement('nav');
     nav.className = 'nav';
-    nav.innerHTML = '<ul>' +
-                      '<li class="main-page">Главная</li>' +
-                      '<li class="about">О нас</li>' +
-                      '<li class="textbook">Учебник</li>' +
-                      // разместить игры в выпадающем меню
-                      '<li class="audio-game">Аудиовызов</li>' +
-                      '<li class="sprint">Спринт</li>' +
-                      '<li class="statistics">Статистика</li>' +
-                    '</ul>'
+    nav.innerHTML =
+      '<ul>' +
+      '<li class="mainPage">Главная</li>' +
+      '<li class="about">О нас</li>' +
+      '<li class="textbook">Учебник</li>' +
+      // разместить игры в выпадающем меню
+      '<li class="audioGame">Аудиовызов</li>' +
+      '<li class="sprint">Спринт</li>' +
+      '<li class="statistics">Статистика</li>' +
+      '</ul>';
     return nav;
   }
 }

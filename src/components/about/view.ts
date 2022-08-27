@@ -1,5 +1,12 @@
 export default class ViewAbout {
-  drewTeamCard(img: string, name: string, github: string, role: string, about: string, work: string) {
+  drewTeamCard(
+    img: string,
+    name: string,
+    github: string,
+    role: string,
+    about: string,
+    work: string
+  ) {
     const card = document.createElement('div');
 
     card.className = 'team-card';
@@ -16,40 +23,43 @@ export default class ViewAbout {
                         <p class='team-card__paragraph'>${about}</p>
                         <p class='team-card__header'>Что сделали?</p>
                         <p class='team-card__paragraph'>${work}</p>
-                      </div>`
+                      </div>`;
     return card;
   }
 
-  drewTeamCards() {
+  drewTeamCards(component: HTMLElement) {
     const teamCount = 3;
     const teamImgs = ['1.png', '2.png', '3.png'];
     const teamNames = ['Ярослав', 'Ксения', 'Халид'];
     const teamGithub = [
       'https://github.com/chagins',
       'https://github.com/ry-ksu',
-      'https://github.com/salladin95'
+      'https://github.com/salladin95',
     ];
     const teamRoles = ['Team Lead', 'Developer', 'Developer'];
     const teamAbout = [
-      'Я - слива лиловая, спелая, садовая!', 
-      'А я - абрикос на юге pос!', 
-      'А я томат!'
+      'Я - слива лиловая, спелая, садовая!',
+      'А я - абрикос на юге pос!',
+      'А я томат!',
     ];
     const teamWorks = ['Сделал то-то', 'Сделала то-то', 'Сделал то-то'];
 
     const teamHeader = document.createElement('h3');
-    teamHeader.innerHTML = 'Наша команда:'
-    document.body.append(teamHeader);
+    teamHeader.innerHTML = 'Наша команда:';
+    component.append(teamHeader);
 
     for (let i = 0; i < teamCount; i += 1) {
-      document.body.append(this.drewTeamCard(
-        teamImgs[i],
-        teamNames[i],
-        teamGithub[i],
-        teamRoles[i],
-        teamAbout[i],
-        teamWorks[i],
-      ))
+      component.append(
+        this.drewTeamCard(
+          teamImgs[i],
+          teamNames[i],
+          teamGithub[i],
+          teamRoles[i],
+          teamAbout[i],
+          teamWorks[i]
+        )
+      );
     }
+    document.body.append(component);
   }
 }
