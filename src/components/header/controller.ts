@@ -46,9 +46,11 @@ export default class ControllerHeader {
   }
 
   checkAuth(token: string) {
+    /*
     if (Math.random() > 0.5) {
       return true;
     }
+    */
     return false;
   }
 }

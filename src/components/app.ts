@@ -5,7 +5,7 @@ import { IAttributes } from './types/types';
 
 import ControllerAbout from './about/controller';
 import ControllerAudioGame from './audioGame/controller';
-// import ControllerAuthorization from './authorization/controller';
+import ControllerAuthorization from './authorization/controller';
 import ControllerHeader from './header/controller';
 import ControllerMainPage from './mainPage/controller';
 // import ControllerSprintGame from './sprintGame/controller';
@@ -22,7 +22,7 @@ class App {
   controllers: {
     about: ControllerAbout;
     audioGame: ControllerAudioGame;
-    // authorization: ControllerAuthorization;
+    authorization: ControllerAuthorization;
     header: ControllerHeader;
     mainPage: ControllerMainPage;
     // sprintGame: ControllerSprintGame;
@@ -41,7 +41,10 @@ class App {
     this.controllers = {
       about: new ControllerAbout(this.attributes),
       audioGame: new ControllerAudioGame(this.attributes),
-      // authorization: new ControllerAuthorization(),
+      authorization: new ControllerAuthorization(
+        this.attributes.wordsApi,
+        this.attributes.localStorage
+      ),
       header: new ControllerHeader(this.changeLSPageAndRenderThisPage.bind(this)),
       mainPage: new ControllerMainPage(this.attributes),
       // sprintGame: new ControllerSprintGame(),
