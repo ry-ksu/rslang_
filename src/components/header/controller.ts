@@ -1,25 +1,61 @@
 import ViewHeader from './view';
+import { IAttributes } from '../types/types';
+
+//! Подумать, как это передать из App
+import ControllerAuthorization from '../authorization/controller';
 
 export default class ControllerHeader {
   changePage: (page: string) => void;
 
   viewHeader: ViewHeader;
 
-  constructor(changePage: (page: string) => void) {
+  attributes: IAttributes;
+
+  //! Подумать, как это передать из App
+  ControllerAuthorization: ControllerAuthorization;
+
+  constructor(attributes: IAttributes, changePage: (page: string) => void) {
     this.viewHeader = new ViewHeader();
     // Это нужно сделать в каждом контроллере
-    this.changePage = changePage; 
+    this.changePage = changePage;
+
+    //! Подумать, как это передать из App
+    this.attributes = attributes;
+    this.ControllerAuthorization = new ControllerAuthorization(
+      attributes.wordsApi,
+      attributes.localStorage
+    );
+  }
+
+  defineLoginLogout(e: Event) {
+    if ((e.target as HTMLElement).hasAttribute('data-login')) {
+      this.ControllerAuthorization.renderAuth();
+      this.ControllerAuthorization.authorization();
+      this.ControllerAuthorization.checkAuth().catch((err) => console.log(err));
+    } else if ((e.target as HTMLElement).hasAttribute('data-logout')) {
+      //
+    }
   }
 
   attachEvents() {
-    (document.querySelector('.nav') as HTMLElement).addEventListener('click', this.goToPage.bind(this));
+    (document.querySelector('.nav') as HTMLElement).addEventListener(
+      'click',
+      this.goToPage.bind(this)
+    );
+    (document.querySelector('.user-area') as HTMLElement).addEventListener(
+      'click',
+      this.defineLoginLogout.bind(this)
+    );
   }
 
-  detachEvents () {
-    const nav = document.querySelector('.nav')
+  detachEvents() {
+    const nav = document.querySelector('.nav');
 
-    if(nav) {
-      (document.querySelector('.nav') as HTMLElement).removeEventListener('click', this.goToPage.bind(this));
+    if (nav) {
+      (document.querySelector('.nav') as HTMLElement).removeEventListener(
+        'click',
+        this.goToPage.bind(this)
+      );
     }
   }
 
@@ -39,7 +75,7 @@ export default class ControllerHeader {
   }
 
   goToPage(e: Event) {
-    if(e.target instanceof HTMLElement) {
+    if (e.target instanceof HTMLElement) {
       const page = e.target.getAttribute('data-page') as string;
       this.changePage(page);
     }

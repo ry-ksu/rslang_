@@ -13,7 +13,7 @@ export default class ControllerAudioGame {
     this.gamePack = gamePack;
     this.viewAudioGame = new ViewAudioGame();
   }
-  
+
   createGamePack(date: IWord[]) {
     const randomDate = date.sort(() => Math.random() - 0.5);
 
@@ -41,34 +41,39 @@ export default class ControllerAudioGame {
         sound,
         wrongWords,
         mixWords,
-      })
+      });
     }
     this.viewAudioGame.draw(this.gamePack[0], this.attributes);
   }
 
-  getServerWordsData(lvl: number){
-    this.attributes.wordsApi.getWords({
-      wordGroup: lvl,
-      wordPage: Math.ceil(Math.random() * 30),
-    }).then((result: IWord[])=> this.createGamePack(result)).catch((err)=> console.log(err));
+  getServerWordsData(lvl: number) {
+    this.attributes.wordsApi
+      .getWords({
+        wordGroup: lvl,
+        wordPage: Math.ceil(Math.random() * 30),
+      })
+      .then((result: IWord[]) => this.createGamePack(result))
+      .catch((err) => console.log(err));
   }
 
-  checkDataLvlAttribute(e: Event){
+  checkDataLvlAttribute(e: Event) {
     if ((e.target as HTMLElement).hasAttribute('data-lvl')) {
-
       this.getServerWordsData(Number((e.target as HTMLElement).getAttribute('data-lvl')));
     }
   }
 
-  attachEvents(){
+  attachEvents() {
     if (document.querySelector('.audioGame__lvls')) {
-      (document.querySelector('.audioGame__lvls') as HTMLElement).addEventListener('click', this.checkDataLvlAttribute.bind(this));
+      (document.querySelector('.audioGame__lvls') as HTMLElement).addEventListener(
+        'click',
+        this.checkDataLvlAttribute.bind(this)
+      );
     }
   }
 
   detachEvents() {
     //
-  }  
+  }
 
   getDate(gameWords: IWord[] = []) {
     if (gameWords.length !== 0) {

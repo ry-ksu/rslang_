@@ -1,4 +1,4 @@
-import { IGamePack, IAttributes, IUserStatistics } from "../types/types";
+import { IGamePack, IAttributes, IUserStatistics } from '../types/types';
 
 export default class ViewAudioGame {
   audioGame: IUserStatistics['optional']['todayStatistics']['audioGame'];
@@ -15,11 +15,11 @@ export default class ViewAudioGame {
   drawLevelWindow(component: HTMLElement) {
     const main = document.createElement('div');
     main.className = 'audioGame';
-    main.innerHTML = 
-    '<h3 class="audioGame__header">Аудиовызов</h3>' +
-    '<h4>В игре аудиовызов вам предстоит выбрать верный перевод слова, которое вы услышите.</h4>' +
-    '<h4 class="audioGame__description">Выберите уровень сложности игры.</h4>'
-    
+    main.innerHTML =
+      '<h3 class="audioGame__header">Аудиовызов</h3>' +
+      '<h4>В игре аудиовызов вам предстоит выбрать верный перевод слова, которое вы услышите.</h4>' +
+      '<h4 class="audioGame__description">Выберите уровень сложности игры.</h4>';
+
     const audioGameLvl = document.createElement('div');
     audioGameLvl.className = 'audioGame__lvls';
 
@@ -27,7 +27,7 @@ export default class ViewAudioGame {
     for (let i = 1; i <= lvlCount; i += 1) {
       const elem = document.createElement('button');
       elem.setAttribute('data-lvl', String(i));
-      elem.className = 'audioGame__lvl-item'
+      elem.className = 'audioGame__lvl-item';
       elem.innerHTML = String(i);
       audioGameLvl.append(elem);
     }
@@ -43,9 +43,7 @@ export default class ViewAudioGame {
 
     allWords.className = 'audioGame__words';
 
-    main.innerHTML =  '<div class="audioGame">' +
-                       '<div class="audioGame__img"></div>' +
-                      '</div>';
+    main.innerHTML = '<div class="audioGame">' + '<div class="audioGame__img"></div>' + '</div>';
 
     for (let i = 0; i < currentGamePack.mixWords.length; i += 1) {
       const elem = document.createElement('div');

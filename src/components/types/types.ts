@@ -1,5 +1,5 @@
-import WordsApi from "../../services/wordsAPI";
-import LocalStorage from "../../services/store";
+import WordsApi from '../../services/wordsAPI';
+import LocalStorage from '../../services/store';
 
 // API types & interfaces
 

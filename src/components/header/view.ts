@@ -11,7 +11,7 @@ export default class ViewHeader {
     logo.innerHTML = '<h1>VICTORY</h1>';
 
     header.append(logo, nav, userArea);
-    document.body.prepend(header); 
+    document.body.prepend(header);
   }
 
   drewUserArea(auth: boolean) {
