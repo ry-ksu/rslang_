@@ -10,4 +10,13 @@ export default class LocalStorage {
     LS[name as keyof ILocalStorage] = value;
     localStorage.setItem('victory', JSON.stringify(LS));
   }
+
+  deleteUserData() {
+    const LS = this.getLS();
+    LS.name = '';
+    LS.token = '';
+    LS.refreshToken = '';
+    LS.userId = '';
+    localStorage.setItem('victory', JSON.stringify(LS));
+  }
 }

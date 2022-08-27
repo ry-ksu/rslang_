@@ -48,6 +48,7 @@ export default class ControllerAuthorization {
       this.localStoarge.changeLS('token', newToken.token);
       this.localStoarge.changeLS('refreshToken', newToken.refreshToken);
     } catch (err) {
+      this.localStoarge.deleteUserData();
       throw new Error("can't refresh", err as Error);
     }
   }
