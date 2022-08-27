@@ -52,7 +52,7 @@ export const showPopup = (): void => {
     const target = e.target as HTMLElement;
     const popup = document.querySelector<HTMLElement>('.popup') as HTMLElement;
 
-    if (!target.matches('.auth-btn' || popup.matches('.animate__animated'))) {
+    if (!target.matches('[data-login]' || popup.matches('.animate__animated'))) {
       return;
     }
     

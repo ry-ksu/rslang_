@@ -20,9 +20,9 @@ export default class ViewHeader {
     userArea.className = 'user-area';
 
     if (auth) {
-      userArea.innerHTML = '<button class="auth-btn primary-button">Выйти</button>';
+      userArea.innerHTML = '<button class="primary-button" data-logout>Выйти</button>';
     } else {
-      userArea.innerHTML = '<button class="auth-btn primary-button">Войти</button>';
+      userArea.innerHTML = '<button class="primary-button" data-login>Войти</button>';
     }
     return userArea;
   }

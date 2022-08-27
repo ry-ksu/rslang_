@@ -2,16 +2,16 @@ import { hidePopup, showPopup, togglePopupState } from "./togglePopupState";
 import renderAuth from "./view";
 import authorization from './auth';
 import WordsApi from "../../services/wordsAPI";
-import Loader from "../../services/loader";
-import { IUserToken } from "../types/types";
+import LocalStorage from "../../services/store";
 
 export default class Auth {
   api: WordsApi
 
-  isAuth = false;
+  localStoarge: LocalStorage
 
-  constructor() {
-    this.api = new WordsApi({ LoaderService: Loader });
+  constructor(api: WordsApi, localStorage: LocalStorage) {
+    this.api = api;
+    this.localStoarge = localStorage;
   }
 
   public renderAuth(): void {
@@ -22,38 +22,31 @@ export default class Auth {
   }
 
   public authorization(): void {
-    authorization(this.api, this.changeIsAuth.bind(this));
-  }
-
-  private changeIsAuth(value: boolean): void {
-    this.isAuth = value;
+    authorization(this.api, this.localStoarge);
   }
 
   public async checkAuth(): Promise<void> {
-    if (localStorage.getItem('user')) {
-      const userLocalStore = localStorage.getItem('user') ?? '{}';
-      const user = JSON.parse(userLocalStore) as IUserToken;
-      console.log(user);
+    const LS = this.localStoarge.getLS();
+    if (Object.keys(LS).length > 0) {
+      const { userId: userID, token, refreshToken} = LS;
       try {
-        await this.api.getUser({ userID: user.userId, token: 'user.token' });
+        await this.api.getUser({ userID, token });
       } catch (err) {
-        await this.tryRefresh(user);
+        await this.tryRefresh(userID, refreshToken);
       }
     } else {
       throw new Error('unauthorized');
     }
   }
 
-  public async tryRefresh(user: IUserToken): Promise<void> {
+  public async tryRefresh(userID: string, refreshToken: string): Promise<void> {
     try {
-      const newToken: IUserToken = await this.api.getNewUserToken({ 
-        userID: user.userId,
-        refreshToken: user.refreshToken 
-      });
-      console.log(newToken);
-      localStorage.setItem('user', JSON.stringify(newToken));
+      const newToken: { 
+        token: string, 
+        refreshToken: string } = await this.api.getNewUserToken({ userID, refreshToken });
+      this.localStoarge.changeLS('token', newToken.token);
+      this.localStoarge.changeLS('refreshToken', newToken.refreshToken);
     } catch(err) {
-      localStorage.removeItem('user');
       throw new Error('can\'t refresh', err as Error);
     }
   }

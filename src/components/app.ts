@@ -112,7 +112,8 @@ class App {
     if (Object.keys(LS).length === 0) {
       dictionary.mainPage();
     } else {
-      dictionary[LS.page as keyof typeof dictionary]();
+      dictionary.mainPage();
+      // dictionary[LS.page as keyof typeof dictionary]();
     }
 
     this.attachEvents();

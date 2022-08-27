@@ -95,5 +95,5 @@ export const updatePopup = (option: AuthOption): void => {
 
 export default function renderAuth(option = 'signIn' as AuthOption): void {
   const popup = renderPopup(option);
-  document.querySelector<HTMLElement>('main')?.appendChild(popup);
+  document.querySelector<HTMLElement>('body')?.appendChild(popup);
 }

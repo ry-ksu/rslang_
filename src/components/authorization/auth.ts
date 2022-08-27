@@ -1,8 +1,11 @@
+import LocalStorage from "../../services/store";
 import WordsApi from "../../services/wordsAPI";
 import { IUserToken } from "../types/types";
+import animateCSS from "./animate";
 import { AuthOption, checkValueFn, SignUpOptions } from "./contrats";
 import { createHtmlEl } from "./helpers";
 import { togglePopupAppearance } from "./togglePopupState";
+import { updatePopup } from "./view";
 
 const testValue = (comparator: RegExp, value: string): boolean => comparator.test(value);
 
@@ -69,18 +72,33 @@ const unBlockButtons = (): void => {
   buttons.forEach(btn => btn.removeAttribute('disabled'));
 }
 
-const authorization = async (email: string, password: string, api: WordsApi): Promise<void> => {
+const authorization = async (
+  email: string, 
+  password: string, 
+  api: WordsApi, 
+  localStorage: LocalStorage
+): Promise<void> => {
   try {
     const user: IUserToken = await api.signUser({ email, password });
-    localStorage.setItem('user', JSON.stringify(user));
-    togglePopupAppearance();
-    unBlockButtons();
+    localStorage.changeLS('token', user.token);
+    localStorage.changeLS('refreshToken', user.refreshToken);
+    localStorage.changeLS('userId', user.userId);
+    localStorage.changeLS('name', user.name);
+    
+    const popup = document.querySelector<HTMLElement>('.popup');
+    animateCSS(popup as HTMLElement, 'zoomOut', '0.7s')
+      .then(() => {
+        togglePopupAppearance();
+        unBlockButtons();
+        updatePopup('signIn');
+      })
+      .catch((err) => console.log(err))
   } catch (err) {
     throw new Error('Failed in authorization');
   }
 }
 
-const singIn = async (api: WordsApi): Promise<void> => {
+const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> => {
   if (!checkValues()) {
     return;
   }
@@ -89,7 +107,7 @@ const singIn = async (api: WordsApi): Promise<void> => {
   
   try {
     blockButtons();
-    await authorization(email.value, password.value, api);
+    await authorization(email.value, password.value, api, localStorage);
   }
   catch (err) {
     email.value = '';
@@ -101,7 +119,7 @@ const singIn = async (api: WordsApi): Promise<void> => {
   }
 }
 
-const singUp = async (api: WordsApi): Promise<void> => {
+const singUp = async (api: WordsApi, localStorage: LocalStorage): Promise<void> => {
   if (!checkValues()) {
     return;
   }
@@ -116,7 +134,7 @@ const singUp = async (api: WordsApi): Promise<void> => {
       email: email.value,
       password: password.value,
     });
-    await authorization(email.value, password.value, api);
+    await authorization(email.value, password.value, api, localStorage);
     name.value = '';
     email.value = '';
     password.value = '';
@@ -128,12 +146,12 @@ const singUp = async (api: WordsApi): Promise<void> => {
   }
 }
 
-const authByOption: Record<AuthOption, (api: WordsApi) => Promise<void>> = {
-  signIn: async (api) => singIn(api),
-  signUp: async (api) => singUp(api)
+const authByOption: Record<AuthOption, (api: WordsApi, localStorage: LocalStorage) => Promise<void>> = {
+  signIn: async (api, localStorage) => singIn(api, localStorage),
+  signUp: async (api, localStorage) => singUp(api, localStorage)
 }
 
-export default (api: WordsApi, callback: (value: boolean) => void) => {
+export default (api: WordsApi,  localStorage: LocalStorage) => {
   document.addEventListener('click', (e: Event) => {
     const target = e.target as HTMLElement;
     if (!target.matches('.popup__btn')) {
@@ -148,8 +166,6 @@ export default (api: WordsApi, callback: (value: boolean) => void) => {
 
     const option = popup.getAttribute('data') as AuthOption;
     
-    authByOption[option](api)
-      .then(() => callback(true))
-      .catch(() => unBlockButtons()) 
+    authByOption[option](api, localStorage).catch(() => unBlockButtons()) 
   });
 }
