@@ -108,3 +108,5 @@ export type IAttributes = {
   component: HTMLElement;
   isUserAuth: boolean;
 };
+
+export type voidFn = () => void

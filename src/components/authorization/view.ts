@@ -6,11 +6,18 @@ const renderInputEl = (title: string): HTMLElement => {
 
   const label = createHtmlEl('label', '', `${title}: `) as HTMLLabelElement;
   label.htmlFor = title;
-  const loginInput = createHtmlEl('input', 'popup__input') as HTMLInputElement;
-  loginInput.id = title;
+  const inputEl = createHtmlEl('input', 'popup__input') as HTMLInputElement;
+  inputEl.id = title;
+  inputEl.setAttribute('autocomplete', 'on')
+
+  if (title === 'password') {
+    inputEl.type = title;
+  } else if (title === 'email') {
+    inputEl.type = title;
+  }
 
   wrapper.appendChild(label);
-  wrapper.appendChild(loginInput);
+  wrapper.appendChild(inputEl);
   return wrapper;
 };
 
@@ -34,8 +41,8 @@ const renderButtons = (option: string): HTMLElement => {
 };
 
 const renderSignIn = (body: HTMLElement): void => {
-  const mail = renderInputEl('mail');
-  mail.classList.add('mail');
+  const mail = renderInputEl('email');
+  mail.classList.add('email');
 
   const password = renderInputEl('password');
   password.classList.add('password');
@@ -49,8 +56,8 @@ const renderSignUp = (body: HTMLElement): void => {
   const name = renderInputEl('name');
   name.classList.add('name');
 
-  const mail = renderInputEl('mail');
-  mail.classList.add('mail');
+  const mail = renderInputEl('email');
+  mail.classList.add('email');
 
   const password = renderInputEl('password');
   password.classList.add('password');

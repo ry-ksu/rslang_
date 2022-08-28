@@ -1,6 +1,6 @@
 import LocalStorage from '../../services/store';
 import WordsApi from '../../services/wordsAPI';
-import { IUserToken } from '../types/types';
+import { IUserToken, voidFn } from '../types/types';
 import animateCSS from './animate';
 import { AuthOption, checkValueFn, SignUpOptions } from './contracts';
 import { createHtmlEl } from './helpers';
@@ -18,7 +18,7 @@ const cleanErrors = (): void => {
 
 const errorMsg: Record<SignUpOptions, () => string> = {
   name: () => 'The name must be in Latin and at least contain 3 characters',
-  mail: () => 'The mail is not correct, e.g some@mail.ru',
+  email: () => 'The mail is not correct, e.g some@mail.ru',
   password: () => 'Password must contain only Latin or digits and at least contain 8 characters',
 };
 
@@ -33,7 +33,7 @@ const checkValuesByOption: Record<SignUpOptions, checkValueFn> = {
     const regexpName = /^[A-Z]{3,20}$/i;
     return testValue(regexpName, value);
   },
-  mail: (value) => {
+  email: (value) => {
     const regexpMail = /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,6}$/;
     return testValue(regexpMail, value);
   },
@@ -101,7 +101,7 @@ const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
   if (!checkValues()) {
     return;
   }
-  const email = document.getElementById('mail') as HTMLInputElement;
+  const email = document.getElementById('email') as HTMLInputElement;
   const password = document.getElementById('password') as HTMLInputElement;
 
   try {
@@ -113,7 +113,6 @@ const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
     document
       .querySelector<HTMLElement>('.password')
       ?.appendChild(createHtmlEl('div', 'error', 'mail or password incorrect'));
-
     throw new Error('incorrect mail or password');
   }
 };
@@ -123,7 +122,7 @@ const singUp = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
     return;
   }
   const name = document.getElementById('name') as HTMLInputElement;
-  const email = document.getElementById('mail') as HTMLInputElement;
+  const email = document.getElementById('email') as HTMLInputElement;
   const password = document.getElementById('password') as HTMLInputElement;
 
   try {
@@ -139,7 +138,7 @@ const singUp = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
     password.value = '';
   } catch (err) {
     document
-      .querySelector<HTMLElement>('.mail')
+      .querySelector<HTMLElement>('.email')
       ?.appendChild(createHtmlEl('div', 'error', 'enter another email'));
     throw new Error('incorrect mail');
   }
@@ -153,7 +152,7 @@ const authByOption: Record<
   signUp: async (api, localStorage) => singUp(api, localStorage),
 };
 
-export default (api: WordsApi, localStorage: LocalStorage) => {
+export default (api: WordsApi, localStorage: LocalStorage, callback: voidFn) => {
   document.addEventListener('click', (e: Event) => {
     const target = e.target as HTMLElement;
     if (!target.matches('.popup__btn')) {
@@ -168,6 +167,8 @@ export default (api: WordsApi, localStorage: LocalStorage) => {
 
     const option = popup.getAttribute('data') as AuthOption;
 
-    authByOption[option](api, localStorage).catch(() => unBlockButtons());
+    authByOption[option](api, localStorage)
+      .then(() => callback())
+      .catch(() => unBlockButtons());
   });
 };
