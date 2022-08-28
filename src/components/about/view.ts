@@ -1,5 +1,5 @@
 export default class ViewAbout {
-  drewTeamCard(
+  drawTeamCard(
     img: string,
     name: string,
     github: string,
@@ -27,7 +27,7 @@ export default class ViewAbout {
     return card;
   }
 
-  drewTeamCards(component: HTMLElement) {
+  drawTeamCards(component: HTMLElement) {
     const teamCount = 3;
     const teamImgs = ['1.png', '2.png', '3.png'];
     const teamNames = ['Ярослав', 'Ксения', 'Халид'];
@@ -50,7 +50,7 @@ export default class ViewAbout {
 
     for (let i = 0; i < teamCount; i += 1) {
       component.append(
-        this.drewTeamCard(
+        this.drawTeamCard(
           teamImgs[i],
           teamNames[i],
           teamGithub[i],
