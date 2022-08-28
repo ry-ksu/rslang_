@@ -9,7 +9,6 @@ export class Loader implements ILoader {
       }
       return response.json() as Promise<T>;
     } catch (result) {
-      console.log(result);
       throw new Error((result as Error).message);
     }
   }
