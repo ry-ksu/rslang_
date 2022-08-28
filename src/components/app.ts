@@ -98,7 +98,7 @@ class App {
       })
       .finally(() => {
         this.controllers.header.getData(this.attributes.isUserAuth);
-        if (Object.keys(LS).length === 0 || !LS.pageTB) {
+        if (Object.keys(LS).length === 0 || !LS.page) {
           dictionary.mainPage();
         } else {
           dictionary[LS.page as keyof typeof dictionary]();
