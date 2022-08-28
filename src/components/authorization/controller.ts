@@ -3,35 +3,45 @@ import renderAuth from './view';
 import authorization from './auth';
 import WordsApi from '../../services/wordsAPI';
 import LocalStorage from '../../services/store';
+import { IAttributes, voidFn } from '../types/types';
 
 export default class ControllerAuthorization {
   api: WordsApi;
 
   localStoarge: LocalStorage;
 
-  constructor(api: WordsApi, localStorage: LocalStorage) {
-    this.api = api;
-    this.localStoarge = localStorage;
+  render: voidFn;
+
+  constructor(attrs: IAttributes, callback: voidFn) {
+    this.api = attrs.wordsApi;
+    this.localStoarge = attrs.localStorage;
+    this.render = callback;
+  }
+  
+  public getData(): void {
+    this.renderAuth();
+    this.authorization(this.render);
   }
 
-  public renderAuth(): void {
+  private renderAuth(): void {
     renderAuth();
     togglePopupState();
     hidePopup();
     showPopup();
   }
 
-  public authorization(): void {
-    authorization(this.api, this.localStoarge);
+  private authorization(callback: voidFn): void {
+    authorization(this.api, this.localStoarge, callback);
   }
 
   public async checkAuth(): Promise<void> {
     const LS = this.localStoarge.getLS();
-    if (Object.keys(LS).length > 0) {
+    if ('token' in LS && LS.token.length > 0) {
       const { userId: userID, token, refreshToken } = LS;
       try {
         await this.api.getUser({ userID, token });
       } catch (err) {
+        console.log('tryREfresh')
         await this.tryRefresh(userID, refreshToken);
       }
     } else {
@@ -39,7 +49,7 @@ export default class ControllerAuthorization {
     }
   }
 
-  public async tryRefresh(userID: string, refreshToken: string): Promise<void> {
+  private async tryRefresh(userID: string, refreshToken: string): Promise<void> {
     try {
       const newToken: {
         token: string;
@@ -49,6 +59,8 @@ export default class ControllerAuthorization {
       this.localStoarge.changeLS('refreshToken', newToken.refreshToken);
     } catch (err) {
       this.localStoarge.deleteUserData();
+      this.localStoarge.changeLS('page', 'mainPage');
+      this.render();
       throw new Error("can't refresh", err as Error);
     }
   }
