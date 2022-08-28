@@ -29,11 +29,12 @@ export default class ControllerHeader {
   defineLoginLogout(e: Event) {
     if ((e.target as HTMLElement).hasAttribute('data-login')) {
       if (!document.querySelector('.outside')) {
-        this.controllerAuthorization.getData(this.render);
+        this.controllerAuthorization.getData();
       }
       this.controllerAuthorization.checkAuth().catch((err) => console.log(err));
     } else if ((e.target as HTMLElement).hasAttribute('data-logout')) {
       this.attributes.localStorage.deleteUserData();
+      this.attributes.localStorage.changeLS('page', 'mainPage')
       this.render();
     }
   }

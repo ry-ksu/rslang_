@@ -41,7 +41,7 @@ class App {
       isUserAuth: false,
     };
 
-    this.controllerAuthorization = new ControllerAuthorization(this.attributes);
+    this.controllerAuthorization = new ControllerAuthorization(this.attributes, this.render.bind(this));
 
     this.controllers = {
       about: new ControllerAbout(this.attributes),

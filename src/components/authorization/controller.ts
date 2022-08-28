@@ -10,14 +10,17 @@ export default class ControllerAuthorization {
 
   localStoarge: LocalStorage;
 
-  constructor(attrs: IAttributes) {
+  render: voidFn;
+
+  constructor(attrs: IAttributes, callback: voidFn) {
     this.api = attrs.wordsApi;
     this.localStoarge = attrs.localStorage;
+    this.render = callback;
   }
   
-  public getData(callback: voidFn): void {
+  public getData(): void {
     this.renderAuth();
-    this.authorization(callback);
+    this.authorization(this.render);
   }
 
   private renderAuth(): void {
@@ -36,8 +39,9 @@ export default class ControllerAuthorization {
     if ('token' in LS && LS.token.length > 0) {
       const { userId: userID, token, refreshToken } = LS;
       try {
-        await this.api.getUser({ userID, token });
+        await this.api.getUser({ userID, token: '' });
       } catch (err) {
+        console.log('tryREfresh')
         await this.tryRefresh(userID, refreshToken);
       }
     } else {
@@ -50,11 +54,14 @@ export default class ControllerAuthorization {
       const newToken: {
         token: string;
         refreshToken: string;
-      } = await this.api.getNewUserToken({ userID, refreshToken });
+      } = await this.api.getNewUserToken({ userID, refreshToken: '' });
       this.localStoarge.changeLS('token', newToken.token);
       this.localStoarge.changeLS('refreshToken', newToken.refreshToken);
     } catch (err) {
+      console.log('can\'t refresh')
       this.localStoarge.deleteUserData();
+      this.localStoarge.changeLS('page', 'mainPage');
+      this.render();
       throw new Error("can't refresh", err as Error);
     }
   }
