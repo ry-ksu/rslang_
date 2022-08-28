@@ -1,16 +1,17 @@
+import { IAttributes } from '../types/types';
 import ViewMainPage from './view';
 
 export default class ControllerAbout {
-  component: HTMLElement;
-
   viewMainPage: ViewMainPage;
 
-  constructor(component: HTMLElement) {
-    this.component = component;
+  attributes: IAttributes;
+
+  constructor(attributes: IAttributes) {
+    this.attributes = attributes;
     this.viewMainPage = new ViewMainPage();
   }
 
   getData() {
-    this.viewMainPage.drewMain(this.component);
+    this.viewMainPage.drawMain(this.attributes);
   }
 }
