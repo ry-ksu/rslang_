@@ -1,16 +1,17 @@
+import { IAttributes } from '../types/types';
 import ViewAbout from './view';
 
 export default class ControllerAbout {
-  component: HTMLElement;
-
   viewAbout: ViewAbout;
 
-  constructor(component: HTMLElement) {
-    this.component = component;
+  attributes: IAttributes;
+
+  constructor(attributes: IAttributes) {
+    this.attributes = attributes;
     this.viewAbout = new ViewAbout();
   }
 
   getData() {
-    this.viewAbout.drewTeamCards(this.component);
+    this.viewAbout.drawTeamCards(this.attributes.component);
   }
 }

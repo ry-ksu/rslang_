@@ -1,10 +1,11 @@
 import WordsApi from '../services/wordsAPI';
 import Loader from '../services/loader';
 import LocalStorage from '../services/store';
+import { IAttributes } from './types/types';
 
 import ControllerAbout from './about/controller';
-// import ControllerAudioGame from './audioGame/controller';
-// import ControllerAuthorization from './authorization/controller';
+import ControllerAudioGame from './audioGame/controller';
+import ControllerAuthorization from './authorization/controller';
 import ControllerHeader from './header/controller';
 import ControllerMainPage from './mainPage/controller';
 // import ControllerSprintGame from './sprintGame/controller';
@@ -16,17 +17,12 @@ import ControllerTextBook from './textBook/controller';
 import '../sass/style.scss';
 
 class App {
-  attributes: {
-    baseURL: string;
-    wordsApi: WordsApi;
-    localStorage: LocalStorage;
-    component: HTMLElement;
-  };
+  attributes: IAttributes;
 
   controllers: {
     about: ControllerAbout;
-    // audioGame: ControllerAudioGame;
-    // authorization: ControllerAuthorization;
+    audioGame: ControllerAudioGame;
+    authorization: ControllerAuthorization;
     header: ControllerHeader;
     mainPage: ControllerMainPage;
     // sprintGame: ControllerSprintGame;
@@ -41,13 +37,21 @@ class App {
       wordsApi: new WordsApi({ LoaderService: Loader }),
       localStorage: new LocalStorage(),
       component: document.createElement('main'),
+      isUserAuth: false,
     };
     this.controllers = {
-      about: new ControllerAbout(this.attributes.component),
-      // audioGame: new ControllerAudioGame(this.attributes.component),
-      // authorization: new ControllerAuthorization(),
-      header: new ControllerHeader(),
-      mainPage: new ControllerMainPage(this.attributes.component),
+      about: new ControllerAbout(this.attributes),
+      audioGame: new ControllerAudioGame(this.attributes),
+      authorization: new ControllerAuthorization(
+        this.attributes.wordsApi,
+        this.attributes.localStorage
+      ),
+      header: new ControllerHeader(
+        this.render.bind(this),
+        this.attributes,
+        this.changeLSPageAndRenderThisPage.bind(this)
+      ),
+      mainPage: new ControllerMainPage(this.attributes),
       // sprintGame: new ControllerSprintGame(),
       // statistics: new ControllerStatistics(),
       // teamPage: new ControllerTeamPage(),
@@ -55,87 +59,51 @@ class App {
     };
   }
 
-  changeLSPageAndRenderThisPage(e: Event) {
-    if ((e.target as HTMLElement).nodeName === 'LI') {
-      this.attributes.localStorage.changeLS('page', (e.target as HTMLElement).className);
+  changeLSPageAndRenderThisPage(page: string) {
+    // тут следует добавить остальные параметры нужные для отрисовки
+    this.attributes.localStorage.changeLS('page', page);
 
-      this.render();
-    }
-  }
-
-  detachEvents() {
-    if (document.querySelector('.nav')) {
-      (document.querySelector('.nav') as HTMLElement).removeEventListener(
-        'click',
-        this.changeLSPageAndRenderThisPage.bind(this)
-      );
-    }
-  }
-
-  attachEvents() {
-    if (document.querySelector('.nav')) {
-      (document.querySelector('.nav') as HTMLElement).addEventListener(
-        'click',
-        this.changeLSPageAndRenderThisPage.bind(this)
-      );
-    }
+    this.render();
   }
 
   render() {
-    this.attributes.component.innerHTML = '';
-    const LS = this.attributes.localStorage.getLS();
-    const dictionary = {
-      mainPage: () => {
-        this.controllers.header.getData(LS.token);
-        this.controllers.mainPage.getData();
-      },
-      about: () => {
-        this.controllers.header.getData(LS.token);
-        this.controllers.about.getData();
-      },
-      // audioGame: () => {
-      //   this.controllers.audioGame.getData(this.attributes);
-      // },
-      // sprint: () => {
-      //   this.controllers.sprintGame.getData();
-      // },
-      // statistics: () => {
-      //   this.controllers.statistics.getData();
-      // },
-      // textbook: () => {
-      //   this.controllers.textBook.getData();
-      // },
-    };
-
-    const dictionaryPromise = {
-      // audioGame: async (): Promise<void> => {
-      //   await this.controllers.audioGame.getDate(this.attributes);
-      // },
-      // sprint: () => {
-      //   this.controllers.sprintGame.getData();
-      // },
-      // statistics: () => {
-      //   this.controllers.statistics.getData();
-      // },
-      textbook: async () => {
-        await this.controllers.textBook.getData();
-      },
-    };
-
-    this.detachEvents();
-
-    if (Object.keys(LS).length === 0) {
-      dictionary.mainPage();
-      this.attachEvents();
-    } else if (Object.keys(dictionary).includes(LS.page)) {
-      dictionary[LS.page as keyof typeof dictionary]();
-      this.attachEvents();
+    if (!document.querySelector('main')) {
+      document.body.append(this.attributes.component);
     } else {
-      const result = dictionaryPromise[LS.page as keyof typeof dictionaryPromise]();
-      result.then(() => this.attachEvents()).catch((err) => console.error(err));
+      this.attributes.component.innerHTML = '';
     }
 
-    this.attachEvents();
+    const LS = this.attributes.localStorage.getLS();
+    const dictionary = {
+      mainPage: (): void => {
+        this.controllers.mainPage.getData();
+      },
+      about: (): void => {
+        this.controllers.about.getData();
+      },
+      audioGame: (): void => {
+        this.controllers.audioGame.getData();
+      },
+    };
+
+
+    this.controllers.authorization
+      .checkAuth()
+      .then(() => {
+        this.attributes.isUserAuth = true;
+      })
+      .catch((err) => {
+        console.log(err);
+        this.attributes.isUserAuth = false;
+      })
+      .finally(() => {
+        this.controllers.header.getData(this.attributes.isUserAuth);
+        if (Object.keys(LS).length === 0) {
+          dictionary.mainPage();
+        } else {
+          dictionary[LS.page as keyof typeof dictionary]();
+        }
+      });
   }
 }
 

@@ -1,11 +1,13 @@
 export default class ViewHeader {
-  drewHeader(auth: boolean) {
-    (document.querySelector('body') as HTMLElement).innerHTML = '';
+  drawHeader(auth: boolean) {
+    if (document.querySelector('header')) {
+      (document.querySelector('header') as HTMLElement).remove();
+    }
 
     const header = document.createElement('header');
     const logo = document.createElement('div');
-    const nav = this.drewNav();
-    const userArea = this.drewUserArea(auth);
+    const nav = this.drawNav();
+    const userArea = this.drawUserArea(auth);
 
     logo.className = 'logo';
     logo.innerHTML = '<h1>VICTORY</h1>';
@@ -14,31 +16,32 @@ export default class ViewHeader {
     document.body.prepend(header);
   }
 
-  drewUserArea(auth: boolean) {
+  drawUserArea(auth: boolean) {
     const userArea = document.createElement('div');
 
     userArea.className = 'user-area';
 
     if (auth) {
-      userArea.innerHTML = '<button class="auth-btn primary-button">Выйти</button>';
+      userArea.innerHTML = '<button class="primary-button" data-logout>Выйти</button>';
     } else {
-      userArea.innerHTML = '<button class="auth-btn primary-button">Войти</button>';
+      userArea.innerHTML = '<button class="primary-button" data-login>Войти</button>';
     }
     return userArea;
   }
 
-  drewNav() {
+  drawNav() {
     const nav = document.createElement('nav');
     nav.className = 'nav';
+    // тут data-атрибуты лучше, чем матчится на css-классы
     nav.innerHTML =
       '<ul>' +
-      '<li class="mainPage">Главная</li>' +
-      '<li class="about">О нас</li>' +
-      '<li class="textbook">Учебник</li>' +
+      '<li data-page="mainPage">Главная</li>' +
+      '<li data-page="about">О нас</li>' +
+      '<li data-page="textbook">Учебник</li>' +
       // разместить игры в выпадающем меню
-      '<li class="audioGame">Аудиовызов</li>' +
-      '<li class="sprint">Спринт</li>' +
-      '<li class="statistics">Статистика</li>' +
+      '<li data-page="audioGame">Аудиовызов</li>' +
+      '<li data-page="sprint">Спринт</li>' +
+      '<li data-page="statistics">Статистика</li>' +
       '</ul>';
     return nav;
   }

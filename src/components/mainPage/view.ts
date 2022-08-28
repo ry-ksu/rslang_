@@ -1,5 +1,7 @@
+import { IAttributes } from '../types/types';
+
 export default class ViewMainPage {
-  drewMainBlock() {
+  drawMainBlock() {
     const mainBlock = document.createElement('div');
     mainBlock.className = 'main-block';
     mainBlock.innerHTML = `<div class='main-block__content'>
@@ -15,7 +17,7 @@ export default class ViewMainPage {
     return mainBlock;
   }
 
-  drewBenefits() {
+  drawBenefits() {
     const benefitCards = document.createElement('div');
     const benefitCardContent = document.createElement('div');
     benefitCardContent.className = 'benefit-card__content';
@@ -46,11 +48,10 @@ export default class ViewMainPage {
     return benefitCards;
   }
 
-  drewMain(component: HTMLElement) {
-    const mainBlock = this.drewMainBlock();
-    const benefits = this.drewBenefits();
+  drawMain(attributes: IAttributes) {
+    const mainBlock = this.drawMainBlock();
+    const benefits = this.drawBenefits();
 
-    component.append(mainBlock, benefits);
-    document.body.append(component);
+    attributes.component.append(mainBlock, benefits);
   }
 }

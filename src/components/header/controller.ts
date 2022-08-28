@@ -1,29 +1,74 @@
 import ViewHeader from './view';
+import { IAttributes } from '../types/types';
+import ControllerAuthorization from '../authorization/controller';
 
 export default class ControllerHeader {
+  render: () => void;
+
+  changePage: (page: string) => void;
+
   viewHeader: ViewHeader;
 
-  constructor() {
+  attributes: IAttributes;
+
+  ControllerAuthorization: ControllerAuthorization;
+
+  constructor(render: () => void, attributes: IAttributes, changePage: (page: string) => void) {
+    this.render = render;
     this.viewHeader = new ViewHeader();
+    this.changePage = changePage;
+    this.attributes = attributes;
+    this.ControllerAuthorization = new ControllerAuthorization(
+      attributes.wordsApi,
+      attributes.localStorage
+    );
   }
 
-  getData(token?: string) {
-    // static
-
-    let auth = false;
-    if (token) {
-      // Нужно будет обратиться к контроллеру авторизации для проверки токена
-      // Сейчас поставила заплатку
-      // добавить async / await
-      auth = this.checkAuth(token);
+  defineLoginLogout(e: Event) {
+    if ((e.target as HTMLElement).hasAttribute('data-login')) {
+      if (!document.querySelector('.outside')) {
+        this.ControllerAuthorization.renderAuth();
+      }
+      this.ControllerAuthorization.authorization();
+      this.ControllerAuthorization.checkAuth().catch((err) => console.log(err));
+    } else if ((e.target as HTMLElement).hasAttribute('data-logout')) {
+      this.attributes.localStorage.deleteUserData();
+      this.render();
     }
-    this.viewHeader.drewHeader(auth);
   }
 
-  checkAuth(token: string) {
-    if (Math.random() > 0.5) {
-      return true;
+  attachEvents() {
+    (document.querySelector('.nav') as HTMLElement).addEventListener(
+      'click',
+      this.goToPage.bind(this)
+    );
+    (document.querySelector('.user-area') as HTMLElement).addEventListener(
+      'click',
+      this.defineLoginLogout.bind(this)
+    );
+  }
+
+  detachEvents() {
+    const nav = document.querySelector('.nav');
+
+    if (nav) {
+      (document.querySelector('.nav') as HTMLElement).removeEventListener(
+        'click',
+        this.goToPage.bind(this)
+      );
     }
-    return false;
+  }
+
+  getData(isUserAuth: boolean) {
+    this.detachEvents();
+    this.viewHeader.drawHeader(isUserAuth);
+    this.attachEvents();
+  }
+
+  goToPage(e: Event) {
+    if (e.target instanceof HTMLElement) {
+      const page = e.target.getAttribute('data-page') as string;
+      this.changePage(page);
+    }
   }
 }

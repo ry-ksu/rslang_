@@ -1,0 +1,110 @@
+.outside {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(41, 41, 41, 0.6);
+  z-index: 4;
+  visibility: hidden;
+}
+
+.popup {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 300px;
+  background: #89a7e2;
+  z-index: 5;
+  color: black;
+  border-radius: 10px;
+  visibility: hidden;
+}
+
+.body__item {
+  &:not(:last-child) {
+    margin-bottom: 2rem;
+  }
+}
+
+.mail {
+  margin-left: 40px;
+}
+
+.name {
+  margin-left: 33px;
+}
+
+label {
+  font-size: 2rem;
+}
+
+.popup__input {
+  min-width: 260px;
+  height: 30px;
+  border-radius: 20px;
+  outline: none;
+  border: none;
+  padding-left: 10px;
+}
+
+.popup__close {
+  position: absolute;
+  top: -30px;
+  right: -25px;
+  background: #f6f6f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 52px;
+  height: 52px;
+  color: black;
+  border: 2px solid #3a5199;
+  border-radius: 100px;
+  transition: background 0.3s linear;
+
+  &:hover {
+    cursor: pointer;
+    border: 2px solid #fddcc4;
+    background: #fddcc4;
+  }
+}
+
+.popupButtons {
+  margin-top: 3rem;
+}
+
+.popup__btn:first-child {
+  margin-right: 2rem;
+}
+
+.popup__body {
+  position: relative;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  font-size: 14px;
+}
+
+.show {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.popup__body {
+  [data='signIn'] {
+    width: 100px;
+  }
+  [data='signUp'] {
+    width: 200px;
+  }
+}
