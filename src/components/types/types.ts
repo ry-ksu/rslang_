@@ -61,6 +61,7 @@ export interface IUserWord {
     rightAnswerCount: number;
     wrongAnswerCount: number;
   };
+  wordId?: string;
 }
 
 export interface IUserStatistics {

@@ -1,4 +1,4 @@
-import { IWord } from '../types/types';
+import { IUserWord, IWord } from '../types/types';
 import ControllerTextBook from './controller';
 
 export default class ViewTextBook {
@@ -6,13 +6,7 @@ export default class ViewTextBook {
 
   private component: HTMLElement;
 
-  private textBookContainer: HTMLDivElement;
-
-  private headerContainer: HTMLDivElement;
-
-  private pageContainer: HTMLDivElement;
-
-  private paginationContainer: HTMLDivElement;
+  private static textBookContainer: HTMLElement;
 
   private baseURL: string;
 
@@ -23,27 +17,15 @@ export default class ViewTextBook {
   constructor({
     controller,
     component,
+    baseURL,
   }: {
     controller: ControllerTextBook;
     component: HTMLElement;
+    baseURL: string;
   }) {
     this.controllerTextBook = controller;
     this.component = component;
-    this.baseURL = 'https://rslang-learnwords-api.herokuapp.com';
-    this.textBookContainer = document.createElement('div');
-    this.textBookContainer.classList.add('textbook-container');
-    this.headerContainer = document.createElement('div');
-    this.headerContainer.classList.add('tb-header');
-    this.pageContainer = document.createElement('div');
-    this.pageContainer.classList.add('tb-page');
-    this.paginationContainer = document.createElement('div');
-    this.paginationContainer.classList.add('tb-pagination');
-    this.textBookContainer.append(
-      this.headerContainer,
-      this.pageContainer,
-      this.paginationContainer
-    );
-    this.component.append(this.textBookContainer);
+    this.baseURL = baseURL;
     this.colors = {
       0: '#b7eee0',
       1: '#eee1b7',
@@ -60,20 +42,27 @@ export default class ViewTextBook {
     wordGroup,
     wordPage,
     maxWordPage,
+    userWords,
   }: {
     words: IWord[];
     wordGroup: number;
     wordPage: number;
     maxWordPage: number;
+    userWords: IUserWord[];
   }) {
+    ViewTextBook.textBookContainer = document.createElement('div');
+    ViewTextBook.textBookContainer.classList.add('textbook-container');
+    this.component.appendChild(ViewTextBook.textBookContainer);
+
     this.drawHeader({ wordGroup });
-    this.drawPage(words);
+    this.drawPage({ words, userWords });
     this.drawPagination({ wordPage, maxWordPage });
-    document.body.appendChild(this.component);
   }
 
   drawHeader({ wordGroup }: { wordGroup: number }) {
-    this.headerContainer.innerHTML = '';
+    const headerContainer = document.createElement('div');
+    headerContainer.classList.add('tb-header');
+
     const tbGroupBtns = this.getHeaderBtns({ wordGroup });
     const btnGames = document.createElement('div');
     btnGames.classList.add('tb-games-btns');
@@ -84,10 +73,12 @@ export default class ViewTextBook {
     btnAudioGame.classList.add('tb-audiogame-btn');
     btnAudioGame.innerText = `🎧Аудиовызов`;
     btnGames.append(btnSprintGame, btnAudioGame);
-    this.headerContainer.append(tbGroupBtns, btnGames);
+    headerContainer.append(tbGroupBtns, btnGames);
+
+    ViewTextBook.textBookContainer.append(headerContainer);
   }
 
-  private getHeaderBtns({ wordGroup }: { wordGroup: number}): HTMLDivElement {
+  private getHeaderBtns({ wordGroup }: { wordGroup: number }): HTMLDivElement {
     const tbGroupBtns = document.createElement('div');
     tbGroupBtns.classList.add('tb-group-btns');
     const btnsCount = 7;
@@ -102,14 +93,16 @@ export default class ViewTextBook {
           .querySelectorAll('.group-btn')
           .forEach((item) => item.classList.remove('pressed'));
         btn.classList.add('pressed');
-        this.textBookContainer.style.backgroundColor = this.colors[`${i}`];
-        this.controllerTextBook.getGroup({ wordGroup: i, wordPage: 0 });
+        ViewTextBook.textBookContainer.style.backgroundColor = this.colors[`${i}`];
+        this.controllerTextBook
+          .getGroup({ wordGroup: i, wordPage: 0 })
+          .catch((error) => console.error(error));
       });
       if (i === wordGroup) {
         btn.classList.add('pressed');
-        this.textBookContainer.style.backgroundColor = this.colors[`${i}`];
+        ViewTextBook.textBookContainer.style.backgroundColor = this.colors[`${i}`];
       }
-      if (i === btnsCount - 1) {
+      if (i === this.controllerTextBook.hardGroupIndex) {
         btn.innerText = 'Сложные';
         btn.classList.add('tb-group-hardbtn');
       }
@@ -118,14 +111,23 @@ export default class ViewTextBook {
     return tbGroupBtns;
   }
 
-  drawPage(words: IWord[]) {
-    this.pageContainer.innerHTML = '';
+  drawPage({ words, userWords }: { words: IWord[]; userWords: IUserWord[] }) {
+    let pageContainer = ViewTextBook.textBookContainer?.querySelector('.tb-page');
+    if (pageContainer) {
+      pageContainer.innerHTML = '';
+    } else {
+      pageContainer = document.createElement('div');
+      pageContainer.classList.add('tb-page');
+      ViewTextBook.textBookContainer.append(pageContainer);
+    }
+
     words.forEach((word) => {
-      this.pageContainer.appendChild(this.getCard(word));
+      const userWord = userWords.find((item) => item.wordId === word.id);
+      pageContainer?.appendChild(this.getCard({ word, userWord }));
     });
   }
 
-  private getCard(word: IWord): HTMLDivElement {
+  private getCard({ word, userWord }: { word: IWord; userWord?: IUserWord }): HTMLDivElement {
     const cardWord = document.createElement('div');
     cardWord.dataset.tbwordid = word.id;
     cardWord.classList.add('tb-card-word');
@@ -146,28 +148,74 @@ export default class ViewTextBook {
           </div>
           <button class="sound-btn" title="audio"></button>
         </div>
-      </div>
-      <div class="user-wrapper">
-        <div class="btns-container">
-          <button class="btn-hard">Сложное</button>
-          <button class="btn-learned">Изучено</button>
-        </div>
-        <div class="footer-wrapper">
-          <div class="right-container">
-            <span class="right-symbol">✔</span>
-            <span class="right-count">0</span>
-          </div>
-          <div class="wrong-container">
-            <span class="wrong-symbol">✖</span>
-            <span class="wrong-count">0</span>
-          </div>
-        </div>
       </div>`;
+
+    if (this.controllerTextBook.isUserRegistered()) {
+      cardWord.append(this.getCardUserArea({ wordID: word.id, userWord }));
+    }
+
     return cardWord;
   }
 
+  getCardUserArea({ wordID, userWord }: { wordID: string; userWord?: IUserWord }) {
+    const userWrapper = document.createElement('div');
+    userWrapper.classList.add('user-wrapper');
+
+    const btnsContainer = document.createElement('div');
+    btnsContainer.classList.add('btns-container');
+    const btnHard = document.createElement('button');
+    btnHard.classList.add('btn-hard');
+    btnHard.innerText = 'Сложное';
+
+    if (userWord?.difficulty === 'hard') {
+      btnHard.classList.add('pressed');
+    }
+    btnHard.addEventListener('click', () => {
+      const isHardWord = btnHard.classList.contains('pressed');
+      this.controllerTextBook
+        .setHardWord({ isHardWord, wordID })
+        .then(() => btnHard.classList.toggle('pressed'))
+        .catch(() => null);
+    });
+
+    const btnLearned = document.createElement('button');
+    btnLearned.classList.add('btn-learned');
+    btnLearned.innerText = 'Изучено';
+    btnsContainer.append(btnHard, btnLearned);
+
+    const footerWrapper = document.createElement('div');
+    footerWrapper.classList.add('footer-wrapper');
+
+    const rightContainer = document.createElement('div');
+    rightContainer.classList.add('right-container');
+    const rightSymbol = document.createElement('span');
+    rightSymbol.classList.add('right-symbol');
+    rightSymbol.innerText = '✔';
+    const rightCount = document.createElement('span');
+    rightCount.classList.add('right-count');
+    rightCount.innerText = '0';
+    rightContainer.append(rightSymbol, rightCount);
+
+    const wrongContainer = document.createElement('div');
+    wrongContainer.classList.add('wrong-container');
+    const wrongSymbol = document.createElement('span');
+    wrongSymbol.classList.add('wrong-symbol');
+    wrongSymbol.innerText = '✖';
+    const wrongCount = document.createElement('span');
+    wrongCount.classList.add('wrong-count');
+    wrongCount.innerText = '0';
+    wrongContainer.append(wrongSymbol, wrongCount);
+
+    footerWrapper.append(rightContainer, wrongContainer);
+    userWrapper.append(btnsContainer, footerWrapper);
+
+    return userWrapper;
+  }
+
   drawPagination({ wordPage, maxWordPage }: { wordPage: number; maxWordPage: number }) {
-    this.paginationContainer.innerHTML = '';
+    ViewTextBook?.textBookContainer?.querySelector('.tb-pagination')?.remove();
+    const paginationContainer = document.createElement('div');
+    paginationContainer.classList.add('tb-pagination');
 
     const btnPrevPage = document.createElement('button');
     btnPrevPage.classList.add('tb-prevPage-btn');
@@ -179,9 +227,11 @@ export default class ViewTextBook {
     const btnNextPage = document.createElement('button');
     btnNextPage.classList.add('tb-nextPage-btn');
     btnNextPage.addEventListener('click', () => this.controllerTextBook.getNextPage());
-    this.paginationContainer.append(btnPrevPage, pageNumberText, btnNextPage);
+    paginationContainer.append(btnPrevPage, pageNumberText, btnNextPage);
 
     if (wordPage === 0) btnPrevPage.disabled = true;
     if (wordPage === maxWordPage) btnNextPage.disabled = true;
+
+    ViewTextBook.textBookContainer.append(paginationContainer);
   }
 }

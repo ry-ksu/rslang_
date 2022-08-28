@@ -84,8 +84,10 @@ class App {
       audioGame: (): void => {
         this.controllers.audioGame.getData();
       },
+      textbook: () => {
+        this.controllers.textBook.getData().catch((error) => console.error(error));
+      },
     };
-
 
     this.controllers.authorization
       .checkAuth()
