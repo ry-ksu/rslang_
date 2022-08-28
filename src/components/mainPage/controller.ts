@@ -11,7 +11,7 @@ export default class ControllerAbout {
     this.viewMainPage = new ViewMainPage();
   }
 
-  getDate() {
-    this.viewMainPage.drewMain(this.attributes.component);
+  getData() {
+    this.viewMainPage.drawMain(this.attributes);
   }
 }

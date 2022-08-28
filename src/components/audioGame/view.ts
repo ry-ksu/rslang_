@@ -43,7 +43,7 @@ export default class ViewAudioGame {
 
     allWords.className = 'audioGame__words';
 
-    main.innerHTML = '<div class="audioGame">' + '<div class="audioGame__img"></div>' + '</div>';
+    main.innerHTML = '<div class="audioGame"><div class="audioGame__img"></div></div>';
 
     for (let i = 0; i < currentGamePack.mixWords.length; i += 1) {
       const elem = document.createElement('div');

@@ -1,11 +1,13 @@
 export default class ViewHeader {
-  drewHeader(auth: boolean) {
-    (document.querySelector('body') as HTMLElement).innerHTML = '';
+  drawHeader(auth: boolean) {
+    if (document.querySelector('header')) {
+      (document.querySelector('header') as HTMLElement).remove();
+    }
 
     const header = document.createElement('header');
     const logo = document.createElement('div');
-    const nav = this.drewNav();
-    const userArea = this.drewUserArea(auth);
+    const nav = this.drawNav();
+    const userArea = this.drawUserArea(auth);
 
     logo.className = 'logo';
     logo.innerHTML = '<h1>VICTORY</h1>';
@@ -14,7 +16,7 @@ export default class ViewHeader {
     document.body.prepend(header);
   }
 
-  drewUserArea(auth: boolean) {
+  drawUserArea(auth: boolean) {
     const userArea = document.createElement('div');
 
     userArea.className = 'user-area';
@@ -27,7 +29,7 @@ export default class ViewHeader {
     return userArea;
   }
 
-  drewNav() {
+  drawNav() {
     const nav = document.createElement('nav');
     nav.className = 'nav';
     // тут data-атрибуты лучше, чем матчится на css-классы

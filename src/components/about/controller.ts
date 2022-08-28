@@ -11,7 +11,7 @@ export default class ControllerAbout {
     this.viewAbout = new ViewAbout();
   }
 
-  getDate() {
-    this.viewAbout.drewTeamCards(this.attributes.component);
+  getData() {
+    this.viewAbout.drawTeamCards(this.attributes.component);
   }
 }

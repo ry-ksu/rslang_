@@ -75,7 +75,7 @@ export default class ControllerAudioGame {
     //
   }
 
-  getDate(gameWords: IWord[] = []) {
+  getData(gameWords: IWord[] = []) {
     if (gameWords.length !== 0) {
       // this.getData();
     } else {

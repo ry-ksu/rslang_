@@ -106,4 +106,5 @@ export type IAttributes = {
   wordsApi: WordsApi;
   localStorage: LocalStorage;
   component: HTMLElement;
+  isUserAuth: boolean;
 };

@@ -37,6 +37,7 @@ class App {
       wordsApi: new WordsApi({ LoaderService: Loader }),
       localStorage: new LocalStorage(),
       component: document.createElement('main'),
+      isUserAuth: false,
     };
     this.controllers = {
       about: new ControllerAbout(this.attributes),
@@ -45,7 +46,11 @@ class App {
         this.attributes.wordsApi,
         this.attributes.localStorage
       ),
-      header: new ControllerHeader(this.attributes, this.changeLSPageAndRenderThisPage.bind(this)),
+      header: new ControllerHeader(
+        this.render.bind(this),
+        this.attributes,
+        this.changeLSPageAndRenderThisPage.bind(this)
+      ),
       mainPage: new ControllerMainPage(this.attributes),
       // sprintGame: new ControllerSprintGame(),
       // statistics: new ControllerStatistics(),
@@ -62,31 +67,42 @@ class App {
   }
 
   render() {
-    // if (!document.querySelector('main')) {
-    document.body.append(this.attributes.component);
-    // }
-    this.attributes.component.innerHTML = '';
-    const LS = this.attributes.localStorage.getLS();
+    if (!document.querySelector('main')) {
+      document.body.append(this.attributes.component);
+    } else {
+      this.attributes.component.innerHTML = '';
+    }
 
+    const LS = this.attributes.localStorage.getLS();
     const dictionary = {
       mainPage: (): void => {
-        this.controllers.mainPage.getDate();
+        this.controllers.mainPage.getData();
       },
       about: (): void => {
-        this.controllers.about.getDate();
+        this.controllers.about.getData();
       },
       audioGame: (): void => {
-        this.controllers.audioGame.getDate();
+        this.controllers.audioGame.getData();
       },
     };
 
-    this.controllers.header.getData(LS.token);
-
-    if (Object.keys(LS).length === 0) {
-      dictionary.mainPage();
-    } else {
-      dictionary[LS.page as keyof typeof dictionary]();
-    }
+    this.controllers.authorization
+      .checkAuth()
+      .then(() => {
+        this.attributes.isUserAuth = true;
+      })
+      .catch((err) => {
+        console.log(err);
+        this.attributes.isUserAuth = false;
+      })
+      .finally(() => {
+        this.controllers.header.getData(this.attributes.isUserAuth);
+        if (Object.keys(LS).length === 0) {
+          dictionary.mainPage();
+        } else {
+          dictionary[LS.page as keyof typeof dictionary]();
+        }
+      });
   }
 }
 

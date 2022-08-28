@@ -1,25 +1,22 @@
 import ViewHeader from './view';
 import { IAttributes } from '../types/types';
-
-//! Подумать, как это передать из App
 import ControllerAuthorization from '../authorization/controller';
 
 export default class ControllerHeader {
+  render: () => void;
+
   changePage: (page: string) => void;
 
   viewHeader: ViewHeader;
 
   attributes: IAttributes;
 
-  //! Подумать, как это передать из App
   ControllerAuthorization: ControllerAuthorization;
 
-  constructor(attributes: IAttributes, changePage: (page: string) => void) {
+  constructor(render: () => void, attributes: IAttributes, changePage: (page: string) => void) {
+    this.render = render;
     this.viewHeader = new ViewHeader();
-    // Это нужно сделать в каждом контроллере
     this.changePage = changePage;
-
-    //! Подумать, как это передать из App
     this.attributes = attributes;
     this.ControllerAuthorization = new ControllerAuthorization(
       attributes.wordsApi,
@@ -29,11 +26,14 @@ export default class ControllerHeader {
 
   defineLoginLogout(e: Event) {
     if ((e.target as HTMLElement).hasAttribute('data-login')) {
-      this.ControllerAuthorization.renderAuth();
+      if (!document.querySelector('.outside')) {
+        this.ControllerAuthorization.renderAuth();
+      }
       this.ControllerAuthorization.authorization();
       this.ControllerAuthorization.checkAuth().catch((err) => console.log(err));
     } else if ((e.target as HTMLElement).hasAttribute('data-logout')) {
-      //
+      this.attributes.localStorage.deleteUserData();
+      this.render();
     }
   }
 
@@ -59,18 +59,9 @@ export default class ControllerHeader {
     }
   }
 
-  getData(token?: string) {
-    // static
-
-    let auth = false;
-    if (token) {
-      // Нужно будет обратиться к контроллеру авторизации для проверки токена
-      // Сейчас поставила заплатку
-      // добавить async / await
-      auth = this.checkAuth(token);
-    }
+  getData(isUserAuth: boolean) {
     this.detachEvents();
-    this.viewHeader.drewHeader(auth);
+    this.viewHeader.drawHeader(isUserAuth);
     this.attachEvents();
   }
 
@@ -79,14 +70,5 @@ export default class ControllerHeader {
       const page = e.target.getAttribute('data-page') as string;
       this.changePage(page);
     }
-  }
-
-  checkAuth(token: string) {
-    /*
-    if (Math.random() > 0.5) {
-      return true;
-    }
-    */
-    return false;
   }
 }
