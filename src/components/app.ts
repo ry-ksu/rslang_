@@ -19,10 +19,11 @@ import '../sass/style.scss';
 class App {
   attributes: IAttributes;
 
+  controllerAuthorization: ControllerAuthorization
+
   controllers: {
     about: ControllerAbout;
     audioGame: ControllerAudioGame;
-    authorization: ControllerAuthorization;
     header: ControllerHeader;
     mainPage: ControllerMainPage;
     // sprintGame: ControllerSprintGame;
@@ -39,17 +40,17 @@ class App {
       component: document.createElement('main'),
       isUserAuth: false,
     };
+
+    this.controllerAuthorization = new ControllerAuthorization(this.attributes, this.render.bind(this));
+
     this.controllers = {
       about: new ControllerAbout(this.attributes),
       audioGame: new ControllerAudioGame(this.attributes),
-      authorization: new ControllerAuthorization(
-        this.attributes.wordsApi,
-        this.attributes.localStorage
-      ),
       header: new ControllerHeader(
         this.render.bind(this),
         this.attributes,
-        this.changeLSPageAndRenderThisPage.bind(this)
+        this.changeLSPageAndRenderThisPage.bind(this),
+        this.controllerAuthorization
       ),
       mainPage: new ControllerMainPage(this.attributes),
       // sprintGame: new ControllerSprintGame(),
@@ -89,7 +90,7 @@ class App {
       },
     };
 
-    this.controllers.authorization
+    this.controllerAuthorization
       .checkAuth()
       .then(() => {
         this.attributes.isUserAuth = true;
@@ -100,7 +101,7 @@ class App {
       })
       .finally(() => {
         this.controllers.header.getData(this.attributes.isUserAuth);
-        if (Object.keys(LS).length === 0) {
+        if (Object.keys(LS).length === 0 || !LS.page) {
           dictionary.mainPage();
         } else {
           dictionary[LS.page as keyof typeof dictionary]();

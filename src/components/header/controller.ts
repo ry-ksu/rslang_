@@ -11,28 +11,30 @@ export default class ControllerHeader {
 
   attributes: IAttributes;
 
-  ControllerAuthorization: ControllerAuthorization;
+  controllerAuthorization: ControllerAuthorization;
 
-  constructor(render: () => void, attributes: IAttributes, changePage: (page: string) => void) {
+  constructor(
+    render: () => void, 
+    attributes: IAttributes, 
+    changePage: (page: string) => void,
+    controllerAuthorization: ControllerAuthorization
+  ) {
     this.render = render;
     this.viewHeader = new ViewHeader();
     this.changePage = changePage;
     this.attributes = attributes;
-    this.ControllerAuthorization = new ControllerAuthorization(
-      attributes.wordsApi,
-      attributes.localStorage
-    );
+    this.controllerAuthorization = controllerAuthorization;
   }
 
   defineLoginLogout(e: Event) {
     if ((e.target as HTMLElement).hasAttribute('data-login')) {
       if (!document.querySelector('.outside')) {
-        this.ControllerAuthorization.renderAuth();
+        this.controllerAuthorization.getData();
       }
-      this.ControllerAuthorization.authorization();
-      this.ControllerAuthorization.checkAuth().catch((err) => console.log(err));
+      this.controllerAuthorization.checkAuth().catch((err) => console.log(err));
     } else if ((e.target as HTMLElement).hasAttribute('data-logout')) {
       this.attributes.localStorage.deleteUserData();
+      this.attributes.localStorage.changeLS('page', 'mainPage')
       this.render();
     }
   }
