@@ -56,7 +56,7 @@ class App {
       // sprintGame: new ControllerSprintGame(),
       // statistics: new ControllerStatistics(),
       // teamPage: new ControllerTeamPage(),
-      textBook: new ControllerTextBook(this.attributes),
+      textBook: new ControllerTextBook({ attributes: this.attributes, authorization: this.controllerAuthorization}),
     };
   }
 

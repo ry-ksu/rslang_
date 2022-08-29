@@ -1,5 +1,6 @@
 import ViewTextBook from './view';
 import { IAttributes, IUserWord, IWord } from '../types/types';
+import ControllerAuthorization from '../authorization/controller';
 
 export default class ControllerTextBook {
   private viewTextBook: ViewTextBook;
@@ -12,7 +13,9 @@ export default class ControllerTextBook {
 
   hardGroupIndex = 6;
 
-  constructor(attributes: IAttributes) {
+  private authorization: ControllerAuthorization;
+
+  constructor({attributes, authorization}: {attributes: IAttributes, authorization: ControllerAuthorization}) {
     this.attributes = attributes;
     this.maxWordPage = 29;
     this.userWords = [];
@@ -21,9 +24,10 @@ export default class ControllerTextBook {
       component: attributes.component,
       baseURL: attributes.baseURL,
     });
+    this.authorization = authorization;
   }
 
-  async getData() {
+  async getData(): Promise<void> {
     const ls = this.attributes.localStorage.getLS();
     let wordGroup = 0;
     let wordPage = 0;
@@ -41,10 +45,15 @@ export default class ControllerTextBook {
       this.userWords = await this.attributes.wordsApi.getUserWords({ userID, token });
     }
 
-    const words = await this.attributes.wordsApi.getWords({
-      wordGroup,
-      wordPage,
-    });
+    let words: IWord[];
+    if (wordGroup === this.hardGroupIndex) {
+      words = await this.getHardGroup();
+    } else {
+      words = await this.attributes.wordsApi.getWords({
+        wordGroup,
+        wordPage,
+      });
+    }
 
     this.viewTextBook.draw({
       words,
@@ -91,18 +100,11 @@ export default class ControllerTextBook {
     }
   }
 
-  async getGroup({ wordGroup, wordPage }: { wordGroup: number; wordPage: number }) {
+  async getGroup({ wordGroup, wordPage }: { wordGroup: number; wordPage: number }): Promise<void> {
     let words: IWord[];
     try {
       if (wordGroup === this.hardGroupIndex) {
-        const wordsPromises: Promise<IWord>[] = [];
-        this.userWords.forEach((item) => {
-          if (item.wordId !== undefined && item.difficulty === 'hard') {
-            const word = this.attributes.wordsApi.getWord({ wordID: item.wordId });
-            wordsPromises.push(word);
-          }
-        });
-        words = await Promise.all(wordsPromises);
+        words = await this.getHardGroup();
       } else {
         words = await this.attributes.wordsApi.getWords({ wordGroup, wordPage });
       }
@@ -115,16 +117,41 @@ export default class ControllerTextBook {
     }
   }
 
+  async getHardGroup(): Promise<IWord[]> {
+    try {
+      const wordsPromises: Promise<IWord>[] = [];
+      this.userWords.forEach((item) => {
+        if (item.wordId !== undefined && item.difficulty === 'hard') {
+          const word = this.attributes.wordsApi.getWord({ wordID: item.wordId });
+          wordsPromises.push(word);
+        }
+      });
+      return await Promise.all(wordsPromises);
+    } catch (error) {
+      throw Error();
+    }
+  }
+
   isUserRegistered(): boolean {
     return this.attributes.isUserAuth;
   }
 
-  async setHardWord({ isHardWord, wordID }: { isHardWord: boolean; wordID: string }) {
+  async checkAuthorization(): Promise<void> {
+    try {
+      await this.authorization.checkAuth();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async setHardWord({ isHardWord, wordID }:
+    { isHardWord: boolean; wordID: string }): Promise<void> {
     if (!this.isUserRegistered()) return;
     const { token, userId: userID } = this.attributes.localStorage.getLS();
     const existsUserWord = this.userWords.find((item) => item.wordId === wordID);
     const difficulty = isHardWord ? 'weak' : 'hard';
     try {
+      await this.checkAuthorization();
       if (existsUserWord) {
         existsUserWord.difficulty = difficulty;
         const updatedUserWord: IUserWord = {
