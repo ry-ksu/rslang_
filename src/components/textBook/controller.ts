@@ -103,6 +103,7 @@ export default class ControllerTextBook {
   async getGroup({ wordGroup, wordPage }: { wordGroup: number; wordPage: number }): Promise<void> {
     let words: IWord[];
     try {
+      await this.checkAuthorization();
       if (wordGroup === this.hardGroupIndex) {
         words = await this.getHardGroup();
       } else {
@@ -119,6 +120,7 @@ export default class ControllerTextBook {
 
   async getHardGroup(): Promise<IWord[]> {
     try {
+      await this.checkAuthorization();
       const wordsPromises: Promise<IWord>[] = [];
       this.userWords.forEach((item) => {
         if (item.wordId !== undefined && item.difficulty === 'hard') {
@@ -139,6 +141,50 @@ export default class ControllerTextBook {
   async checkAuthorization(): Promise<void> {
     try {
       await this.authorization.checkAuth();
+      this.attributes.isUserAuth = true;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async setLearnedWord({ isLearnedWord, wordID}: { isLearnedWord: boolean; wordID: string }): Promise<void> {
+    if (!this.isUserRegistered()) return;
+    const { token, userId: userID } = this.attributes.localStorage.getLS();
+    const existsUserWord = this.userWords.find((item) => item.wordId === wordID);
+    const isLearned = !isLearnedWord;
+    try {
+      if (existsUserWord) {
+        existsUserWord.optional.isLearned = isLearned;
+        const updatedUserWord: IUserWord = {
+          difficulty: existsUserWord.difficulty,
+          optional: existsUserWord.optional,
+        };
+        updatedUserWord.optional.isLearned = isLearned;
+        await this.attributes.wordsApi.updateUserWord({
+          userID,
+          wordID,
+          userWord: updatedUserWord,
+          token,
+        });
+      } else {
+        const newUserWord: IUserWord = {
+          difficulty: 'weak',
+          optional: {
+            isLearned,
+            currentProgress: 0,
+            rightAnswerCount: 0,
+            wrongAnswerCount: 0,
+          },
+        };
+        await this.attributes.wordsApi.createUserWord({
+          userID,
+          wordID,
+          userWord: newUserWord,
+          token,
+        });
+        newUserWord.wordId = wordID;
+        this.userWords.push(newUserWord);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -151,7 +197,6 @@ export default class ControllerTextBook {
     const existsUserWord = this.userWords.find((item) => item.wordId === wordID);
     const difficulty = isHardWord ? 'weak' : 'hard';
     try {
-      await this.checkAuthorization();
       if (existsUserWord) {
         existsUserWord.difficulty = difficulty;
         const updatedUserWord: IUserWord = {

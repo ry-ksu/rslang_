@@ -181,6 +181,20 @@ export default class ViewTextBook {
     const btnLearned = document.createElement('button');
     btnLearned.classList.add('btn-learned');
     btnLearned.innerText = 'Изучено';
+
+    if(userWord?.optional.isLearned) {
+      btnLearned.classList.add('pressed');
+    }
+
+    btnLearned.addEventListener('click', () => {
+      const isLearnedWord = btnLearned.classList.contains('pressed');
+      this.controllerTextBook
+        .setLearnedWord({ isLearnedWord, wordID })
+        .then(() => btnLearned.classList.toggle('pressed'))
+        .catch(() => null);
+    })
+
+
     btnsContainer.append(btnHard, btnLearned);
 
     const footerWrapper = document.createElement('div');
