@@ -99,8 +99,7 @@ class App {
       .then(() => {
         this.attributes.isUserAuth = true;
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         this.attributes.isUserAuth = false;
       })
       .finally(() => {

@@ -5,7 +5,7 @@
 
 .audioGame__words {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   text-align: center;
   p {
     background: $color-primary-light;
@@ -16,7 +16,20 @@
   }
 }
 
-.audioGame__skipBtn {
+.audioGame__words_disable {
+  display: flex;
+  gap: 10px;
+  text-align: center;
+  p {
+    background: $color-5;
+  }
+  .audioGame__mistake {
+    background: $color-4;
+  }
+}
+
+.audioGame__skipBtn,
+.audioGame__skipBtn_continue {
   width: 150px;
   margin-left: calc(50% - 75px);
   margin-top: 50px;
@@ -27,12 +40,22 @@
 }
 
 .audioGame__img {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   margin: auto;
-  margin-bottom: 100px;
+  margin-bottom: 0px;
   border-radius: 100px;
   &:hover {
     cursor: pointer;
   }
+}
+
+.audioGame__answer {
+  color: $color-primary;
+  height: 50px;
+  width: 500px;
+  margin: auto;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }

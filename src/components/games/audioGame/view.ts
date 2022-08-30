@@ -1,16 +1,6 @@
-import { IGamePack, IAttributes, IUserStatistics } from '../../types/types';
+import { IGamePack, IAttributes } from '../../types/types';
 
 export default class ViewAudioGame {
-  audioGame: IUserStatistics['optional']['todayStatistics']['audioGame'];
-
-  constructor() {
-    this.audioGame = {
-      newWords: 0,
-      successWords: 0,
-      failWords: 0,
-      rightSeries: 0,
-    };
-  }
 
   draw(gamePack: IGamePack, attributes: IAttributes) {
     const main = attributes.component;
@@ -23,6 +13,7 @@ export default class ViewAudioGame {
     skipBtn.className = 'primary-button audioGame__skipBtn'
     main.innerHTML = `<div class="audioGame">
                         <div class="audioGame__img"></div>
+                        <h3 class="audioGame__answer"></h3>
                       </div>`;
     skipBtn.innerHTML = 'Я не знаю';
 
@@ -38,7 +29,7 @@ export default class ViewAudioGame {
       elem.innerHTML = `${i + 1} ${currentGamePack.ruMixWords[i]}`;
       allWords.append(elem);
     }
-    (main.querySelector('.audioGame__img') as HTMLElement).after(allWords);
+    (main.querySelector('.audioGame__answer') as HTMLElement).after(allWords);
     (main.querySelector('.audioGame') as HTMLElement).append(skipBtn);
     document.body.append(main);
   }

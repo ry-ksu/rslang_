@@ -1,4 +1,4 @@
-import { IAttributes, IGamePack, IWord } from '../../types/types';
+import { IAttributes, IGamePack, IWord, IAudioGameCurrentResult } from '../../types/types';
 import ViewAudioGame from './view';
 
 export default class ControllerAudioGame {
@@ -8,10 +8,19 @@ export default class ControllerAudioGame {
 
   viewAudioGame: ViewAudioGame;
 
+  currentAudioGameStatistic: IAudioGameCurrentResult;
+
   constructor(attributes: IAttributes) {
     this.attributes = attributes;
     this.gamePack = [];
     this.viewAudioGame = new ViewAudioGame();
+    this.currentAudioGameStatistic = {
+      newWords: [],
+      successWords: [],
+      failWords: [],
+      currentSeries: 0,
+      rightSeries: 0,
+    };
   }
 
   createGamePackForAudioGame(randomDate: IWord[]) {
@@ -52,6 +61,55 @@ export default class ControllerAudioGame {
 
   attachEvents() {
     (document.querySelector('.audioGame__img') as HTMLElement).addEventListener('click', this.playSound.bind(this));
+    if (document.querySelector('.audioGame__skipBtn')) {
+      (document.querySelector('.audioGame__skipBtn') as HTMLElement).addEventListener('click', this.skipWord.bind(this));
+    }
+    if (document.querySelector('.audioGame__skipBtn_continue')) {
+      (document.querySelector('.audioGame__skipBtn_continue') as HTMLElement).addEventListener('click', this.drawAudioGamePg.bind(this));
+    }
+  }
+
+  detachEvents() {
+    (document.querySelector('.audioGame__img') as HTMLElement).removeEventListener('click', this.playSound.bind(this));
+
+    if (document.querySelector('.audioGame__skipBtn')) {
+      (document.querySelector('.audioGame__skipBtn') as HTMLElement).removeEventListener('click', this.skipWord.bind(this));
+    }
+    if (document.querySelector('.audioGame__skipBtn_continue')) {
+      (document.querySelector('.audioGame__skipBtn_continue') as HTMLElement).removeEventListener('click', this.drawAudioGamePg.bind(this));
+    }
+  }
+
+  skipWord() {
+    if (document.querySelector('.audioGame__skipBtn')) {
+      this.detachEvents();
+
+      this.currentAudioGameStatistic.currentSeries = 0;
+      this.currentAudioGameStatistic.failWords.push({
+        enWord: this.gamePack[0].enRightWord,
+        ruWord: this.gamePack[0].ruRightWord,
+        sound: this.gamePack[0].enSound,
+      });
+
+      (document.querySelector('.audioGame__answer') as HTMLElement).innerHTML = `${this.gamePack[0].enRightWord}`;
+      (document.querySelector('.audioGame__skipBtn') as HTMLElement).innerHTML = '→';
+
+      const img = (document.querySelector('.audioGame__img') as HTMLElement).style;
+      img.background = `url(${this.attributes.baseURL}/${this.gamePack[0].img}) center / contain no-repeat`;
+
+      (document.querySelector('.audioGame__words') as HTMLElement).className = 'audioGame__words_disable';
+      (document.querySelector('.right ') as HTMLElement).classList.add('audioGame__mistake');
+      (document.querySelector('.audioGame__skipBtn ') as HTMLElement).className = 'primary-button audioGame__skipBtn_continue';
+
+      this.attachEvents();
+    }
+  }
+
+  drawAudioGamePg() {
+    this.gamePack.shift();
+    this.viewAudioGame.draw(this.gamePack[0], this.attributes);
+    this.playSound();
+    this.attachEvents();
   }
 
   playSound() {
