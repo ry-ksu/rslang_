@@ -110,4 +110,4 @@ export type IAttributes = {
   isUserAuth: boolean;
 };
 
-export type voidFn = () => void
+export type voidFn = () => void;

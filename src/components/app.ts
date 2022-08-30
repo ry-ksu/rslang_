@@ -19,7 +19,7 @@ import '../sass/style.scss';
 class App {
   attributes: IAttributes;
 
-  controllerAuthorization: ControllerAuthorization
+  controllerAuthorization: ControllerAuthorization;
 
   controllers: {
     about: ControllerAbout;
@@ -41,7 +41,10 @@ class App {
       isUserAuth: false,
     };
 
-    this.controllerAuthorization = new ControllerAuthorization(this.attributes, this.render.bind(this));
+    this.controllerAuthorization = new ControllerAuthorization(
+      this.attributes,
+      this.render.bind(this)
+    );
 
     this.controllers = {
       about: new ControllerAbout(this.attributes),
@@ -56,7 +59,10 @@ class App {
       // sprintGame: new ControllerSprintGame(),
       // statistics: new ControllerStatistics(),
       // teamPage: new ControllerTeamPage(),
-      textBook: new ControllerTextBook({ attributes: this.attributes, authorization: this.controllerAuthorization}),
+      textBook: new ControllerTextBook({
+        attributes: this.attributes,
+        authorization: this.controllerAuthorization,
+      }),
     };
   }
 

@@ -10,6 +10,8 @@ export default class ViewTextBook {
 
   private baseURL: string;
 
+  private cardPerPage: number;
+
   private colors: {
     [key: string]: string;
   };
@@ -35,6 +37,7 @@ export default class ViewTextBook {
       5: '#f2f7d5',
       6: '#e2a6a6',
     };
+    this.cardPerPage = 20;
   }
 
   draw({
@@ -121,6 +124,17 @@ export default class ViewTextBook {
       ViewTextBook.textBookContainer.append(pageContainer);
     }
 
+    const countMarkedCard = words.filter((word) =>
+      userWords.some(
+        (userWord) =>
+          userWord.wordId === word.id &&
+          (userWord.difficulty === 'hard' || userWord.optional.isLearned === true)
+      )
+    ).length;
+    if (countMarkedCard === this.cardPerPage)
+      ViewTextBook.textBookContainer.classList.add('marked');
+    else ViewTextBook.textBookContainer.classList.remove('marked');
+
     words.forEach((word) => {
       const userWord = userWords.find((item) => item.wordId === word.id);
       pageContainer?.appendChild(this.getCard({ word, userWord }));
@@ -182,7 +196,7 @@ export default class ViewTextBook {
     btnLearned.classList.add('btn-learned');
     btnLearned.innerText = 'Изучено';
 
-    if(userWord?.optional.isLearned) {
+    if (userWord?.optional.isLearned) {
       btnLearned.classList.add('pressed');
     }
 
@@ -192,8 +206,7 @@ export default class ViewTextBook {
         .setLearnedWord({ isLearnedWord, wordID })
         .then(() => btnLearned.classList.toggle('pressed'))
         .catch(() => null);
-    })
-
+    });
 
     btnsContainer.append(btnHard, btnLearned);
 

@@ -8,7 +8,7 @@ const renderInputEl = (title: string): HTMLElement => {
   label.htmlFor = title;
   const inputEl = createHtmlEl('input', 'popup__input') as HTMLInputElement;
   inputEl.id = title;
-  inputEl.setAttribute('autocomplete', 'on')
+  inputEl.setAttribute('autocomplete', 'on');
 
   if (title === 'password') {
     inputEl.type = title;

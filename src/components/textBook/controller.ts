@@ -15,7 +15,13 @@ export default class ControllerTextBook {
 
   private authorization: ControllerAuthorization;
 
-  constructor({attributes, authorization}: {attributes: IAttributes, authorization: ControllerAuthorization}) {
+  constructor({
+    attributes,
+    authorization,
+  }: {
+    attributes: IAttributes;
+    authorization: ControllerAuthorization;
+  }) {
     this.attributes = attributes;
     this.maxWordPage = 29;
     this.userWords = [];
@@ -147,7 +153,13 @@ export default class ControllerTextBook {
     }
   }
 
-  async setLearnedWord({ isLearnedWord, wordID}: { isLearnedWord: boolean; wordID: string }): Promise<void> {
+  async setLearnedWord({
+    isLearnedWord,
+    wordID,
+  }: {
+    isLearnedWord: boolean;
+    wordID: string;
+  }): Promise<void> {
     if (!this.isUserRegistered()) return;
     const { token, userId: userID } = this.attributes.localStorage.getLS();
     const existsUserWord = this.userWords.find((item) => item.wordId === wordID);
@@ -190,8 +202,13 @@ export default class ControllerTextBook {
     }
   }
 
-  async setHardWord({ isHardWord, wordID }:
-    { isHardWord: boolean; wordID: string }): Promise<void> {
+  async setHardWord({
+    isHardWord,
+    wordID,
+  }: {
+    isHardWord: boolean;
+    wordID: string;
+  }): Promise<void> {
     if (!this.isUserRegistered()) return;
     const { token, userId: userID } = this.attributes.localStorage.getLS();
     const existsUserWord = this.userWords.find((item) => item.wordId === wordID);
