@@ -8,7 +8,7 @@ const renderInputEl = (title: string): HTMLElement => {
   label.htmlFor = title;
   const inputEl = createHtmlEl('input', 'popup__input') as HTMLInputElement;
   inputEl.id = title;
-  inputEl.setAttribute('autocomplete', 'on')
+  inputEl.setAttribute('autocomplete', 'on');
 
   if (title === 'password') {
     inputEl.type = title;
@@ -25,7 +25,7 @@ const renderButtons = (option: string): HTMLElement => {
   const wrapper = createHtmlEl('div', 'popupButtons');
   const signIn = createHtmlEl('button', 'popup__btn', 'Войти');
   signIn.setAttribute('data', 'signIn');
-  const signUp = createHtmlEl('button', 'popup__btn', 'Зарегестрироваться');
+  const signUp = createHtmlEl('button', 'popup__btn', 'Зарегистрироваться');
   signUp.setAttribute('data', 'signUp');
 
   if (option === 'signIn') {
