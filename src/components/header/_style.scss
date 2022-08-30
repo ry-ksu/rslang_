@@ -1,11 +1,18 @@
 header {
+  background: $color-primary-light;
+}
+
+.header-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 1280px;
+  margin: auto;
+  padding: 15px 20px;
 }
 
 .logo {
-  color: $color-primary;
+  color: $color-light-xl;
   cursor: pointer;
 }
 
@@ -17,7 +24,7 @@ header {
 ul {
   display: flex;
   gap: 15px;
-  color: $color-dark-xl;
+  color: $color-6;
   li {
     cursor: pointer;
   }

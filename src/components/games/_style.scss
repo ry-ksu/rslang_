@@ -1,0 +1,93 @@
+.main_games {
+  height: calc(100vh - 65px);
+  background: $color-1;
+  padding-top: calc(50vh - 65px - 150px - 40px);
+}
+
+.games__lvl-item {
+  width: 70px;
+  height: 60px;
+  margin: 10px;
+  border: none;
+  border-radius: 10px;
+}
+
+.games {
+  background-color: $color-primary-light;
+  width: 800px;
+  height: 300px;
+  margin: auto;
+  text-align: center;
+  padding: 40px 20px;
+  border-radius: 30px;
+  .games__header {
+    color: $color-6;
+    margin-bottom: 20px;
+  }
+  .games__description {
+    color: $color-dark-xl;
+  }
+  .games__lvls {
+    margin-top: 10px;
+  }
+  .games__lvl-item {
+    color: $color-primary;
+  }
+  .games_check-lvl {
+    margin-top: 5px;
+  }
+}
+
+.games:last-child [data-lvl='1'] {
+  background: $color-1;
+}
+
+[data-lvl='2'] {
+  background: $color-2;
+}
+
+[data-lvl='3'] {
+  background: $color-3;
+}
+
+[data-lvl='4'] {
+  background: $color-4;
+}
+
+[data-lvl='5'] {
+  background: $color-5;
+}
+
+[data-lvl='6'] {
+  background: $color-6;
+}
+
+.main_sprint {
+  background: $color-2;
+  .sprint {
+    background: $color-4;
+  }
+  [data-lvl='1'] {
+    background: $color-6;
+  }
+
+  [data-lvl='2'] {
+    background: $color-5;
+  }
+
+  [data-lvl='3'] {
+    background: $color-light-s;
+  }
+
+  [data-lvl='4'] {
+    background: $color-3;
+  }
+
+  [data-lvl='5'] {
+    background: $color-2;
+  }
+
+  [data-lvl='6'] {
+    background: $color-1;
+  }
+}

@@ -5,14 +5,17 @@ export default class ViewHeader {
     }
 
     const header = document.createElement('header');
+    const headerWrapper = document.createElement('div');
     const logo = document.createElement('div');
     const nav = this.drawNav();
     const userArea = this.drawUserArea(auth);
 
     logo.className = 'logo';
+    headerWrapper.className = 'header-wrapper';
     logo.innerHTML = '<h1>VICTORY</h1>';
 
-    header.append(logo, nav, userArea);
+    headerWrapper.append(logo, nav, userArea);
+    header.append(headerWrapper);
     document.body.prepend(header);
   }
 

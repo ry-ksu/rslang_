@@ -25,7 +25,7 @@ const renderButtons = (option: string): HTMLElement => {
   const wrapper = createHtmlEl('div', 'popupButtons');
   const signIn = createHtmlEl('button', 'popup__btn', 'Войти');
   signIn.setAttribute('data', 'signIn');
-  const signUp = createHtmlEl('button', 'popup__btn', 'Зарегестрироваться');
+  const signUp = createHtmlEl('button', 'popup__btn', 'Зарегистрироваться');
   signUp.setAttribute('data', 'signUp');
 
   if (option === 'signIn') {
