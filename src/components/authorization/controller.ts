@@ -39,7 +39,8 @@ export default class ControllerAuthorization {
     if ('token' in LS && LS.token.length > 0) {
       const { userId: userID, token, refreshToken } = LS;
       try {
-        await this.api.getUser({ userID, token });
+        const user = await this.api.getUser({ userID, token });
+        console.log(user);
       } catch (err) {
         console.log('tryREfresh');
         await this.tryRefresh(userID, refreshToken);

@@ -10,6 +10,9 @@
   margin: 10px;
   border: none;
   border-radius: 10px;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .games {

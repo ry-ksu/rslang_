@@ -1,0 +1,102 @@
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  @include flexible;
+}
+
+.sprintGame {
+  background: linear-gradient(0deg, rgb(184 151 237) 0%, rgb(148, 187, 233) 100%);;
+  border-radius: 10px;
+  width: 900px;
+  @include flexible;
+  flex-direction: column;
+}
+
+.sprint__card {
+  margin-top: 35px;
+  max-width: 300px;
+  border-radius: 10px;
+  background-color: transparent;
+  @include flexible;
+  flex-direction: column;
+}
+
+.word {
+  color: black;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+[data-word='en-word'] {
+  margin-bottom: 1rem;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.words {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.buttons {
+  margin: 2rem 0;
+
+
+  .btn-danger {
+    margin-right: 4rem;
+  }
+
+  .primary-button {
+    background-color: #b7eeb7;;
+  }
+}
+
+.sprint__btn {
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  font-size: 20px;
+  color: black;
+}
+
+
+.sprintGame {
+  position: relative;
+  &::after {
+    content: "";
+    width: 90%;
+    height: 2px;
+    background-color: black;
+    position: absolute;
+    bottom: 80px;
+    right: 42px;
+  }
+}
+
+.combo {
+  @include flexible;
+  margin-bottom: 2rem;
+}
+
+.combo__item {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  background-color: white;
+
+  &:not(:last-child) {
+    margin-right: 2rem;
+  }
+}
+
+.score {
+  position: absolute;
+  top: 35px;
+  right: 20px;
+}
+
+.score__title, .score__count {
+  font-size: 22px;
+  font-weight: 500;
+  font-style: italic;
+}

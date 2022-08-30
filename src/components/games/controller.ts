@@ -1,12 +1,14 @@
 import { IWord, IAttributes } from '../types/types';
 import ViewGames from './view';
 import ControllerAudioGame from './audioGame/controller';
+import SprintController from './sprintGame/controller';
 
 export default class ControllerGames {
   viewGames: ViewGames;
 
   controllers: {
     controllerAudioGame: ControllerAudioGame;
+    controllerSprintGame: SprintController;
   };
 
   attributes: IAttributes;
@@ -16,6 +18,7 @@ export default class ControllerGames {
     this.viewGames = new ViewGames();
     this.controllers = {
       controllerAudioGame: new ControllerAudioGame(this.attributes),
+      controllerSprintGame: new SprintController(this.attributes),
     };
   }
 
@@ -84,7 +87,7 @@ export default class ControllerGames {
     if (LSPage === 'audioGame') {
       this.controllers.controllerAudioGame.createGamePackForAudioGame(randomDate);
     } else if (LSPage === 'sprint') {
-      //! нужен алгоритм для спринта
+      this.controllers.controllerSprintGame.luanchGame()
     }
   }
 }
