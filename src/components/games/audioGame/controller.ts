@@ -15,6 +15,8 @@ export default class ControllerAudioGame {
   }
 
   createGamePackForAudioGame(randomDate: IWord[]) {
+    this.gamePack = [];
+    
     for (let i = 0; i < randomDate.length; i += 1) {
       const enSound = randomDate[i].audio;
       const enRightWord = randomDate[i].word;
@@ -44,6 +46,23 @@ export default class ControllerAudioGame {
       });
     }
     this.viewAudioGame.draw(this.gamePack[0], this.attributes);
-    this.gamePack.shift();
+    this.attachEvents();
+    this.playSound();
+  }
+
+  attachEvents() {
+    (document.querySelector('.audioGame__img') as HTMLElement).addEventListener('click', this.playSound.bind(this));
+  }
+
+  playSound() {
+    const audio = document.createElement('audio');
+    audio.innerHTML = `<source src='${this.attributes.baseURL}/${this.gamePack[0].enSound}'>`;
+    audio.setAttribute('autoplay', '');
+
+    if (document.querySelector('audio')) {
+      (document.querySelector('audio') as HTMLMediaElement).remove();
+    }
+
+    document.body.append(audio);
   }
 }

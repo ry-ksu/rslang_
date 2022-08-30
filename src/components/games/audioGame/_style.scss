@@ -1,0 +1,38 @@
+.audioGame {
+  max-width: 800px;
+  margin: auto;
+}
+
+.audioGame__words {
+  display: flex;
+  gap: 20px;
+  text-align: center;
+  p {
+    background: $color-primary-light;
+  }
+  p:hover {
+    background: $color-2;
+    color: $color-primary;
+  }
+}
+
+.audioGame__skipBtn {
+  width: 150px;
+  margin-left: calc(50% - 75px);
+  margin-top: 50px;
+  &:hover {
+    background: $color-hard;
+    color: $color-light-xl;
+  }
+}
+
+.audioGame__img {
+  width: 100px;
+  height: 100px;
+  margin: auto;
+  margin-bottom: 100px;
+  border-radius: 100px;
+  &:hover {
+    cursor: pointer;
+  }
+}

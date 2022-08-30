@@ -36,7 +36,7 @@ export default class ControllerGames {
   }
 
   attachEvents() {
-    // навешиваем событие на нажатие на уровень
+    // навешиваем событие при нажатии на уровень
     if (document.querySelector('.games__lvls')) {
       (document.querySelector('.games__lvls') as HTMLElement).addEventListener(
         'click',
@@ -68,7 +68,7 @@ export default class ControllerGames {
       .getWords({
         wordGroup: lvl,
         // Страница рандомная
-        wordPage: Math.ceil(Math.random() * 30),
+        wordPage: Math.floor(Math.random() * 30),
       })
       // создаем набор объектов для игры из полученных слов
       .then((result: IWord[]) => this.createGamePack(result))
