@@ -17,11 +17,11 @@
 }
 
 @mixin button(
-  $background-color: $color-primary,
-  $color: $color-light-xl,
+  $background-color: $color-light-xl,
+  $color: $color-primary,
   $border: none,
   $padding: 5px 10px,
-  $border-radius: 15%,
+  $border-radius: 20px,
   $cursor: pointer,
   $width: 150px
 ) {

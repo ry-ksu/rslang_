@@ -14,8 +14,8 @@ export default class ControllerHeader {
   controllerAuthorization: ControllerAuthorization;
 
   constructor(
-    render: () => void, 
-    attributes: IAttributes, 
+    render: () => void,
+    attributes: IAttributes,
     changePage: (page: string) => void,
     controllerAuthorization: ControllerAuthorization
   ) {
@@ -34,7 +34,7 @@ export default class ControllerHeader {
       this.controllerAuthorization.checkAuth().catch((err) => console.log(err));
     } else if ((e.target as HTMLElement).hasAttribute('data-logout')) {
       this.attributes.localStorage.deleteUserData();
-      this.attributes.localStorage.changeLS('page', 'mainPage')
+      this.attributes.localStorage.changeLS('page', 'mainPage');
       this.render();
     }
   }
