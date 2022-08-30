@@ -16,7 +16,7 @@ export default class ControllerAudioGame {
 
   createGamePackForAudioGame(randomDate: IWord[]) {
     this.gamePack = [];
-    
+
     for (let i = 0; i < randomDate.length; i += 1) {
       const enSound = randomDate[i].audio;
       const enRightWord = randomDate[i].word;

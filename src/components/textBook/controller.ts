@@ -1,36 +1,36 @@
 import ViewTextBook from './view';
 import { IAttributes, IUserWord, IWord } from '../types/types';
 import ControllerAuthorization from '../authorization/controller';
+import App from '../app';
 
 export default class ControllerTextBook {
   private viewTextBook: ViewTextBook;
 
-  private maxWordPage: number;
+  private maxWordPage = 29;
 
   private attributes: IAttributes;
 
-  private userWords: IUserWord[];
+  private userWords: IUserWord[] = [];
 
-  hardGroupIndex = 6;
+  private wordsPage: IWord[] = [];
+
+  readonly hardGroupIndex = 6;
+
+  readonly countCardsPerPage = 20;
 
   private authorization: ControllerAuthorization;
 
-  constructor({
-    attributes,
-    authorization,
-  }: {
-    attributes: IAttributes;
-    authorization: ControllerAuthorization;
-  }) {
-    this.attributes = attributes;
-    this.maxWordPage = 29;
-    this.userWords = [];
+  private app: App;
+
+  constructor(app: App) {
+    this.app = app;
+    this.attributes = app.attributes;
     this.viewTextBook = new ViewTextBook({
       controller: this,
-      component: attributes.component,
-      baseURL: attributes.baseURL,
+      component: this.attributes.component,
+      baseURL: this.attributes.baseURL,
     });
-    this.authorization = authorization;
+    this.authorization = app.controllerAuthorization;
   }
 
   async getData(): Promise<void> {
@@ -60,7 +60,7 @@ export default class ControllerTextBook {
         wordPage,
       });
     }
-
+    this.wordsPage = words;
     this.viewTextBook.draw({
       words,
       wordGroup,
@@ -77,9 +77,7 @@ export default class ControllerTextBook {
 
     if (wordPage < this.maxWordPage) {
       wordPage += 1;
-      this.attributes.localStorage.changeLS('pageTB', `${wordPage}`);
-      this.attributes.wordsApi
-        .getWords({ wordGroup, wordPage })
+      this.getPage({ wordGroup, wordPage })
         .then((words) => {
           this.viewTextBook.drawPage({ words, userWords: this.userWords });
         })
@@ -95,14 +93,23 @@ export default class ControllerTextBook {
 
     if (wordPage > 0) {
       wordPage -= 1;
-      this.attributes.localStorage.changeLS('pageTB', `${wordPage}`);
-      this.attributes.wordsApi
-        .getWords({ wordGroup, wordPage })
+      this.getPage({ wordGroup, wordPage })
         .then((words) => {
           this.viewTextBook.drawPage({ words, userWords: this.userWords });
         })
         .catch((error) => console.error(error));
       this.viewTextBook.drawPagination({ wordPage, maxWordPage: this.maxWordPage });
+    }
+  }
+
+  async getPage({ wordGroup, wordPage }: { wordGroup: number; wordPage: number }) {
+    try {
+      this.attributes.localStorage.changeLS('pageTB', `${wordPage}`);
+      const words = await this.attributes.wordsApi.getWords({ wordGroup, wordPage });
+      this.wordsPage = words;
+      return words;
+    } catch (error) {
+      throw new Error('Words fetching error');
     }
   }
 
@@ -117,6 +124,7 @@ export default class ControllerTextBook {
       }
       this.attributes.localStorage.changeLS('groupTB', `${wordGroup}`);
       this.attributes.localStorage.changeLS('pageTB', `${wordPage}`);
+      this.wordsPage = words;
       this.viewTextBook.drawPage({ words, userWords: this.userWords });
       this.viewTextBook.drawPagination({ wordPage, maxWordPage: this.maxWordPage });
     } catch (error) {
@@ -248,5 +256,47 @@ export default class ControllerTextBook {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  async getWordsForGame() {
+    const getUnmarkedWords = (userWords: IUserWord[], words: IWord[]): IWord[] =>
+      words.filter((word) =>
+        userWords.every(
+          (userWord) =>
+            word.id !== userWord.wordId ||
+            (word.id === userWord.wordId &&
+              userWord.difficulty !== 'hard' &&
+              userWord.optional.isLearned !== true)
+        )
+      );
+
+    const unMarkedWords = getUnmarkedWords(this.userWords, this.wordsPage);
+    const { groupTB, pageTB } = this.attributes.localStorage.getLS();
+    const wordGroup = parseInt(groupTB, 10);
+    const wordPage = parseInt(pageTB, 10);
+    if (unMarkedWords.length < this.countCardsPerPage && wordPage > 0) {
+      try {
+        const pagePromise: Promise<IWord[]>[] = [];
+        for (let i = wordPage - 1; i >= 0; i -= 1) {
+          pagePromise.push(this.getPage({ wordGroup, wordPage: i }));
+        }
+        const otherWords = (await Promise.all(pagePromise)).flat();
+        const unmarkedOtherWords = getUnmarkedWords(this.userWords, otherWords);
+        const countDifference = this.countCardsPerPage - unMarkedWords.length;
+        unMarkedWords.push(...unmarkedOtherWords.slice(0, countDifference));
+        return unMarkedWords;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    return unMarkedWords;
+  }
+
+  runGame(page: string) {
+    this.attributes.localStorage.changeLS('page', page);
+    this.attributes.component.innerHTML = '';
+    this.getWordsForGame()
+      .then((words) => this.app.controllers.games.getData(words))
+      .catch((error) => console.error(error));
   }
 }

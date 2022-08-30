@@ -59,17 +59,13 @@ class App {
       // sprintGame: new ControllerSprintGame(),
       // statistics: new ControllerStatistics(),
       // teamPage: new ControllerTeamPage(),
-      textBook: new ControllerTextBook({
-        attributes: this.attributes,
-        authorization: this.controllerAuthorization,
-      }),
+      textBook: new ControllerTextBook(this),
     };
   }
 
   changeLSPageAndRenderThisPage(page: string) {
     // тут следует добавить остальные параметры нужные для отрисовки
     this.attributes.localStorage.changeLS('page', page);
-
     this.render();
   }
 

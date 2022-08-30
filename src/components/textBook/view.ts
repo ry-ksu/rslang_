@@ -10,7 +10,7 @@ export default class ViewTextBook {
 
   private baseURL: string;
 
-  private cardPerPage: number;
+  private cardsPage: HTMLDivElement[] = [];
 
   private colors: {
     [key: string]: string;
@@ -37,7 +37,6 @@ export default class ViewTextBook {
       5: '#f2f7d5',
       6: '#e2a6a6',
     };
-    this.cardPerPage = 20;
   }
 
   draw({
@@ -67,15 +66,7 @@ export default class ViewTextBook {
     headerContainer.classList.add('tb-header');
 
     const tbGroupBtns = this.getHeaderBtns({ wordGroup });
-    const btnGames = document.createElement('div');
-    btnGames.classList.add('tb-games-btns');
-    const btnSprintGame = document.createElement('button');
-    btnSprintGame.classList.add('tb-sprintgame-btn');
-    btnSprintGame.innerText = `🏃Спринт`;
-    const btnAudioGame = document.createElement('button');
-    btnAudioGame.classList.add('tb-audiogame-btn');
-    btnAudioGame.innerText = `🎧Аудиовызов`;
-    btnGames.append(btnSprintGame, btnAudioGame);
+    const btnGames = this.getGameBtns();
     headerContainer.append(tbGroupBtns, btnGames);
 
     ViewTextBook.textBookContainer.append(headerContainer);
@@ -114,7 +105,30 @@ export default class ViewTextBook {
     return tbGroupBtns;
   }
 
+  private getGameBtns(): HTMLDivElement {
+    const btnGames = document.createElement('div');
+    btnGames.classList.add('tb-games-btns');
+    const btnSprintGame = document.createElement('button');
+    btnSprintGame.classList.add('tb-sprintgame-btn');
+    btnSprintGame.innerText = `🏃Спринт`;
+    btnSprintGame.dataset.page = 'sprint';
+    btnSprintGame.addEventListener('click', () => {
+      if (btnSprintGame.dataset.page) this.controllerTextBook.runGame(btnSprintGame.dataset.page);
+    });
+
+    const btnAudioGame = document.createElement('button');
+    btnAudioGame.classList.add('tb-audiogame-btn');
+    btnAudioGame.innerText = `🎧Аудиовызов`;
+    btnAudioGame.dataset.page = 'audioGame';
+    btnAudioGame.addEventListener('click', () => {
+      if (btnAudioGame.dataset.page) this.controllerTextBook.runGame(btnAudioGame.dataset.page);
+    });
+    btnGames.append(btnSprintGame, btnAudioGame);
+    return btnGames;
+  }
+
   drawPage({ words, userWords }: { words: IWord[]; userWords: IUserWord[] }) {
+    this.cardsPage.length = 0;
     let pageContainer = ViewTextBook.textBookContainer?.querySelector('.tb-page');
     if (pageContainer) {
       pageContainer.innerHTML = '';
@@ -123,28 +137,18 @@ export default class ViewTextBook {
       pageContainer.classList.add('tb-page');
       ViewTextBook.textBookContainer.append(pageContainer);
     }
-
-    const countMarkedCard = words.filter((word) =>
-      userWords.some(
-        (userWord) =>
-          userWord.wordId === word.id &&
-          (userWord.difficulty === 'hard' || userWord.optional.isLearned === true)
-      )
-    ).length;
-    if (countMarkedCard === this.cardPerPage)
-      ViewTextBook.textBookContainer.classList.add('marked');
-    else ViewTextBook.textBookContainer.classList.remove('marked');
-
     words.forEach((word) => {
       const userWord = userWords.find((item) => item.wordId === word.id);
       pageContainer?.appendChild(this.getCard({ word, userWord }));
     });
+    this.checkIsAllCardMarked();
   }
 
   private getCard({ word, userWord }: { word: IWord; userWord?: IUserWord }): HTMLDivElement {
     const cardWord = document.createElement('div');
     cardWord.dataset.tbwordid = word.id;
     cardWord.classList.add('tb-card-word');
+    this.cardsPage.push(cardWord);
 
     cardWord.innerHTML = `
       <div class="main-wrapper">
@@ -165,15 +169,23 @@ export default class ViewTextBook {
       </div>`;
 
     if (this.controllerTextBook.isUserRegistered()) {
-      cardWord.append(this.getCardUserArea({ wordID: word.id, userWord }));
+      cardWord.append(this.getCardUserArea({ wordID: word.id, userWord, cardWord }));
     }
-
     return cardWord;
   }
 
-  getCardUserArea({ wordID, userWord }: { wordID: string; userWord?: IUserWord }) {
+  getCardUserArea({
+    wordID,
+    userWord,
+    cardWord,
+  }: {
+    wordID: string;
+    userWord?: IUserWord;
+    cardWord: HTMLDivElement;
+  }) {
     const userWrapper = document.createElement('div');
     userWrapper.classList.add('user-wrapper');
+    const card = cardWord;
 
     const btnsContainer = document.createElement('div');
     btnsContainer.classList.add('btns-container');
@@ -183,12 +195,17 @@ export default class ViewTextBook {
 
     if (userWord?.difficulty === 'hard') {
       btnHard.classList.add('pressed');
+      card.dataset.ishardword = 'true';
     }
     btnHard.addEventListener('click', () => {
       const isHardWord = btnHard.classList.contains('pressed');
       this.controllerTextBook
         .setHardWord({ isHardWord, wordID })
-        .then(() => btnHard.classList.toggle('pressed'))
+        .then(() => {
+          btnHard.classList.toggle('pressed');
+          card.dataset.ishardword = isHardWord ? 'false' : 'true';
+          this.checkIsAllCardMarked();
+        })
         .catch(() => null);
     });
 
@@ -198,13 +215,18 @@ export default class ViewTextBook {
 
     if (userWord?.optional.isLearned) {
       btnLearned.classList.add('pressed');
+      card.dataset.islearnedword = 'true';
     }
 
     btnLearned.addEventListener('click', () => {
       const isLearnedWord = btnLearned.classList.contains('pressed');
       this.controllerTextBook
         .setLearnedWord({ isLearnedWord, wordID })
-        .then(() => btnLearned.classList.toggle('pressed'))
+        .then(() => {
+          btnLearned.classList.toggle('pressed');
+          card.dataset.islearnedword = isLearnedWord ? 'false' : 'true';
+          this.checkIsAllCardMarked();
+        })
         .catch(() => null);
     });
 
@@ -237,6 +259,24 @@ export default class ViewTextBook {
     userWrapper.append(btnsContainer, footerWrapper);
 
     return userWrapper;
+  }
+
+  checkIsAllCardMarked() {
+    const countMarkedCards = this.cardsPage.filter(
+      (card) => card.dataset.ishardword === 'true' || card.dataset.islearnedword === 'true'
+    ).length;
+    const btnSprintGame = document.querySelector('button.tb-sprintgame-btn') as HTMLButtonElement;
+    const btnAudioGame = document.querySelector('button.tb-audiogame-btn') as HTMLButtonElement;
+
+    if (countMarkedCards === this.controllerTextBook.countCardsPerPage) {
+      ViewTextBook.textBookContainer.classList.add('marked');
+      btnSprintGame.disabled = true;
+      btnAudioGame.disabled = true;
+    } else {
+      ViewTextBook.textBookContainer.classList.remove('marked');
+      btnSprintGame.disabled = false;
+      btnAudioGame.disabled = false;
+    }
   }
 
   drawPagination({ wordPage, maxWordPage }: { wordPage: number; maxWordPage: number }) {
