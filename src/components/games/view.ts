@@ -26,7 +26,7 @@ export default class ViewGames {
     const lvlCount = 6;
     for (let i = 1; i <= lvlCount; i += 1) {
       const elem = document.createElement('button');
-      elem.setAttribute('data-lvl', String(i));
+      elem.setAttribute('data-lvl', String(i - 1));
       elem.className = `games__lvl-item`;
       elem.innerHTML = String(i);
       audioGameLvl.append(elem);

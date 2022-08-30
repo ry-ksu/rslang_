@@ -68,7 +68,7 @@ export default class ControllerGames {
       .getWords({
         wordGroup: lvl,
         // Страница рандомная
-        wordPage: Math.ceil(Math.random() * 30),
+        wordPage: Math.floor(Math.random() * 30),
       })
       // создаем набор объектов для игры из полученных слов
       .then((result: IWord[]) => this.createGamePack(result))
