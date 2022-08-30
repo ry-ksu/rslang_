@@ -5,3 +5,7 @@
 .additional-button {
   @include button($background-color: $color-additional);
 }
+
+.btn-danger {
+  @include button($background-color: red);
+}

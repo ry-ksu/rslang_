@@ -34,6 +34,12 @@
   width: $width;
 }
 
+@mixin flexible {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @mixin media-desktop {
   @media (min-width: calc($tablet-width + 1px)) {
     @content;
