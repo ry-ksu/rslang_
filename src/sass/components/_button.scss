@@ -3,7 +3,7 @@
 }
 
 .additional-button {
-  @include button($background-color: $color-additional);
+  @include button($background-color: $color-additional, $color: $color-light-xl);
 }
 
 .btn-danger {

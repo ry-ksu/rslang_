@@ -17,7 +17,7 @@ export default class ControllerAuthorization {
     this.localStoarge = attrs.localStorage;
     this.render = callback;
   }
-  
+
   public getData(): void {
     this.renderAuth();
     this.authorization(this.render);
@@ -41,7 +41,7 @@ export default class ControllerAuthorization {
       try {
         await this.api.getUser({ userID, token });
       } catch (err) {
-        console.log('tryREfresh')
+        console.log('tryREfresh');
         await this.tryRefresh(userID, refreshToken);
       }
     } else {

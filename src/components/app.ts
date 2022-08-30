@@ -4,7 +4,7 @@ import LocalStorage from '../services/store';
 import { IAttributes } from './types/types';
 
 import ControllerAbout from './about/controller';
-import ControllerAudioGame from './audioGame/controller';
+import ControllerGames from './games/controller';
 import ControllerAuthorization from './authorization/controller';
 import ControllerHeader from './header/controller';
 import ControllerMainPage from './mainPage/controller';
@@ -19,11 +19,11 @@ import '../sass/style.scss';
 class App {
   attributes: IAttributes;
 
-  controllerAuthorization: ControllerAuthorization
+  controllerAuthorization: ControllerAuthorization;
 
   controllers: {
     about: ControllerAbout;
-    audioGame: ControllerAudioGame;
+    games: ControllerGames;
     header: ControllerHeader;
     mainPage: ControllerMainPage;
     // sprintGame: ControllerSprintGame;
@@ -41,11 +41,14 @@ class App {
       isUserAuth: false,
     };
 
-    this.controllerAuthorization = new ControllerAuthorization(this.attributes, this.render.bind(this));
+    this.controllerAuthorization = new ControllerAuthorization(
+      this.attributes,
+      this.render.bind(this)
+    );
 
     this.controllers = {
       about: new ControllerAbout(this.attributes),
-      audioGame: new ControllerAudioGame(this.attributes),
+      games: new ControllerGames(this.attributes),
       header: new ControllerHeader(
         this.render.bind(this),
         this.attributes,
@@ -72,6 +75,7 @@ class App {
       document.body.append(this.attributes.component);
     } else {
       this.attributes.component.innerHTML = '';
+      this.attributes.component.className = '';
     }
 
     const LS = this.attributes.localStorage.getLS();
@@ -83,7 +87,10 @@ class App {
         this.controllers.about.getData();
       },
       audioGame: (): void => {
-        this.controllers.audioGame.getData();
+        this.controllers.games.getData();
+      },
+      sprint: (): void => {
+        this.controllers.games.getData();
       },
     };
 

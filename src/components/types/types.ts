@@ -95,10 +95,11 @@ export interface IUserStatistics {
 }
 
 export type IGamePack = {
-  rightWord: string;
-  sound: string;
-  wrongWords: string[];
-  mixWords: string[];
+  img: string;
+  enRightWord: string;
+  enSound: string;
+  ruRightWord: string;
+  ruMixWords: string[];
 };
 
 export type IAttributes = {
@@ -109,4 +110,4 @@ export type IAttributes = {
   isUserAuth: boolean;
 };
 
-export type voidFn = () => void
+export type voidFn = () => void;
