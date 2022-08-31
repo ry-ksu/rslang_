@@ -83,7 +83,7 @@ export default class ControllerAudioGame {
   attachEvents() {
     (document.querySelector('.audioGame__img') as HTMLElement).addEventListener('click', this.playSound.bind(this));
     if (document.querySelector('.audioGame__skipBtn')) {
-      (document.querySelector('.audioGame__skipBtn') as HTMLElement).addEventListener('click', this.skipWord.bind(this));
+      (document.querySelector('.audioGame__skipBtn') as HTMLElement).addEventListener('click', this.skipWordHandler.bind(this));
     }
     if (document.querySelector('.audioGame__skipBtn_continue')) {
       (document.querySelector('.audioGame__skipBtn_continue') as HTMLElement).addEventListener('click', this.drawAudioGamePg.bind(this));
@@ -91,13 +91,14 @@ export default class ControllerAudioGame {
     if (document.querySelector('.audioGame__words')) {
       (document.querySelector('.audioGame__words') as HTMLElement).addEventListener('click', this.changeWord.bind(this));
     }
+    document.addEventListener('keyup', this.handleKeyUp);
   }
 
   detachEvents() {
     (document.querySelector('.audioGame__img') as HTMLElement).removeEventListener('click', this.playSound.bind(this));
 
     if (document.querySelector('.audioGame__skipBtn')) {
-      (document.querySelector('.audioGame__skipBtn') as HTMLElement).removeEventListener('click', this.skipWord.bind(this));
+      (document.querySelector('.audioGame__skipBtn') as HTMLElement).removeEventListener('click', this.skipWordHandler.bind(this));
     }
     if (document.querySelector('.audioGame__skipBtn_continue')) {
       (document.querySelector('.audioGame__skipBtn_continue') as HTMLElement).removeEventListener('click', this.drawAudioGamePg.bind(this));
@@ -105,17 +106,51 @@ export default class ControllerAudioGame {
     if (document.querySelector('.audioGame__words')) {
       (document.querySelector('.audioGame__words') as HTMLElement).removeEventListener('click', this.changeWord.bind(this));
     }
+    document.removeEventListener('keyup', this.handleKeyUp);
+  }
+
+  handleKeyUp = (e: KeyboardEvent) => {
+    if (document.querySelector('.audioGame__answer')) {
+      if ((document.querySelector('.audioGame__answer') as HTMLElement).innerHTML === '') {
+        if (e.key === '1' ||
+            e.key === '2' ||
+            e.key === '3' ||
+            e.key === '4' ||
+            e.key === '5') {
+          console.log(e.key);
+          this.defineWord(document.querySelector(`.word_${Number(e.key) - 1}`) as HTMLElement);
+        }
+      }
+
+      if (e.code === 'Space') {
+        if (document.querySelector('.audioGame__answer') && document.querySelector('.audioGame__skipBtn_continue')) {
+          this.drawAudioGamePg();
+        } else {
+          this.skipWordHandler();
+        }
+      }
+    }
+  }
+
+  skipWordHandler() {
+    this.skipWord();
+    (document.querySelector('.right ') as HTMLElement).style.background = '#e2a6a6';
   }
 
   changeWord(e: Event){
     if ((document.querySelector('.audioGame__answer') as HTMLElement).innerHTML === '') {
-      if ((e.target as HTMLElement).classList.contains('right')) {
-        this.addRightAnswerInStatistic();
-        this.addRightAnswerInWindow();
-      } else if ((e.target as HTMLElement).classList.contains('wrong')) {
-        this.skipWord();
-        (e.target as HTMLElement).style.background = '#e2a6a6';
-      }
+      this.defineWord(e.target as HTMLElement);
+    }
+  }
+
+  defineWord(elem: HTMLElement) {
+    if (elem.classList.contains('right')) {
+      this.addRightAnswerInStatistic();
+      this.addRightAnswerInWindow();
+    } else if (elem.classList.contains('wrong')) {
+      this.skipWord();
+      const el = elem;
+      el.style.background = '#e2a6a6';
     }
   }
 
@@ -155,7 +190,7 @@ export default class ControllerAudioGame {
 
   addRightAnswerInWindow() {
     (document.querySelector('.audioGame__answer') as HTMLElement).innerHTML = `${this.gameObjects.gamePack[0].enRightWord}`;
-    (document.querySelector('.audioGame__skipBtn') as HTMLElement).innerHTML = '→';
+    (document.querySelector('.audioGame__skipBtn') as HTMLElement).innerHTML = '(Пробел) →';
 
     const img = (document.querySelector('.audioGame__img') as HTMLElement).style;
     img.background = `url(${this.attributes.baseURL}/${this.gameObjects.gamePack[0].img}) center / contain no-repeat`;
@@ -175,6 +210,7 @@ export default class ControllerAudioGame {
       this.playSound();
       this.attachEvents();
     } else {
+      this.detachEvents();
       this.view.viewGames.drawResults(this.gameObjects.currentAudioGameStatistic, this.attributes.component);
       this.controllerGames.attachStatisticEvents(this.gameObjects.currentAudioGameStatistic);
     }

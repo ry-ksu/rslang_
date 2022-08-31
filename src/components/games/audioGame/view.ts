@@ -14,7 +14,7 @@ export default class ViewAudioGame {
                         <div class="audioGame__img"></div>
                         <h3 class="audioGame__answer"></h3>
                       </div>`;
-    skipBtn.innerHTML = 'Я не знаю';
+    skipBtn.innerHTML = '(Пробел) Я не знаю';
 
     for (let i = 0; i < currentGamePack.ruMixWords.length; i += 1) {
       const elem = document.createElement('p');
@@ -25,7 +25,7 @@ export default class ViewAudioGame {
         elem.className = `additional-button wrong word_${i}`;
       }
 
-      elem.innerHTML = `${i + 1} ${currentGamePack.ruMixWords[i]}`;
+      elem.innerHTML = `(${i + 1}) ${currentGamePack.ruMixWords[i]}`;
       allWords.append(elem);
     }
     (main.querySelector('.audioGame__answer') as HTMLElement).after(allWords);
