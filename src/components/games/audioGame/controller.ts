@@ -1,34 +1,51 @@
-import { IAttributes, IGamePack, IWord, IAudioGameCurrentResult } from '../../types/types';
+import { IAttributes, IGamePack, IWord, IGameCurrentResult } from '../../types/types';
 import ViewAudioGame from './view';
-import App from '../../app';
+import ControllerGames from '../controller';
+import ViewGames from '../view';
 
 export default class ControllerAudioGame {
-  app: App;
+  controllerGames: ControllerGames;
 
   attributes: IAttributes;
 
-  gamePack: IGamePack[];
+  gameObjects: {
+    gamePack: IGamePack[];
+    currentAudioGameStatistic: IGameCurrentResult;
+  }
+  
+  view: {
+    viewGames: ViewGames;
+    viewAudioGame: ViewAudioGame;
+  }
 
-  viewAudioGame: ViewAudioGame;
-
-  currentAudioGameStatistic: IAudioGameCurrentResult;
-
-  constructor(app: App, attributes: IAttributes) {
-    this.app = app;
+  constructor(controllerGames: ControllerGames, viewGames: ViewGames, attributes: IAttributes) {
+    this.controllerGames = controllerGames;
     this.attributes = attributes;
-    this.gamePack = [];
-    this.viewAudioGame = new ViewAudioGame();
-    this.currentAudioGameStatistic = {
+    this.gameObjects = {
+      gamePack: [],
+      currentAudioGameStatistic: {
+        newWords: [],
+        successWords: [],
+        failWords: [],
+        currentSeries: 0,
+        rightSeries: 0,
+      },
+    }
+    this.view = {
+      viewGames,
+      viewAudioGame: new ViewAudioGame(),
+    }
+  }
+
+  createGamePackForAudioGame(randomDate: IWord[]) {
+    this.gameObjects.currentAudioGameStatistic = {
       newWords: [],
       successWords: [],
       failWords: [],
       currentSeries: 0,
       rightSeries: 0,
     };
-  }
-
-  createGamePackForAudioGame(randomDate: IWord[]) {
-    this.gamePack = [];
+    this.gameObjects.gamePack = [];
     
     for (let i = 0; i < randomDate.length; i += 1) {
       const enSound = randomDate[i].audio;
@@ -50,7 +67,7 @@ export default class ControllerAudioGame {
       ruMixWords.push(ruRightWord);
       ruMixWords.sort(() => Math.random() - 0.5);
 
-      this.gamePack.push({
+      this.gameObjects.gamePack.push({
         img,
         enRightWord,
         enSound,
@@ -58,7 +75,7 @@ export default class ControllerAudioGame {
         ruMixWords,
       });
     }
-    this.viewAudioGame.draw(this.gamePack[0], this.attributes);
+    this.view.viewAudioGame.draw(this.gameObjects.gamePack[0], this.attributes);
     this.attachEvents();
     this.playSound();
   }
@@ -76,12 +93,6 @@ export default class ControllerAudioGame {
     }
   }
 
-  attachStatisticEvents() {
-    (document.querySelector('.audioGame__statistic') as HTMLElement).addEventListener('click', this.playSound.bind(this));
-    (document.querySelector('.audioGame__mainPgBtn') as HTMLElement).addEventListener('click', this.goToMainPage.bind(this));
-    (document.querySelector('.audioGame__btn-continue') as HTMLElement).addEventListener('click', this.goToAudioGame.bind(this));
-  }
-
   detachEvents() {
     (document.querySelector('.audioGame__img') as HTMLElement).removeEventListener('click', this.playSound.bind(this));
 
@@ -94,15 +105,6 @@ export default class ControllerAudioGame {
     if (document.querySelector('.audioGame__words')) {
       (document.querySelector('.audioGame__words') as HTMLElement).removeEventListener('click', this.changeWord.bind(this));
     }
-  }
-
-  goToAudioGame() {
-    this.app.render();
-  }
-
-  goToMainPage() {
-    this.attributes.localStorage.changeLS('page', 'mainPage');
-    this.app.render();
   }
 
   changeWord(e: Event){
@@ -127,36 +129,36 @@ export default class ControllerAudioGame {
   addRightAnswerInStatistic() {
     this.detachEvents();
 
-    this.currentAudioGameStatistic.currentSeries += 1;
-    if (this.currentAudioGameStatistic.rightSeries < this.currentAudioGameStatistic.currentSeries) {
-      this.currentAudioGameStatistic.rightSeries = this.currentAudioGameStatistic.currentSeries;
+    this.gameObjects.currentAudioGameStatistic.currentSeries += 1;
+    if (this.gameObjects.currentAudioGameStatistic.rightSeries < this.gameObjects.currentAudioGameStatistic.currentSeries) {
+      this.gameObjects.currentAudioGameStatistic.rightSeries = this.gameObjects.currentAudioGameStatistic.currentSeries;
     }
 
-    this.currentAudioGameStatistic.newWords.push(this.gamePack[0].enRightWord);
-    this.currentAudioGameStatistic.successWords.push({
-      enWord: this.gamePack[0].enRightWord,
-      ruWord: this.gamePack[0].ruRightWord,
-      sound: this.gamePack[0].enSound,
+    this.gameObjects.currentAudioGameStatistic.newWords.push(this.gameObjects.gamePack[0].enRightWord);
+    this.gameObjects.currentAudioGameStatistic.successWords.push({
+      enWord: this.gameObjects.gamePack[0].enRightWord,
+      ruWord: this.gameObjects.gamePack[0].ruRightWord,
+      sound: this.gameObjects.gamePack[0].enSound,
     });
   }
 
   addMistakeInStatistic() {
     this.detachEvents();
 
-    this.currentAudioGameStatistic.currentSeries = 0;
-    this.currentAudioGameStatistic.failWords.push({
-      enWord: this.gamePack[0].enRightWord,
-      ruWord: this.gamePack[0].ruRightWord,
-      sound: this.gamePack[0].enSound,
+    this.gameObjects.currentAudioGameStatistic.currentSeries = 0;
+    this.gameObjects.currentAudioGameStatistic.failWords.push({
+      enWord: this.gameObjects.gamePack[0].enRightWord,
+      ruWord: this.gameObjects.gamePack[0].ruRightWord,
+      sound: this.gameObjects.gamePack[0].enSound,
     });
   }
 
   addRightAnswerInWindow() {
-    (document.querySelector('.audioGame__answer') as HTMLElement).innerHTML = `${this.gamePack[0].enRightWord}`;
+    (document.querySelector('.audioGame__answer') as HTMLElement).innerHTML = `${this.gameObjects.gamePack[0].enRightWord}`;
     (document.querySelector('.audioGame__skipBtn') as HTMLElement).innerHTML = '→';
 
     const img = (document.querySelector('.audioGame__img') as HTMLElement).style;
-    img.background = `url(${this.attributes.baseURL}/${this.gamePack[0].img}) center / contain no-repeat`;
+    img.background = `url(${this.attributes.baseURL}/${this.gameObjects.gamePack[0].img}) center / contain no-repeat`;
 
     (document.querySelector('.audioGame__words') as HTMLElement).className = 'audioGame__words_disable';
     (document.querySelector('.right ') as HTMLElement).classList.add('audioGame__right-answer');
@@ -166,38 +168,22 @@ export default class ControllerAudioGame {
   }
 
   drawAudioGamePg() {
-    this.gamePack.shift();
+    this.gameObjects.gamePack.shift();
 
-    if (this.gamePack.length !== 0) {
-      this.viewAudioGame.draw(this.gamePack[0], this.attributes);
+    if (this.gameObjects.gamePack.length !== 0) {
+      this.view.viewAudioGame.draw(this.gameObjects.gamePack[0], this.attributes);
       this.playSound();
       this.attachEvents();
     } else {
-      this.viewAudioGame.drawResults(this.currentAudioGameStatistic, this.attributes.component);
-      this.attachStatisticEvents();
+      this.view.viewGames.drawResults(this.gameObjects.currentAudioGameStatistic, this.attributes.component);
+      this.controllerGames.attachStatisticEvents(this.gameObjects.currentAudioGameStatistic);
     }
   }
 
-  playSound(e?: Event) {
-    if (e && !((e.target as HTMLElement).classList.contains('word__img'))) {
-      return;
-    }
-
+  playSound() {
     const audio = document.createElement('audio');
 
-    if (e && (e.target as HTMLElement).classList.contains('word__img')) {
-      const index = Number((e.target as HTMLElement).classList[0]);
-      const group = ((((e .target as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement).className);
-      if (group === 'audioGame__wrongWords') {
-        audio.innerHTML = `<source src='${this.attributes.baseURL}/${this.currentAudioGameStatistic.failWords[index].sound}'>`
-      } else {
-        audio.innerHTML = `<source src='${this.attributes.baseURL}/${this.currentAudioGameStatistic.successWords[index].sound}'>`
-      }
-
-    } else {
-      audio.innerHTML = `<source src='${this.attributes.baseURL}/${this.gamePack[0].enSound}'>`;
-    }
-
+    audio.innerHTML = `<source src='${this.attributes.baseURL}/${this.gameObjects.gamePack[0].enSound}'>`;
     audio.setAttribute('autoplay', '');
 
     if (document.querySelector('audio')) {

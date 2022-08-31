@@ -1,4 +1,4 @@
-import { IGamePack, IAttributes, IAudioGameCurrentResult } from '../../types/types';
+import { IGamePack, IAttributes, IGameCurrentResult } from '../../types/types';
 
 export default class ViewAudioGame {
 
@@ -31,55 +31,5 @@ export default class ViewAudioGame {
     (main.querySelector('.audioGame__answer') as HTMLElement).after(allWords);
     (main.querySelector('.audioGame') as HTMLElement).append(skipBtn);
     document.body.append(main);
-  }
-
-  drawResults(statistic: IAudioGameCurrentResult, component: HTMLElement) {
-    const comp = component;
-    comp.innerHTML = '';
-
-    const statisticWrapper = document.createElement('div');
-    const main = document.createElement('div');
-    const rightWords = document.createElement('div');
-    const wrongWords = document.createElement('div');
-    const rightStatistic = document.createElement('div');
-    const wrongStatistic = document.createElement('div');
-    const btnWrapper = document.createElement('div');
-    const mainPageBtn = document.createElement('button');
-    const continueBtn = document.createElement('button');
-
-    statisticWrapper.className = 'audioGame__statistic-wrapper';
-    rightStatistic.className = 'audioGame__right-statistic';
-    wrongStatistic.className = 'audioGame__wrong-statistic';
-    rightWords.className = 'audioGame__rightWords';
-    wrongWords.className = 'audioGame__wrongWords';
-    main.className = 'audioGame__statistic';
-    mainPageBtn.className = 'primary-button audioGame__mainPgBtn';
-    continueBtn.className = 'primary-button audioGame__btn-continue';
-    btnWrapper.className = 'audioGame__btn-wrapper'
-
-    this.addWordsResult(statistic.successWords, rightWords);
-    this.addWordsResult(statistic.failWords, wrongWords);
-    rightStatistic.innerHTML = `<h4>Знаю</h4>
-                                <div class='audioGame__right-statistic-count'>${statistic.successWords.length}</div>`
-    wrongStatistic.innerHTML = `<h4>Ошибок</h4>
-                                <div class='audioGame__wring-statistic-count'>${statistic.failWords.length}</div>`
-    continueBtn.innerHTML = 'Еще раз';
-    mainPageBtn.innerHTML = 'На главную';
-
-    statisticWrapper.append(main, btnWrapper);
-    btnWrapper.append(continueBtn, mainPageBtn);
-    main.append(wrongStatistic, wrongWords, rightStatistic, rightWords);
-    comp.append(statisticWrapper);
-  }
-
-  addWordsResult(array: IAudioGameCurrentResult['successWords'], component: HTMLElement) {
-    for (let i = 0; i < array.length; i += 1) {
-      const word = document.createElement('div');
-      word.className = 'audioGame__word';
-      word.innerHTML = `<div class='${i} word__img'></div>
-                        <p><b class='enWord'>${array[i].enWord}</b> - ${array[i].ruWord}</p>`
-      component.append(word);
-    }
-    return component;
   }
 }

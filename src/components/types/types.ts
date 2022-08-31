@@ -112,7 +112,7 @@ export type IAttributes = {
 
 export type voidFn = () => void;
 
-export type IAudioGameCurrentResult = {
+export type IGameCurrentResult = {
   newWords: string[],
   successWords: {
     enWord: string,
