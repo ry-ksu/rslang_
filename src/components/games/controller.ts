@@ -1,8 +1,11 @@
 import { IWord, IAttributes } from '../types/types';
 import ViewGames from './view';
 import ControllerAudioGame from './audioGame/controller';
+import App from '../app';
 
 export default class ControllerGames {
+  app: App;
+
   viewGames: ViewGames;
 
   controllers: {
@@ -11,11 +14,12 @@ export default class ControllerGames {
 
   attributes: IAttributes;
 
-  constructor(attributes: IAttributes) {
+  constructor(app: App, attributes: IAttributes) {
+    this.app = app;
     this.attributes = attributes;
     this.viewGames = new ViewGames();
     this.controllers = {
-      controllerAudioGame: new ControllerAudioGame(this.attributes),
+      controllerAudioGame: new ControllerAudioGame(this.app, this.attributes),
     };
   }
 
