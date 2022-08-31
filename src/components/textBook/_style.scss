@@ -127,6 +127,10 @@
   -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 
+  &.viewUserArea {
+    height: 610px;
+  }
+
   &:hover {
     outline: 2px solid $color-primary;
   }
@@ -155,8 +159,8 @@
   @mixin afterSound {
     content: '';
     display: inline-block;
-    padding: 0 1rem;
-    width: 2.5rem;
+    padding: 0 0.5rem;
+    width: 2rem;
     height: 1.7rem;
     background: url('../../assets/svg/volume-speaker.svg') center / contain no-repeat;
     cursor: pointer;

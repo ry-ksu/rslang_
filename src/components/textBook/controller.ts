@@ -46,7 +46,6 @@ export default class ControllerTextBook {
     }
 
     const { token, userId: userID } = this.attributes.localStorage.getLS();
-
     if (this.isUserRegistered()) {
       this.userWords = await this.attributes.wordsApi.getUserWords({ userID, token });
     }
@@ -82,7 +81,7 @@ export default class ControllerTextBook {
           this.viewTextBook.drawPage({ words, userWords: this.userWords });
         })
         .catch((error) => console.error(error));
-      this.viewTextBook.drawPagination({ wordPage, maxWordPage: this.maxWordPage });
+      this.viewTextBook.drawPagination({ wordGroup, wordPage, maxWordPage: this.maxWordPage });
     }
   }
 
@@ -98,12 +97,13 @@ export default class ControllerTextBook {
           this.viewTextBook.drawPage({ words, userWords: this.userWords });
         })
         .catch((error) => console.error(error));
-      this.viewTextBook.drawPagination({ wordPage, maxWordPage: this.maxWordPage });
+      this.viewTextBook.drawPagination({ wordGroup, wordPage, maxWordPage: this.maxWordPage });
     }
   }
 
   async getPage({ wordGroup, wordPage }: { wordGroup: number; wordPage: number }) {
     try {
+      await this.checkAuthorization();
       this.attributes.localStorage.changeLS('pageTB', `${wordPage}`);
       const words = await this.attributes.wordsApi.getWords({ wordGroup, wordPage });
       this.wordsPage = words;
@@ -126,25 +126,26 @@ export default class ControllerTextBook {
       this.attributes.localStorage.changeLS('pageTB', `${wordPage}`);
       this.wordsPage = words;
       this.viewTextBook.drawPage({ words, userWords: this.userWords });
-      this.viewTextBook.drawPagination({ wordPage, maxWordPage: this.maxWordPage });
-    } catch (error) {
-      console.error(error);
+      this.viewTextBook.drawPagination({ wordGroup, wordPage, maxWordPage: this.maxWordPage });
+    } catch {
+      throw new Error('Get words group error');
     }
   }
 
   async getHardGroup(): Promise<IWord[]> {
     try {
+      const words: Promise<IWord>[] = [];
       await this.checkAuthorization();
-      const wordsPromises: Promise<IWord>[] = [];
+      if (!this.isUserRegistered()) return Promise.all(words);
       this.userWords.forEach((item) => {
         if (item.wordId !== undefined && item.difficulty === 'hard') {
           const word = this.attributes.wordsApi.getWord({ wordID: item.wordId });
-          wordsPromises.push(word);
+          words.push(word);
         }
       });
-      return await Promise.all(wordsPromises);
-    } catch (error) {
-      throw Error();
+      return await Promise.all(words);
+    } catch {
+      throw new Error('Get hard group error');
     }
   }
 
@@ -157,7 +158,7 @@ export default class ControllerTextBook {
       await this.authorization.checkAuth();
       this.attributes.isUserAuth = true;
     } catch (error) {
-      console.error(error);
+      this.attributes.isUserAuth = false;
     }
   }
 

@@ -58,7 +58,7 @@ export default class ViewTextBook {
 
     this.drawHeader({ wordGroup });
     this.drawPage({ words, userWords });
-    this.drawPagination({ wordPage, maxWordPage });
+    this.drawPagination({ wordGroup, wordPage, maxWordPage });
   }
 
   drawHeader({ wordGroup }: { wordGroup: number }) {
@@ -315,8 +315,17 @@ export default class ViewTextBook {
     }
   }
 
-  drawPagination({ wordPage, maxWordPage }: { wordPage: number; maxWordPage: number }) {
+  drawPagination({
+    wordGroup,
+    wordPage,
+    maxWordPage,
+  }: {
+    wordGroup: number;
+    wordPage: number;
+    maxWordPage: number;
+  }) {
     ViewTextBook?.textBookContainer?.querySelector('.tb-pagination')?.remove();
+    if (this.controllerTextBook.hardGroupIndex === wordGroup) return;
     const paginationContainer = document.createElement('div');
     paginationContainer.classList.add('tb-pagination');
 
