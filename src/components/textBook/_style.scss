@@ -152,25 +152,48 @@
     gap: 10px;
   }
 
-  .word-container {
+  @mixin afterSound {
+    content: '';
+    display: inline-block;
+    padding: 0 1rem;
+    width: 2.5rem;
+    height: 1.7rem;
+    background: url('../../assets/svg/volume-speaker.svg') center / contain no-repeat;
+    cursor: pointer;
+  }
+
+  .word-translate {
     padding: 5px;
     background-color: $color-primary-light;
     border-radius: 1rem;
+    cursor: pointer;
+
+    &:hover:after {
+      @include afterSound;
+    }
+
+    &:hover {
+      color: $color-light-xl;
+      background-color: $color-primary;
+    }
   }
 
-  .sentense-container {
-    height: 150px;
+  .text-meaning,
+  .text-example {
     padding: 5px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
     overflow: auto;
     background-color: $color-primary-light;
     border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
 
-    & > p {
-      font-size: 1.5rem;
-      line-height: 1.8rem;
+    &:hover {
+      color: $color-light-xl;
+      background-color: $color-primary;
+    }
+
+    &:hover::after {
+      @include afterSound;
     }
   }
 
@@ -179,7 +202,7 @@
     width: 100px;
     height: 60px;
     border-radius: 1rem;
-    background: $color-primary-light url('../../assets/img/card-word-sound-btn.svg') center / 80%
+    background: $color-primary-light url('../../assets/svg/card-word-sound-btn.svg') center / 80%
       no-repeat;
     cursor: pointer;
     transition: all 0.3s;
@@ -298,10 +321,10 @@
   }
 
   .tb-prevPage-btn {
-    background: transparent url('../../assets/img/card-word-arrow-left.svg') center / 70% no-repeat;
+    background: transparent url('../../assets/svg/card-word-arrow-left.svg') center / 70% no-repeat;
   }
 
   .tb-nextPage-btn {
-    background: transparent url('../../assets/img/card-word-arrow-right.svg') center / 70% no-repeat;
+    background: transparent url('../../assets/svg/card-word-arrow-right.svg') center / 70% no-repeat;
   }
 }

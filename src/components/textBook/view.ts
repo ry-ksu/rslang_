@@ -150,24 +150,60 @@ export default class ViewTextBook {
     cardWord.classList.add('tb-card-word');
     this.cardsPage.push(cardWord);
 
-    cardWord.innerHTML = `
-      <div class="main-wrapper">
-        <img class="word-picture" src="${this.baseURL}/${word.image}" alt="${word.word}" width="390" height="234">
-        <div class="card-content">
-          <audio src="${this.baseURL}/${word.audio}" preload="auto"></audio>
-          <audio src="${this.baseURL}/${word.audioMeaning}" preload="auto"></audio>
-          <audio src="${this.baseURL}/${word.audioExample}" preload="auto"></audio>
-          <div class="word-container">
-            <span class="word-translate"><b>${word.word} - ${word.transcription} - ${word.wordTranslate}</b></span>
-          </div>
-          <div class="sentense-container">
-            <p class="text-meaning">${word.textMeaning}<br>${word.textMeaningTranslate}</p>
-            <p class="text-example">${word.textExample}<br>${word.textExampleTranslate}</p>
-          </div>
-          <button class="sound-btn" title="audio"></button>
-        </div>
-      </div>`;
+    const mainWrapper = document.createElement('div');
+    mainWrapper.classList.add('main-wrapper');
 
+    const wordPicture = document.createElement('img');
+    wordPicture.classList.add('word-picture');
+    wordPicture.src = `${this.baseURL}/${word.image}`;
+    wordPicture.alt = `${word.word}`;
+    wordPicture.width = 390;
+    wordPicture.height = 234;
+
+    const cardContent = document.createElement('div');
+    cardContent.classList.add('card-content');
+
+    const audioWord = document.createElement('audio');
+    audioWord.classList.add('audio-word');
+    audioWord.src = `${this.baseURL}/${word.audio}`;
+    const audioMeaning = document.createElement('audio');
+    audioMeaning.classList.add('audio-meaning');
+    audioMeaning.src = `${this.baseURL}/${word.audioMeaning}`;
+    const audioExample = document.createElement('audio');
+    audioExample.classList.add('audio-example');
+    audioExample.src = `${this.baseURL}/${word.audioExample}`;
+
+    const wordTranslate = document.createElement('p');
+    wordTranslate.classList.add('word-translate');
+    wordTranslate.innerText = `${word.word} - ${word.transcription} - ${word.wordTranslate}`;
+    wordTranslate.addEventListener('click', () => {
+      audioWord.play().catch((error) => console.error(error));
+    });
+
+    const textMeaning = document.createElement('p');
+    textMeaning.classList.add('text-meaning');
+    textMeaning.innerHTML = `${word.textMeaning}<br>${word.textMeaningTranslate}`;
+    textMeaning.addEventListener('click', () => {
+      audioMeaning.play().catch((error) => console.error(error));
+    });
+
+    const textExample = document.createElement('p');
+    textExample.classList.add('text-example');
+    textExample.innerHTML = `${word.textExample}<br>${word.textExampleTranslate}`;
+    textExample.addEventListener('click', () => {
+      audioExample.play().catch((error) => console.error(error));
+    });
+
+    cardContent.append(
+      audioWord,
+      audioMeaning,
+      audioExample,
+      wordTranslate,
+      textMeaning,
+      textExample
+    );
+    mainWrapper.append(wordPicture, cardContent);
+    cardWord.append(mainWrapper);
     if (this.controllerTextBook.isUserRegistered()) {
       cardWord.append(this.getCardUserArea({ wordID: word.id, userWord, cardWord }));
     }
