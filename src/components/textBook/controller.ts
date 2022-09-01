@@ -85,7 +85,7 @@ export default class ControllerTextBook {
       wordPage += 1;
       this.getPage({ wordGroup, wordPage })
         .then((words) => {
-          this.viewTextBook.drawPage({ words, userWords: this.userWords });
+          this.viewTextBook.drawPage({ wordGroup, words, userWords: this.userWords });
         })
         .catch((error) => console.error(error));
       this.viewTextBook.drawPagination({ wordGroup, wordPage, maxWordPage: this.maxWordPage });
@@ -101,7 +101,7 @@ export default class ControllerTextBook {
       wordPage -= 1;
       this.getPage({ wordGroup, wordPage })
         .then((words) => {
-          this.viewTextBook.drawPage({ words, userWords: this.userWords });
+          this.viewTextBook.drawPage({ wordGroup, words, userWords: this.userWords });
         })
         .catch((error) => console.error(error));
       this.viewTextBook.drawPagination({ wordGroup, wordPage, maxWordPage: this.maxWordPage });
@@ -132,7 +132,7 @@ export default class ControllerTextBook {
       this.attributes.localStorage.changeLS('groupTB', `${wordGroup}`);
       this.attributes.localStorage.changeLS('pageTB', `${wordPage}`);
       this.wordsPage = words;
-      this.viewTextBook.drawPage({ words, userWords: this.userWords });
+      this.viewTextBook.drawPage({ wordGroup, words, userWords: this.userWords });
       this.viewTextBook.drawPagination({ wordGroup, wordPage, maxWordPage: this.maxWordPage });
     } catch {
       throw new Error('Get words group error');

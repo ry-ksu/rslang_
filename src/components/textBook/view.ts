@@ -57,7 +57,7 @@ export default class ViewTextBook {
     this.component.appendChild(ViewTextBook.textBookContainer);
 
     this.drawHeader({ wordGroup });
-    this.drawPage({ words, userWords });
+    this.drawPage({ wordGroup, words, userWords });
     this.drawPagination({ wordGroup, wordPage, maxWordPage });
   }
 
@@ -75,7 +75,6 @@ export default class ViewTextBook {
   private getHeaderBtns({ wordGroup }: { wordGroup: number }): HTMLDivElement {
     const tbGroupBtns = document.createElement('div');
     tbGroupBtns.classList.add('tb-group-btns');
-    // const btnsCount = 7;
     const btnsCount = 6;
     for (let i = 0; i < btnsCount; i += 1) {
       const btn = document.createElement('button');
@@ -97,10 +96,6 @@ export default class ViewTextBook {
         btn.classList.add('pressed');
         ViewTextBook.textBookContainer.style.backgroundColor = this.colors[`${i}`];
       }
-      // if (i === this.controllerTextBook.hardGroupIndex) {
-      //   btn.innerText = 'Сложные';
-      //   btn.classList.add('tb-group-hardbtn');
-      // }
       tbGroupBtns.appendChild(btn);
     }
 
@@ -149,7 +144,15 @@ export default class ViewTextBook {
     return btnGames;
   }
 
-  drawPage({ words, userWords }: { words: IWord[]; userWords: IUserWord[] }) {
+  drawPage({
+    wordGroup,
+    words,
+    userWords,
+  }: {
+    wordGroup: number;
+    words: IWord[];
+    userWords: IUserWord[];
+  }) {
     this.cardsPage.length = 0;
     let pageContainer = ViewTextBook.textBookContainer?.querySelector('.tb-page');
     if (pageContainer) {
@@ -161,12 +164,20 @@ export default class ViewTextBook {
     }
     words.forEach((word) => {
       const userWord = userWords.find((item) => item.wordId === word.id);
-      pageContainer?.appendChild(this.getCard({ word, userWord }));
+      pageContainer?.appendChild(this.getCard({ wordGroup, word, userWord }));
     });
     this.checkIsAllCardMarked();
   }
 
-  private getCard({ word, userWord }: { word: IWord; userWord?: IUserWord }): HTMLDivElement {
+  private getCard({
+    wordGroup,
+    word,
+    userWord,
+  }: {
+    wordGroup: number;
+    word: IWord;
+    userWord?: IUserWord;
+  }): HTMLDivElement {
     const cardWord = document.createElement('div');
     cardWord.dataset.tbwordid = word.id;
     cardWord.classList.add('tb-card-word');
@@ -227,16 +238,18 @@ export default class ViewTextBook {
     mainWrapper.append(wordPicture, cardContent);
     cardWord.append(mainWrapper);
     if (this.controllerTextBook.isUserRegistered()) {
-      cardWord.append(this.getCardUserArea({ wordID: word.id, userWord, cardWord }));
+      cardWord.append(this.getCardUserArea({ wordGroup, wordID: word.id, userWord, cardWord }));
     }
     return cardWord;
   }
 
   getCardUserArea({
+    wordGroup,
     wordID,
     userWord,
     cardWord,
   }: {
+    wordGroup: number;
     wordID: string;
     userWord?: IUserWord;
     cardWord: HTMLDivElement;
@@ -263,6 +276,13 @@ export default class ViewTextBook {
           btnHard.classList.toggle('pressed');
           card.dataset.ishardword = isHardWord ? 'false' : 'true';
           this.checkIsAllCardMarked();
+          if (
+            wordGroup === this.controllerTextBook.hardGroupIndex &&
+            card.dataset.ishardword === 'false'
+          ) {
+            this.cardsPage = this.cardsPage.filter((item) => item !== card);
+            card.remove();
+          }
         })
         .catch(() => null);
     });
@@ -319,24 +339,6 @@ export default class ViewTextBook {
     return userWrapper;
   }
 
-  checkIsAllCardMarked() {
-    const countMarkedCards = this.cardsPage.filter(
-      (card) => card.dataset.ishardword === 'true' || card.dataset.islearnedword === 'true'
-    ).length;
-    const btnSprintGame = document.querySelector('button.tb-sprintgame-btn') as HTMLButtonElement;
-    const btnAudioGame = document.querySelector('button.tb-audiogame-btn') as HTMLButtonElement;
-
-    if (countMarkedCards === this.controllerTextBook.countCardsPerPage) {
-      ViewTextBook.textBookContainer.classList.add('marked');
-      btnSprintGame.disabled = true;
-      btnAudioGame.disabled = true;
-    } else {
-      ViewTextBook.textBookContainer.classList.remove('marked');
-      btnSprintGame.disabled = false;
-      btnAudioGame.disabled = false;
-    }
-  }
-
   drawPagination({
     wordGroup,
     wordPage,
@@ -367,5 +369,23 @@ export default class ViewTextBook {
     if (wordPage === maxWordPage) btnNextPage.disabled = true;
 
     ViewTextBook.textBookContainer.append(paginationContainer);
+  }
+
+  checkIsAllCardMarked() {
+    const countMarkedCards = this.cardsPage.filter(
+      (card) => card.dataset.ishardword === 'true' || card.dataset.islearnedword === 'true'
+    ).length;
+    const btnSprintGame = document.querySelector('button.tb-sprintgame-btn') as HTMLButtonElement;
+    const btnAudioGame = document.querySelector('button.tb-audiogame-btn') as HTMLButtonElement;
+
+    if (countMarkedCards === this.controllerTextBook.countCardsPerPage) {
+      ViewTextBook.textBookContainer.classList.add('marked');
+      btnSprintGame.disabled = true;
+      btnAudioGame.disabled = true;
+    } else {
+      ViewTextBook.textBookContainer.classList.remove('marked');
+      btnSprintGame.disabled = false;
+      btnAudioGame.disabled = false;
+    }
   }
 }
