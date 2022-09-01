@@ -153,7 +153,7 @@ export default class ViewTextBook {
     words: IWord[];
     userWords: IUserWord[];
   }) {
-    this.cardsPage.length = 0;
+    this.cardsPage = [];
     let pageContainer = ViewTextBook.textBookContainer?.querySelector('.tb-page');
     if (pageContainer) {
       pageContainer.innerHTML = '';
@@ -196,45 +196,37 @@ export default class ViewTextBook {
     const cardContent = document.createElement('div');
     cardContent.classList.add('card-content');
 
-    const audioWord = document.createElement('audio');
-    audioWord.classList.add('audio-word');
-    audioWord.src = `${this.baseURL}/${word.audio}`;
-    const audioMeaning = document.createElement('audio');
-    audioMeaning.classList.add('audio-meaning');
-    audioMeaning.src = `${this.baseURL}/${word.audioMeaning}`;
-    const audioExample = document.createElement('audio');
-    audioExample.classList.add('audio-example');
-    audioExample.src = `${this.baseURL}/${word.audioExample}`;
-
     const wordTranslate = document.createElement('p');
     wordTranslate.classList.add('word-translate');
     wordTranslate.innerText = `${word.word} - ${word.transcription} - ${word.wordTranslate}`;
     wordTranslate.addEventListener('click', () => {
-      audioWord.play().catch((error) => console.error(error));
+      const audio = document.createElement('audio');
+      audio.src = `${this.baseURL}/${word.audio}`;
+      audio.play().catch((error) => console.error(error));
+      audio.remove();
     });
 
     const textMeaning = document.createElement('p');
     textMeaning.classList.add('text-meaning');
     textMeaning.innerHTML = `${word.textMeaning}<br>${word.textMeaningTranslate}`;
     textMeaning.addEventListener('click', () => {
-      audioMeaning.play().catch((error) => console.error(error));
+      const audio = document.createElement('audio');
+      audio.src = `${this.baseURL}/${word.audioMeaning}`;
+      audio.play().catch((error) => console.error(error));
+      audio.remove();
     });
 
     const textExample = document.createElement('p');
     textExample.classList.add('text-example');
     textExample.innerHTML = `${word.textExample}<br>${word.textExampleTranslate}`;
     textExample.addEventListener('click', () => {
-      audioExample.play().catch((error) => console.error(error));
+      const audio = document.createElement('audio');
+      audio.src = `${this.baseURL}/${word.audioExample}`;
+      audio.play().catch((error) => console.error(error));
+      audio.remove();
     });
 
-    cardContent.append(
-      audioWord,
-      audioMeaning,
-      audioExample,
-      wordTranslate,
-      textMeaning,
-      textExample
-    );
+    cardContent.append(wordTranslate, textMeaning, textExample);
     mainWrapper.append(wordPicture, cardContent);
     cardWord.append(mainWrapper);
     if (this.controllerTextBook.isUserRegistered()) {
@@ -394,14 +386,26 @@ export default class ViewTextBook {
 
     const btnPrevPage = document.createElement('button');
     btnPrevPage.classList.add('tb-prevPage-btn');
-    btnPrevPage.addEventListener('click', () => this.controllerTextBook.getPrevPage());
+    btnPrevPage.addEventListener(
+      'click',
+      () => {
+        this.controllerTextBook.getPrevPage();
+      },
+      { once: true }
+    );
 
     const pageNumberText = document.createElement('span');
     pageNumberText.innerText = `${wordPage + 1} / ${maxWordPage + 1}`;
 
     const btnNextPage = document.createElement('button');
     btnNextPage.classList.add('tb-nextPage-btn');
-    btnNextPage.addEventListener('click', () => this.controllerTextBook.getNextPage());
+    btnNextPage.addEventListener(
+      'click',
+      () => {
+        this.controllerTextBook.getNextPage();
+      },
+      { once: true }
+    );
     paginationContainer.append(btnPrevPage, pageNumberText, btnNextPage);
 
     if (wordPage === 0) btnPrevPage.disabled = true;
