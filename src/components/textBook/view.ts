@@ -75,7 +75,8 @@ export default class ViewTextBook {
   private getHeaderBtns({ wordGroup }: { wordGroup: number }): HTMLDivElement {
     const tbGroupBtns = document.createElement('div');
     tbGroupBtns.classList.add('tb-group-btns');
-    const btnsCount = 7;
+    // const btnsCount = 7;
+    const btnsCount = 6;
     for (let i = 0; i < btnsCount; i += 1) {
       const btn = document.createElement('button');
       btn.dataset.tbgroup = `${i}`;
@@ -96,13 +97,34 @@ export default class ViewTextBook {
         btn.classList.add('pressed');
         ViewTextBook.textBookContainer.style.backgroundColor = this.colors[`${i}`];
       }
-      if (i === this.controllerTextBook.hardGroupIndex) {
-        btn.innerText = 'Сложные';
-        btn.classList.add('tb-group-hardbtn');
-      }
+      // if (i === this.controllerTextBook.hardGroupIndex) {
+      //   btn.innerText = 'Сложные';
+      //   btn.classList.add('tb-group-hardbtn');
+      // }
       tbGroupBtns.appendChild(btn);
     }
+
+    if (this.controllerTextBook.isUserRegistered()) {
+      tbGroupBtns.appendChild(this.getHeaderHardButton());
+    }
     return tbGroupBtns;
+  }
+
+  private getHeaderHardButton(): HTMLButtonElement {
+    const btn = document.createElement('button');
+    const wordGroup = this.controllerTextBook.hardGroupIndex;
+    btn.dataset.tbgroup = `${wordGroup}`;
+    btn.classList.add('tb-group-btn', 'group-btn', 'tb-group-hardbtn');
+    btn.innerText = 'Сложные';
+    btn.style.backgroundColor = this.colors[`${wordGroup}`];
+    btn.addEventListener('click', () => {
+      btn.classList.add('pressed');
+      ViewTextBook.textBookContainer.style.backgroundColor = this.colors[`${wordGroup}`];
+      this.controllerTextBook
+        .getGroup({ wordGroup, wordPage: 0 })
+        .catch((error) => console.error(error));
+    });
+    return btn;
   }
 
   private getGameBtns(): HTMLDivElement {

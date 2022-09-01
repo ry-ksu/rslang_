@@ -37,21 +37,28 @@ export default class ControllerTextBook {
     const ls = this.attributes.localStorage.getLS();
     let wordGroup = 0;
     let wordPage = 0;
+    // check page & group
     if (ls.groupTB && ls.pageTB) {
       wordGroup = parseInt(ls.groupTB, 10);
       wordPage = parseInt(ls.pageTB, 10);
+      if (wordGroup === this.hardGroupIndex && !this.isUserRegistered()) {
+        wordGroup = 0;
+        wordPage = 0;
+        this.attributes.localStorage.changeLS('groupTB', '0');
+        this.attributes.localStorage.changeLS('pageTB', '0');
+      }
     } else {
       this.attributes.localStorage.changeLS('groupTB', '0');
       this.attributes.localStorage.changeLS('pageTB', '0');
     }
-
-    const { token, userId: userID } = this.attributes.localStorage.getLS();
-    if (this.isUserRegistered()) {
+    // check authorization
+    const { token, userId: userID } = ls;
+    if (token && userID && this.isUserRegistered()) {
       this.userWords = await this.attributes.wordsApi.getUserWords({ userID, token });
     }
-
+    // load data & draw
     let words: IWord[];
-    if (wordGroup === this.hardGroupIndex) {
+    if (wordGroup === this.hardGroupIndex && this.isUserRegistered()) {
       words = await this.getHardGroup();
     } else {
       words = await this.attributes.wordsApi.getWords({
@@ -296,8 +303,12 @@ export default class ControllerTextBook {
   runGame(page: string) {
     this.attributes.localStorage.changeLS('page', page);
     this.attributes.component.innerHTML = '';
-    this.getWordsForGame()
-      .then((words) => this.app.controllers.games.getData(words))
-      .catch((error) => console.error(error));
+    if (this.isUserRegistered()) {
+      this.getWordsForGame()
+        .then((words) => this.app.controllers.games.getData(words))
+        .catch((error) => console.error(error));
+    } else {
+      this.app.controllers.games.getData(this.wordsPage);
+    }
   }
 }
