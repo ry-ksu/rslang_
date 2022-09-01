@@ -222,18 +222,15 @@ export default class ControllerTextBook {
   }
 
   async getWordsForGame() {
-    const getUnmarkedWords = (userWords: IUserWord[], words: IWord[]): IWord[] =>
+    const getUnLearnedWords = (userWords: IUserWord[], words: IWord[]): IWord[] =>
       words.filter((word) =>
         userWords.every(
           (userWord) =>
             word.id !== userWord.wordId ||
-            (word.id === userWord.wordId &&
-              userWord.difficulty !== 'hard' &&
-              userWord.optional.isLearned !== true)
+            (word.id === userWord.wordId && userWord.optional.isLearned !== true)
         )
       );
-
-    const unMarkedWords = getUnmarkedWords(this.userWords, this.wordsPage);
+    const unMarkedWords = getUnLearnedWords(this.userWords, this.wordsPage);
     const { groupTB, pageTB } = this.attributes.localStorage.getLS();
     const wordGroup = parseInt(groupTB, 10);
     const wordPage = parseInt(pageTB, 10);
@@ -244,7 +241,7 @@ export default class ControllerTextBook {
           pagePromise.push(this.getPage({ wordGroup, wordPage: i }));
         }
         const otherWords = (await Promise.all(pagePromise)).flat();
-        const unmarkedOtherWords = getUnmarkedWords(this.userWords, otherWords);
+        const unmarkedOtherWords = getUnLearnedWords(this.userWords, otherWords);
         const countDifference = this.countCardsPerPage - unMarkedWords.length;
         unMarkedWords.push(...unmarkedOtherWords.slice(0, countDifference));
         return unMarkedWords;

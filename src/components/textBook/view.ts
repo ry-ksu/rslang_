@@ -100,23 +100,32 @@ export default class ViewTextBook {
     }
 
     if (this.controllerTextBook.isUserRegistered()) {
-      tbGroupBtns.appendChild(this.getHeaderHardButton());
+      tbGroupBtns.appendChild(this.getHeaderHardButton({ wordGroup }));
     }
     return tbGroupBtns;
   }
 
-  private getHeaderHardButton(): HTMLButtonElement {
+  private getHeaderHardButton({ wordGroup }: { wordGroup: number }): HTMLButtonElement {
     const btn = document.createElement('button');
-    const wordGroup = this.controllerTextBook.hardGroupIndex;
-    btn.dataset.tbgroup = `${wordGroup}`;
+    btn.dataset.tbgroup = `${this.controllerTextBook.hardGroupIndex}`;
     btn.classList.add('tb-group-btn', 'group-btn', 'tb-group-hardbtn');
     btn.innerText = 'Сложные';
-    btn.style.backgroundColor = this.colors[`${wordGroup}`];
-    btn.addEventListener('click', () => {
+    btn.style.backgroundColor = this.colors[`${this.controllerTextBook.hardGroupIndex}`];
+    if (this.controllerTextBook.hardGroupIndex === wordGroup) {
       btn.classList.add('pressed');
-      ViewTextBook.textBookContainer.style.backgroundColor = this.colors[`${wordGroup}`];
+      ViewTextBook.textBookContainer.style.backgroundColor = this.colors[wordGroup];
+    }
+
+    btn.addEventListener('click', () => {
+      this.component
+        .querySelectorAll('.group-btn')
+        .forEach((item) => item.classList.remove('pressed'));
+      btn.classList.add('pressed');
+      ViewTextBook.textBookContainer.style.backgroundColor =
+        this.colors[`${this.controllerTextBook.hardGroupIndex}`];
+      ViewTextBook.textBookContainer.classList.remove('marked');
       this.controllerTextBook
-        .getGroup({ wordGroup, wordPage: 0 })
+        .getGroup({ wordGroup: this.controllerTextBook.hardGroupIndex, wordPage: 0 })
         .catch((error) => console.error(error));
     });
     return btn;
@@ -315,8 +324,9 @@ export default class ViewTextBook {
 
     btnHard.addEventListener('click', () => {
       const isHardBtnPressed = btnHard.classList.contains('pressed');
+      const isLearnedBtnPressed = btnLearned.classList.contains('pressed');
       const isHardWord = !isHardBtnPressed;
-      const isLearnedWord = !isHardWord;
+      const isLearnedWord = isHardWord ? !isHardWord : isLearnedBtnPressed;
 
       this.controllerTextBook
         .setMarkedWord({ isLearnedWord, isHardWord, wordID })
@@ -341,8 +351,9 @@ export default class ViewTextBook {
 
     btnLearned.addEventListener('click', () => {
       const isLearnedBtnPressed = btnLearned.classList.contains('pressed');
+      const isHardBtnPressed = btnHard.classList.contains('pressed');
       const isLearnedWord = !isLearnedBtnPressed;
-      const isHardWord = !isLearnedWord;
+      const isHardWord = isLearnedWord ? !isLearnedWord : isHardBtnPressed;
 
       this.controllerTextBook
         .setMarkedWord({ isLearnedWord, isHardWord, wordID })
@@ -416,7 +427,7 @@ export default class ViewTextBook {
 
   checkIsAllCardMarked() {
     const countMarkedCards = this.cardsPage.filter(
-      (card) => card.dataset.ishardword === 'true' || card.dataset.islearnedword === 'true'
+      (card) => card.dataset.islearnedword === 'true'
     ).length;
     const btnSprintGame = document.querySelector('button.tb-sprintgame-btn') as HTMLButtonElement;
     const btnAudioGame = document.querySelector('button.tb-audiogame-btn') as HTMLButtonElement;
