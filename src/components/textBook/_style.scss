@@ -153,7 +153,13 @@
   .card-content {
     display: flex;
     flex-direction: column;
+    max-height: 255px;
+    overflow: auto;
     gap: 10px;
+
+    &.unregistered {
+      max-height: 300px;
+    }
   }
 
   @mixin afterSound {
@@ -185,7 +191,6 @@
   .text-meaning,
   .text-example {
     padding: 5px;
-    overflow: auto;
     background-color: $color-primary-light;
     border-radius: 1rem;
     cursor: pointer;

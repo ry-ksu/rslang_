@@ -238,7 +238,10 @@ export default class ViewTextBook {
     mainWrapper.append(wordPicture, cardContent);
     cardWord.append(mainWrapper);
     if (this.controllerTextBook.isUserRegistered()) {
+      cardContent.classList.remove('unregistered');
       cardWord.append(this.getCardUserArea({ wordGroup, wordID: word.id, userWord, cardWord }));
+    } else {
+      cardContent.classList.add('unregistered');
     }
     return cardWord;
   }
