@@ -137,7 +137,6 @@ export default class ControllerAudioGame {
     if (document.querySelector('.audioGame__answer')) {
       if ((document.querySelector('.audioGame__answer') as HTMLElement).innerHTML === '') {
         if (e.key === '1' || e.key === '2' || e.key === '3' || e.key === '4' || e.key === '5') {
-          console.log(e.key);
           this.defineWord(document.querySelector(`.word_${Number(e.key) - 1}`) as HTMLElement);
         }
       }
