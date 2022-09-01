@@ -59,14 +59,14 @@ export default class ViewGames {
     main.className = 'game-result__statistic';
     mainPageBtn.className = 'primary-button game-result__main-pg-btn';
     continueBtn.className = 'primary-button game-result__btn-continue';
-    btnWrapper.className = 'game-result__btn-wrapper'
+    btnWrapper.className = 'game-result__btn-wrapper';
 
     this.addWordsResult(statistic.successWords, rightWords);
     this.addWordsResult(statistic.failWords, wrongWords);
     rightStatistic.innerHTML = `<h4>Знаю</h4>
-                                <div class='game-result__right-count'>${statistic.successWords.length}</div>`
+                                <div class='game-result__right-count'>${statistic.successWords.length}</div>`;
     wrongStatistic.innerHTML = `<h4>Ошибок</h4>
-                                <div class='game-result__wring-statistic-count'>${statistic.failWords.length}</div>`
+                                <div class='game-result__wring-statistic-count'>${statistic.failWords.length}</div>`;
     continueBtn.innerHTML = 'Еще раз';
     mainPageBtn.innerHTML = 'На главную';
 
@@ -81,7 +81,7 @@ export default class ViewGames {
       const word = document.createElement('div');
       word.className = 'game-result__word';
       word.innerHTML = `<div class='${i} word__img'></div>
-                        <p><b class='enWord'>${array[i].enWord}</b> - ${array[i].ruWord}</p>`
+                        <p><b class='enWord'>${array[i].enWord}</b> - ${array[i].ruWord}</p>`;
       component.append(word);
     }
     return component;

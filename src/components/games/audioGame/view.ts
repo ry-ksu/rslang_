@@ -1,7 +1,6 @@
-import { IGamePack, IAttributes, IGameCurrentResult } from '../../types/types';
+import { IGamePack, IAttributes } from '../../types/types';
 
 export default class ViewAudioGame {
-
   draw(gamePack: IGamePack, attributes: IAttributes) {
     const main = attributes.component;
     const currentGamePack: IGamePack = gamePack;
@@ -9,7 +8,7 @@ export default class ViewAudioGame {
     const skipBtn = document.createElement('button');
 
     allWords.className = 'audioGame__words';
-    skipBtn.className = 'primary-button audioGame__skipBtn'
+    skipBtn.className = 'primary-button audioGame__skipBtn';
     main.innerHTML = `<div class="audioGame">
                         <div class="audioGame__img"></div>
                         <h3 class="audioGame__answer"></h3>

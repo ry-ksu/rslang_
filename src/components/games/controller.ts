@@ -98,17 +98,19 @@ export default class ControllerGames {
   }
 
   playSound(e: Event) {
-    if (!((e.target as HTMLElement).classList.contains('word__img'))) {
+    if (!(e.target as HTMLElement).classList.contains('word__img')) {
       return;
     }
 
     const audio = document.createElement('audio');
     const index = Number((e.target as HTMLElement).classList[0]);
-    const group = ((((e .target as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement).className);
+    const group = (
+      ((e.target as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement
+    ).className;
     if (group === 'game-result__wrong-words') {
-      audio.innerHTML = `<source src='${this.attributes.baseURL}/${this.finishGameStatistic.failWords[index].sound}'>`
+      audio.innerHTML = `<source src='${this.attributes.baseURL}/${this.finishGameStatistic.failWords[index].sound}'>`;
     } else {
-      audio.innerHTML = `<source src='${this.attributes.baseURL}/${this.finishGameStatistic.successWords[index].sound}'>`
+      audio.innerHTML = `<source src='${this.attributes.baseURL}/${this.finishGameStatistic.successWords[index].sound}'>`;
     }
     audio.setAttribute('autoplay', '');
 
@@ -121,9 +123,18 @@ export default class ControllerGames {
   attachStatisticEvents(finishGameStatistic: IGameCurrentResult) {
     this.finishGameStatistic = finishGameStatistic;
 
-    (document.querySelector('.game-result__statistic') as HTMLElement).addEventListener('click', this.playSound.bind(this));
-    (document.querySelector('.game-result__main-pg-btn') as HTMLElement).addEventListener('click', this.goToMainPage.bind(this));
-    (document.querySelector('.game-result__btn-continue') as HTMLElement).addEventListener('click', this.goToAudioGame.bind(this));
+    (document.querySelector('.game-result__statistic') as HTMLElement).addEventListener(
+      'click',
+      this.playSound.bind(this)
+    );
+    (document.querySelector('.game-result__main-pg-btn') as HTMLElement).addEventListener(
+      'click',
+      this.goToMainPage.bind(this)
+    );
+    (document.querySelector('.game-result__btn-continue') as HTMLElement).addEventListener(
+      'click',
+      this.goToAudioGame.bind(this)
+    );
   }
 
   // создаем набор объектов для игры
