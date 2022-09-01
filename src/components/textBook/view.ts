@@ -256,60 +256,7 @@ export default class ViewTextBook {
   }) {
     const userWrapper = document.createElement('div');
     userWrapper.classList.add('user-wrapper');
-    const card = cardWord;
-
-    const btnsContainer = document.createElement('div');
-    btnsContainer.classList.add('btns-container');
-    const btnHard = document.createElement('button');
-    btnHard.classList.add('btn-hard');
-    btnHard.innerText = 'Сложное';
-
-    if (userWord?.difficulty === 'hard') {
-      btnHard.classList.add('pressed');
-      card.dataset.ishardword = 'true';
-    }
-    btnHard.addEventListener('click', () => {
-      const isHardWord = btnHard.classList.contains('pressed');
-      this.controllerTextBook
-        .setHardWord({ isHardWord, wordID })
-        .then(() => {
-          btnHard.classList.toggle('pressed');
-          card.dataset.ishardword = isHardWord ? 'false' : 'true';
-          this.checkIsAllCardMarked();
-          if (
-            wordGroup === this.controllerTextBook.hardGroupIndex &&
-            card.dataset.ishardword === 'false'
-          ) {
-            this.cardsPage = this.cardsPage.filter((item) => item !== card);
-            card.remove();
-          }
-        })
-        .catch(() => null);
-    });
-
-    const btnLearned = document.createElement('button');
-    btnLearned.classList.add('btn-learned');
-    btnLearned.innerText = 'Изучено';
-
-    if (userWord?.optional.isLearned) {
-      btnLearned.classList.add('pressed');
-      card.dataset.islearnedword = 'true';
-    }
-
-    btnLearned.addEventListener('click', () => {
-      const isLearnedWord = btnLearned.classList.contains('pressed');
-      this.controllerTextBook
-        .setLearnedWord({ isLearnedWord, wordID })
-        .then(() => {
-          btnLearned.classList.toggle('pressed');
-          card.dataset.islearnedword = isLearnedWord ? 'false' : 'true';
-          this.checkIsAllCardMarked();
-        })
-        .catch(() => null);
-    });
-
-    btnsContainer.append(btnHard, btnLearned);
-
+    const btnsContainer = this.getMarkedBtns({ wordGroup, wordID, userWord, cardWord });
     const footerWrapper = document.createElement('div');
     footerWrapper.classList.add('footer-wrapper');
 
@@ -337,6 +284,95 @@ export default class ViewTextBook {
     userWrapper.append(btnsContainer, footerWrapper);
 
     return userWrapper;
+  }
+
+  getMarkedBtns({
+    wordGroup,
+    wordID,
+    userWord,
+    cardWord,
+  }: {
+    wordGroup: number;
+    wordID: string;
+    userWord?: IUserWord;
+    cardWord: HTMLDivElement;
+  }) {
+    const card = cardWord;
+    const btnsContainer = document.createElement('div');
+    btnsContainer.classList.add('btns-container');
+    const btnHard = document.createElement('button');
+    btnHard.classList.add('btn-hard');
+    btnHard.innerText = 'Сложное';
+
+    if (userWord?.difficulty === 'hard') {
+      btnHard.classList.add('pressed');
+      card.dataset.ishardword = 'true';
+    }
+
+    const btnLearned = document.createElement('button');
+    btnLearned.classList.add('btn-learned');
+    btnLearned.innerText = 'Изучено';
+
+    if (userWord?.optional.isLearned) {
+      btnLearned.classList.add('pressed');
+      card.dataset.islearnedword = 'true';
+    }
+
+    btnHard.addEventListener('click', () => {
+      const isHardBtnPressed = btnHard.classList.contains('pressed');
+      const isHardWord = !isHardBtnPressed;
+      const isLearnedWord = !isHardWord;
+
+      this.controllerTextBook
+        .setMarkedWord({ isLearnedWord, isHardWord, wordID })
+        .then(() => {
+          btnHard.classList.toggle('pressed');
+          card.dataset.ishardword = isHardWord ? 'true' : 'false';
+          if (isHardWord) {
+            btnLearned.classList.remove('pressed');
+            card.dataset.islearnedword = 'false';
+          }
+          this.checkIsAllCardMarked();
+          if (
+            wordGroup === this.controllerTextBook.hardGroupIndex &&
+            card.dataset.ishardword === 'false'
+          ) {
+            this.cardsPage = this.cardsPage.filter((item) => item !== card);
+            card.remove();
+          }
+        })
+        .catch(() => null);
+    });
+
+    btnLearned.addEventListener('click', () => {
+      const isLearnedBtnPressed = btnLearned.classList.contains('pressed');
+      const isLearnedWord = !isLearnedBtnPressed;
+      const isHardWord = !isLearnedWord;
+
+      this.controllerTextBook
+        .setMarkedWord({ isLearnedWord, isHardWord, wordID })
+        .then(() => {
+          btnLearned.classList.toggle('pressed');
+          card.dataset.islearnedword = isLearnedWord ? 'true' : 'false';
+          if (isLearnedWord) {
+            btnHard.classList.remove('pressed');
+            card.dataset.ishardword = 'false';
+          }
+          this.checkIsAllCardMarked();
+          if (
+            wordGroup === this.controllerTextBook.hardGroupIndex &&
+            card.dataset.ishardword === 'false'
+          ) {
+            this.cardsPage = this.cardsPage.filter((item) => item !== card);
+            card.remove();
+          }
+          this.checkIsAllCardMarked();
+        })
+        .catch(() => null);
+    });
+
+    btnsContainer.append(btnHard, btnLearned);
+    return btnsContainer;
   }
 
   drawPagination({

@@ -169,25 +169,28 @@ export default class ControllerTextBook {
     }
   }
 
-  async setLearnedWord({
+  async setMarkedWord({
     isLearnedWord,
+    isHardWord,
     wordID,
   }: {
     isLearnedWord: boolean;
+    isHardWord: boolean;
     wordID: string;
-  }): Promise<void> {
+  }) {
     if (!this.isUserRegistered()) return;
     const { token, userId: userID } = this.attributes.localStorage.getLS();
     const existsUserWord = this.userWords.find((item) => item.wordId === wordID);
-    const isLearned = !isLearnedWord;
+    const isLearned = isLearnedWord;
+    const difficulty = isHardWord ? 'hard' : 'weak';
     try {
       if (existsUserWord) {
         existsUserWord.optional.isLearned = isLearned;
+        existsUserWord.difficulty = difficulty;
         const updatedUserWord: IUserWord = {
           difficulty: existsUserWord.difficulty,
           optional: existsUserWord.optional,
         };
-        updatedUserWord.optional.isLearned = isLearned;
         await this.attributes.wordsApi.updateUserWord({
           userID,
           wordID,
@@ -196,57 +199,9 @@ export default class ControllerTextBook {
         });
       } else {
         const newUserWord: IUserWord = {
-          difficulty: 'weak',
+          difficulty,
           optional: {
             isLearned,
-            currentProgress: 0,
-            rightAnswerCount: 0,
-            wrongAnswerCount: 0,
-          },
-        };
-        await this.attributes.wordsApi.createUserWord({
-          userID,
-          wordID,
-          userWord: newUserWord,
-          token,
-        });
-        newUserWord.wordId = wordID;
-        this.userWords.push(newUserWord);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async setHardWord({
-    isHardWord,
-    wordID,
-  }: {
-    isHardWord: boolean;
-    wordID: string;
-  }): Promise<void> {
-    if (!this.isUserRegistered()) return;
-    const { token, userId: userID } = this.attributes.localStorage.getLS();
-    const existsUserWord = this.userWords.find((item) => item.wordId === wordID);
-    const difficulty = isHardWord ? 'weak' : 'hard';
-    try {
-      if (existsUserWord) {
-        existsUserWord.difficulty = difficulty;
-        const updatedUserWord: IUserWord = {
-          difficulty,
-          optional: existsUserWord.optional,
-        };
-        await this.attributes.wordsApi.updateUserWord({
-          userID,
-          wordID,
-          userWord: updatedUserWord,
-          token,
-        });
-      } else {
-        const newUserWord: IUserWord = {
-          difficulty,
-          optional: {
-            isLearned: false,
             currentProgress: 0,
             rightAnswerCount: 0,
             wrongAnswerCount: 0,
