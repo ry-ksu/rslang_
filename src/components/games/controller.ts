@@ -87,7 +87,7 @@ export default class ControllerGames {
     if (LSPage === 'audioGame') {
       this.controllers.controllerAudioGame.createGamePackForAudioGame(randomDate);
     } else if (LSPage === 'sprint') {
-      this.controllers.controllerSprintGame.luanchGame()
+      this.controllers.controllerSprintGame.luanchGame(randomDate);
     }
   }
 }

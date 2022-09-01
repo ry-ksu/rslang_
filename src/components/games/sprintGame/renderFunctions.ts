@@ -1,4 +1,4 @@
-import { createHtmlEl } from "../../authorization/helpers";
+import { createHtmlEl } from '../../authorization/helpers';
 
 export const getProgressBar = (): HTMLElement => {
   const progressBar = createHtmlEl('div', 'progressbar');
@@ -8,7 +8,7 @@ export const getProgressBar = (): HTMLElement => {
   </svg>
   <span class="progressbar__text shadow-html" data-count="60">60</span>`;
   return progressBar;
-}
+};
 
 export const getScore = (): HTMLElement => {
   const score = createHtmlEl('div', 'score');
@@ -16,24 +16,24 @@ export const getScore = (): HTMLElement => {
   <span class="score__title">Total score:</span>
   <span class="score__count" data-score-count="0">0</span>`;
   return score;
-}
+};
 
 export const getCombo = (): HTMLElement => {
   const combo = createHtmlEl('div', 'combo');
   combo.innerHTML = `
-    <div class="combo__item"></div>
-    <div class="combo__item"></div>
-    <div class="combo__item"></div>`;
+    <div class="combo__item" data-series="1"></div>
+    <div class="combo__item" data-series="2"></div>
+    <div class="combo__item" data-series="3"></div>`;
   return combo;
-}
+};
 
 export const getWordsWrapper = (): HTMLElement => {
   const wordsWrapper = createHtmlEl('div', 'words');
   wordsWrapper.innerHTML = `
     <div class="word" data-word="en-word"></div>
-    <div class="word" data-word="ru-word"></div>`
+    <div class="word" data-word="ru-word"></div>`;
   return wordsWrapper;
-}
+};
 
 export const getButtons = (): HTMLElement => {
   const buttonsWrapper = createHtmlEl('div', 'buttons');
@@ -41,7 +41,7 @@ export const getButtons = (): HTMLElement => {
     <button type="button" class="sprint__btn btn-danger">wrong</button>
     <button type="button" class="sprint__btn primary-button">right</button>`;
   return buttonsWrapper;
-}
+};
 
 export const getSprinCard = (): HTMLElement => {
   const sprintCard = createHtmlEl('div', 'sprint__card');
@@ -49,4 +49,4 @@ export const getSprinCard = (): HTMLElement => {
   sprintCard.appendChild(getWordsWrapper());
   sprintCard.appendChild(getButtons());
   return sprintCard;
-}
+};

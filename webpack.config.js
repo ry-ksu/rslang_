@@ -58,10 +58,17 @@ const config = {
         },
       },
       {
-        test: /\.(png|jpg|jpeg|gif)$/i,
+        test: /\.(png|jpg|jpeg|gif|)$/i,
         type: 'asset/resource',
         generator: {
           filename: 'assets/img/[name][ext][query]',
+        },
+      },
+      {
+        test: /\.(mp3)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/audio/[name][ext][query]',
         },
       },
     ],

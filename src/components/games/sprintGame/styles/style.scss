@@ -5,11 +5,12 @@
 }
 
 .sprintGame {
-  background: linear-gradient(0deg, rgb(184 151 237) 0%, rgb(148, 187, 233) 100%);;
+  background: linear-gradient(0deg, rgb(184 151 237) 0%, rgb(148, 187, 233) 100%);
   border-radius: 10px;
   width: 900px;
   @include flexible;
   flex-direction: column;
+  position: relative;
 }
 
 .sprint__card {
@@ -41,13 +42,12 @@
 .buttons {
   margin: 2rem 0;
 
-
   .btn-danger {
     margin-right: 4rem;
   }
 
   .primary-button {
-    background-color: #b7eeb7;;
+    background-color: #b7eeb7;
   }
 }
 
@@ -59,11 +59,10 @@
   color: black;
 }
 
-
 .sprintGame {
   position: relative;
   &::after {
-    content: "";
+    content: '';
     width: 90%;
     height: 2px;
     background-color: black;
@@ -95,8 +94,29 @@
   right: 20px;
 }
 
-.score__title, .score__count {
+.score__title,
+.score__count {
   font-size: 22px;
   font-weight: 500;
   font-style: italic;
+  color: hsl(236deg 93% 42%);
+  filter: drop-shadow(0 0 5px hsl(336deg, 100%, 60%));
+  transition: 0.5s ease-in-out;
+}
+.combo {
+  .active {
+    background-color: greenyellow;
+  }
+}
+
+.additionalScore {
+  position: absolute;
+  top: 37px;
+  right: 310px;
+  font-size: 22px;
+  font-weight: 500;
+  font-style: italic;
+  color: hsl(236deg 93% 42%);
+  filter: drop-shadow(0 0 5px hsl(336deg, 100%, 60%));
+  transition: 0.5s ease-in-out;
 }

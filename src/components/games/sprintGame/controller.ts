@@ -1,5 +1,7 @@
-import { IAttributes } from "../../types/types";
-import { renderSprintGame } from "./view";
+import { IAttributes, IWord } from '../../types/types';
+import { getGamePack } from './generateGamePack';
+import { renderSprintGame } from './view';
+import startGame from './startGame';
 
 export default class SprintController {
   attributes: IAttributes;
@@ -8,7 +10,9 @@ export default class SprintController {
     this.attributes = attributes;
   }
 
-  public luanchGame(): void {
+  public luanchGame(data: IWord[]): void {
+    const gamePack = getGamePack(data);
     renderSprintGame(this.attributes);
+    startGame(gamePack);
   }
 }
