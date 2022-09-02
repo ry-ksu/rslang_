@@ -9,7 +9,8 @@ import ControllerAuthorization from './authorization/controller';
 import ControllerHeader from './header/controller';
 import ControllerMainPage from './mainPage/controller';
 // import ControllerStatistics from './statistics/controller';
-// import ControllerTextBook from './textBook/controller';
+// import ControllerTeamPage from './teamPage/controller';
+import ControllerTextBook from './textBook/controller';
 
 // import { ILocalStorage } from './types/types';
 import '../sass/style.scss';
@@ -25,7 +26,8 @@ export class App {
     header: ControllerHeader;
     mainPage: ControllerMainPage;
     // statistics: ControllerStatistics;
-    // textBook: ControllerTextBook
+    // teamPage: ControllerTeamPage;
+    textBook: ControllerTextBook;
   };
 
   constructor() {
@@ -53,14 +55,14 @@ export class App {
       ),
       mainPage: new ControllerMainPage(this.attributes),
       // statistics: new ControllerStatistics(),
-      // textBook: new ControllerTextBook(),
+      // teamPage: new ControllerTeamPage(),
+      textBook: new ControllerTextBook(this),
     };
   }
 
   changeLSPageAndRenderThisPage(page: string) {
     // тут следует добавить остальные параметры нужные для отрисовки
     this.attributes.localStorage.changeLS('page', page);
-
     this.render();
   }
 
@@ -85,6 +87,9 @@ export class App {
       },
       sprint: (): void => {
         this.controllers.games.getData();
+      },
+      textbook: () => {
+        this.controllers.textBook.getData().catch((error) => console.error(error));
       },
     };
 
