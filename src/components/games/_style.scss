@@ -1,6 +1,8 @@
+// for change level
+
 .main_games {
   height: calc(100vh - 65px);
-  background: $color-1;
+  background-color: $color-1;
   padding-top: calc(50vh - 65px - 150px - 40px);
 }
 
@@ -89,5 +91,79 @@
 
   [data-lvl='6'] {
     background: $color-1;
+  }
+}
+
+// for results
+.game-result__statistic-wrapper {
+  width: 500px;
+  height: 500px;
+  margin: auto;
+  background: $color-light-xl;
+  border-radius: 20px;
+  padding: 20px 40px;
+  .game-result__btn-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 8px;
+    .game-result__main-pg-btn {
+      background: $color-4;
+      color: $color-light-xl;
+      width: 120px;
+    }
+    .game-result__btn-continue {
+      background: $color-right;
+      color: $color-light-xl;
+      width: 100px;
+    }
+  }
+}
+
+.game-result__statistic {
+  height: 430px;
+  overflow: auto;
+  .game-result__right {
+    margin-top: 20px;
+  }
+  .game-result__wrong,
+  .game-result__right {
+    display: flex;
+    gap: 10px;
+    h4 {
+      color: $color-dark-s;
+      margin-bottom: 25px;
+    }
+    div {
+      font-size: 20px;
+      width: 35px;
+      height: 25px;
+      border-radius: 10px;
+      color: $color-light-xl;
+      padding: 1px 7px;
+    }
+    .game-result__wring-statistic-count {
+      background: $color-hard;
+    }
+    .game-result__right-count {
+      background: $color-right;
+    }
+  }
+  .game-result__wrong-words {
+    border-bottom: 1px solid $color-dark-s;
+  }
+  .game-result__word {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 15px;
+    color: $color-dark-xl;
+  }
+  .word__img {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+  }
+  p:first-letter {
+    text-transform: uppercase;
   }
 }

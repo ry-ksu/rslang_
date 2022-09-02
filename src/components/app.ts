@@ -8,15 +8,13 @@ import ControllerGames from './games/controller';
 import ControllerAuthorization from './authorization/controller';
 import ControllerHeader from './header/controller';
 import ControllerMainPage from './mainPage/controller';
-// import ControllerSprintGame from './sprintGame/controller';
 // import ControllerStatistics from './statistics/controller';
-// import ControllerTeamPage from './teamPage/controller';
 // import ControllerTextBook from './textBook/controller';
 
 // import { ILocalStorage } from './types/types';
 import '../sass/style.scss';
 
-class App {
+export class App {
   attributes: IAttributes;
 
   controllerAuthorization: ControllerAuthorization;
@@ -26,9 +24,7 @@ class App {
     games: ControllerGames;
     header: ControllerHeader;
     mainPage: ControllerMainPage;
-    // sprintGame: ControllerSprintGame;
     // statistics: ControllerStatistics;
-    // teamPage: ControllerTeamPage;
     // textBook: ControllerTextBook
   };
 
@@ -48,7 +44,7 @@ class App {
 
     this.controllers = {
       about: new ControllerAbout(this.attributes),
-      games: new ControllerGames(this.attributes),
+      games: new ControllerGames(this, this.attributes),
       header: new ControllerHeader(
         this.render.bind(this),
         this.attributes,
@@ -56,9 +52,7 @@ class App {
         this.controllerAuthorization
       ),
       mainPage: new ControllerMainPage(this.attributes),
-      // sprintGame: new ControllerSprintGame(),
       // statistics: new ControllerStatistics(),
-      // teamPage: new ControllerTeamPage(),
       // textBook: new ControllerTextBook(),
     };
   }
@@ -99,8 +93,7 @@ class App {
       .then(() => {
         this.attributes.isUserAuth = true;
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         this.attributes.isUserAuth = false;
       })
       .finally(() => {

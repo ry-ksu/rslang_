@@ -1,4 +1,5 @@
 import LocalStorage from '../../services/store';
+import { IGameCurrentResult } from '../types/types';
 
 export default class ViewGames {
   drawLevelWindow(component: HTMLElement, LS: LocalStorage) {
@@ -34,5 +35,55 @@ export default class ViewGames {
     main.append(audioGameLvl);
     component.append(main);
     document.body.append(component);
+  }
+
+  drawResults(statistic: IGameCurrentResult, component: HTMLElement) {
+    const comp = component;
+    comp.innerHTML = '';
+
+    const statisticWrapper = document.createElement('div');
+    const main = document.createElement('div');
+    const rightWords = document.createElement('div');
+    const wrongWords = document.createElement('div');
+    const rightStatistic = document.createElement('div');
+    const wrongStatistic = document.createElement('div');
+    const btnWrapper = document.createElement('div');
+    const mainPageBtn = document.createElement('button');
+    const continueBtn = document.createElement('button');
+
+    statisticWrapper.className = 'game-result__statistic-wrapper';
+    rightStatistic.className = 'game-result__right';
+    wrongStatistic.className = 'game-result__wrong';
+    rightWords.className = 'game-result__right-words';
+    wrongWords.className = 'game-result__wrong-words';
+    main.className = 'game-result__statistic';
+    mainPageBtn.className = 'primary-button game-result__main-pg-btn';
+    continueBtn.className = 'primary-button game-result__btn-continue';
+    btnWrapper.className = 'game-result__btn-wrapper';
+
+    this.addWordsResult(statistic.successWords, rightWords);
+    this.addWordsResult(statistic.failWords, wrongWords);
+    rightStatistic.innerHTML = `<h4>Знаю</h4>
+                                <div class='game-result__right-count'>${statistic.successWords.length}</div>`;
+    wrongStatistic.innerHTML = `<h4>Ошибок</h4>
+                                <div class='game-result__wring-statistic-count'>${statistic.failWords.length}</div>`;
+    continueBtn.innerHTML = 'Еще раз';
+    mainPageBtn.innerHTML = 'На главную';
+
+    statisticWrapper.append(main, btnWrapper);
+    btnWrapper.append(continueBtn, mainPageBtn);
+    main.append(wrongStatistic, wrongWords, rightStatistic, rightWords);
+    comp.append(statisticWrapper);
+  }
+
+  addWordsResult(array: IGameCurrentResult['successWords'], component: HTMLElement) {
+    for (let i = 0; i < array.length; i += 1) {
+      const word = document.createElement('div');
+      word.className = 'game-result__word';
+      word.innerHTML = `<div class='${i} word__img'></div>
+                        <p><b class='enWord'>${array[i].enWord}</b> - ${array[i].ruWord}</p>`;
+      component.append(word);
+    }
+    return component;
   }
 }

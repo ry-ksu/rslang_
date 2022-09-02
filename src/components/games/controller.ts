@@ -1,8 +1,13 @@
-import { IWord, IAttributes } from '../types/types';
+import { IWord, IAttributes, IGameCurrentResult } from '../types/types';
 import ViewGames from './view';
 import ControllerAudioGame from './audioGame/controller';
+import App from '../app';
 
 export default class ControllerGames {
+  finishGameStatistic: IGameCurrentResult;
+
+  controllerApp: App;
+
   viewGames: ViewGames;
 
   controllers: {
@@ -11,11 +16,19 @@ export default class ControllerGames {
 
   attributes: IAttributes;
 
-  constructor(attributes: IAttributes) {
+  constructor(controllerApp: App, attributes: IAttributes) {
+    this.finishGameStatistic = {
+      newWords: [],
+      successWords: [],
+      failWords: [],
+      currentSeries: 0,
+      rightSeries: 0,
+    };
+    this.controllerApp = controllerApp;
     this.attributes = attributes;
     this.viewGames = new ViewGames();
     this.controllers = {
-      controllerAudioGame: new ControllerAudioGame(this.attributes),
+      controllerAudioGame: new ControllerAudioGame(this, this.viewGames, this.attributes),
     };
   }
 
@@ -36,7 +49,7 @@ export default class ControllerGames {
   }
 
   attachEvents() {
-    // навешиваем событие на нажатие на уровень
+    // навешиваем событие при нажатии на уровень
     if (document.querySelector('.games__lvls')) {
       (document.querySelector('.games__lvls') as HTMLElement).addEventListener(
         'click',
@@ -73,6 +86,55 @@ export default class ControllerGames {
       // создаем набор объектов для игры из полученных слов
       .then((result: IWord[]) => this.createGamePack(result))
       .catch((err) => console.log(err));
+  }
+
+  goToAudioGame() {
+    this.controllerApp.render();
+  }
+
+  goToMainPage() {
+    this.attributes.localStorage.changeLS('page', 'mainPage');
+    this.controllerApp.render();
+  }
+
+  playSound(e: Event) {
+    if (!(e.target as HTMLElement).classList.contains('word__img')) {
+      return;
+    }
+
+    const audio = document.createElement('audio');
+    const index = Number((e.target as HTMLElement).classList[0]);
+    const group = (
+      ((e.target as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement
+    ).className;
+    if (group === 'game-result__wrong-words') {
+      audio.innerHTML = `<source src='${this.attributes.baseURL}/${this.finishGameStatistic.failWords[index].sound}'>`;
+    } else {
+      audio.innerHTML = `<source src='${this.attributes.baseURL}/${this.finishGameStatistic.successWords[index].sound}'>`;
+    }
+    audio.setAttribute('autoplay', '');
+
+    if (document.querySelector('audio')) {
+      (document.querySelector('audio') as HTMLMediaElement).remove();
+    }
+    document.body.append(audio);
+  }
+
+  attachStatisticEvents(finishGameStatistic: IGameCurrentResult) {
+    this.finishGameStatistic = finishGameStatistic;
+
+    (document.querySelector('.game-result__statistic') as HTMLElement).addEventListener(
+      'click',
+      this.playSound.bind(this)
+    );
+    (document.querySelector('.game-result__main-pg-btn') as HTMLElement).addEventListener(
+      'click',
+      this.goToMainPage.bind(this)
+    );
+    (document.querySelector('.game-result__btn-continue') as HTMLElement).addEventListener(
+      'click',
+      this.goToAudioGame.bind(this)
+    );
   }
 
   // создаем набор объектов для игры
