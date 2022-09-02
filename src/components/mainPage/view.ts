@@ -37,7 +37,7 @@ export default class ViewMainPage {
     for (let i = 0; i < benefitCount; i += 1) {
       const benefitCard = document.createElement('div');
       benefitCard.className = 'benefit-card';
-      benefitCard.innerHTML = `<div class='benefit-card__img ${img[i]}'></div>
+      benefitCard.innerHTML = `<div class='benefit-card__img benefit-card__img_${i}'></div>
                                <h4>${paragraphHeaders[i]}</h4>
                                <p>${paragraph[i]}</p>`;
 
