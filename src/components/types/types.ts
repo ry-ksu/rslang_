@@ -112,3 +112,25 @@ export type IAttributes = {
 };
 
 export type voidFn = () => void;
+
+export type IGameCurrentResult = {
+  newWords: string[];
+  successWords: {
+    enWord: string;
+    ruWord: string;
+    sound: string;
+  }[];
+  failWords: {
+    enWord: string;
+    ruWord: string;
+    sound: string;
+  }[];
+  currentSeries: number;
+  rightSeries: number;
+};
+
+export type IWrongWordsArray = {
+  ruWord: string;
+  enWord: string;
+  soundWord: string;
+};
