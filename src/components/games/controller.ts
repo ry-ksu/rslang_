@@ -30,7 +30,6 @@ export default class ControllerGames {
     this.attributes = attributes;
     this.viewGames = new ViewGames();
     this.controllers = {
-      controllerAudioGame: new ControllerAudioGame(this.attributes),
       controllerSprintGame: new SprintController(this.attributes),
       controllerAudioGame: new ControllerAudioGame(this, this.viewGames, this.attributes),
     };
