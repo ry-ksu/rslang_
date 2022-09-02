@@ -25,7 +25,6 @@ export default class ViewMainPage {
     const benefitCount = 4;
     benefitCards.innerHTML = `<h3>Оцените преимущества приложения</h3>
                               <h4>Зарегистрируйтесь, чтобы использовать все возможности</h4>`;
-    const img = ['1.png', '1.png', '1.png', '1.png'];
     const paragraphHeaders = ['Учебник', 'Сложные слова', 'Статистика', 'Игры'];
     const paragraph = [
       'Коллекция из 3 600 наиболее употребляемых английских слов, разбитых по уровню сложности',
@@ -37,7 +36,7 @@ export default class ViewMainPage {
     for (let i = 0; i < benefitCount; i += 1) {
       const benefitCard = document.createElement('div');
       benefitCard.className = 'benefit-card';
-      benefitCard.innerHTML = `<div class='benefit-card__img ${img[i]}'></div>
+      benefitCard.innerHTML = `<div class='benefit-card__img benefit-card__img_${i}'></div>
                                <h4>${paragraphHeaders[i]}</h4>
                                <p>${paragraph[i]}</p>`;
 

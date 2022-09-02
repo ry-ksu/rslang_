@@ -1,0 +1,39 @@
+footer {
+  background: $color-primary-light;
+}
+
+.footer-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1280px;
+  margin: auto;
+  padding: 5px 20px;
+  .RSSchool-icon {
+    width: 160px;
+    height: 70px;
+  }
+  .footer__creators-github {
+    display: flex;
+    justify-content: space-between;
+    width: 530px;
+    .footer__creators-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      p {
+        color: $color-6;
+      }
+      .footer__creators-gh {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+  h4 {
+    display: inline-block;
+    padding: 0 20px;
+    color: $color-6;
+  }
+}
