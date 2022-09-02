@@ -1,0 +1,70 @@
+.audioGame {
+  max-width: 800px;
+  margin: auto;
+}
+
+.audioGame__words {
+  display: flex;
+  gap: 10px;
+  text-align: center;
+  p {
+    background: $color-primary-light;
+  }
+  p:hover {
+    background: $color-2;
+    color: $color-primary;
+  }
+}
+
+.audioGame__words_disable {
+  display: flex;
+  gap: 10px;
+  text-align: center;
+  p {
+    background: $color-5;
+    cursor: default;
+  }
+  .audioGame__right-answer {
+    background: $color-right;
+  }
+}
+
+.audioGame__skipBtn,
+.audioGame__skipBtn_continue {
+  width: 170px;
+  margin-left: calc(50% - 75px);
+  margin-top: 50px;
+  &:hover {
+    background: $color-hard;
+    color: $color-light-xl;
+  }
+}
+
+.audioGame__skipBtn_continue:hover {
+  background: $color-6;
+  color: $color-primary;
+}
+
+.audioGame__img {
+  width: 150px;
+  height: 150px;
+  margin: auto;
+  margin-bottom: 0px;
+  border-radius: 100px;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.audioGame__answer {
+  color: $color-primary;
+  height: 50px;
+  width: 500px;
+  margin: auto;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  &:first-letter {
+    text-transform: uppercase;
+  }
+}
