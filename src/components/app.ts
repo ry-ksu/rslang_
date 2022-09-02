@@ -76,7 +76,7 @@ export class App {
     }
 
     if (document.querySelector('footer')) {
-      (document.querySelector('footer')as HTMLElement).remove();
+      (document.querySelector('footer') as HTMLElement).remove();
     }
 
     const LS = this.attributes.localStorage.getLS();

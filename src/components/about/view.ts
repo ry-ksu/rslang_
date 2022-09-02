@@ -1,12 +1,5 @@
 export default class ViewAbout {
-  drawTeamCard(
-    i: number,
-    name: string,
-    github: string,
-    role: string,
-    about: string,
-    work: string
-  ) {
+  drawTeamCard(i: number, name: string, github: string, role: string, about: string, work: string) {
     const card = document.createElement('div');
 
     card.className = `team-card team-card_${i}`;
@@ -46,7 +39,7 @@ export default class ViewAbout {
     const teamWorks = [
       'Архитектура проекта, модули : "Главная страница", "О нас", "Аудиовызов", общие экраны для игр.',
       'Базовая конфигурация проекта, модули: "API", "Учебник", "Статистика".',
-      'Модули: "Авторизация", "Спринт", обработка результатов игр и их отправка на сервер.'
+      'Модули: "Авторизация", "Спринт", обработка результатов игр и их отправка на сервер.',
     ];
 
     const teamHeader = document.createElement('h3');
@@ -59,17 +52,10 @@ export default class ViewAbout {
 
     for (let i = 0; i < teamCount; i += 1) {
       mainWrapper.append(
-        this.drawTeamCard(
-          i,
-          teamNames[i],
-          teamGithub[i],
-          teamRoles[i],
-          teamAbout[i],
-          teamWorks[i]
-        )
+        this.drawTeamCard(i, teamNames[i], teamGithub[i], teamRoles[i], teamAbout[i], teamWorks[i])
       );
     }
-    comp.append(mainWrapper)
+    comp.append(mainWrapper);
     document.body.append(comp);
   }
 }

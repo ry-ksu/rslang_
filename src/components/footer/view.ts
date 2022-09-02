@@ -1,7 +1,7 @@
 export default class ViewFooter {
   drawFooter() {
     const footer = document.createElement('footer');
-    
+
     footer.innerHTML = `<div class='footer-wrapper'>
                                 <a href='https://rs.school/'>
                                   <div class='RSSchool-icon'></div>
@@ -21,8 +21,8 @@ export default class ViewFooter {
                                   </a>  
                                 </div>
                                 <h4>2022</h4>
-                              </div>`
-                              
+                              </div>`;
+
     document.body.append(footer);
   }
 }

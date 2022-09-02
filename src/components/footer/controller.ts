@@ -1,4 +1,4 @@
-import ViewFooter from "./view";
+import ViewFooter from './view';
 
 export default class ControllerFooter {
   viewFooter: ViewFooter;
