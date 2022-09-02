@@ -1,0 +1,339 @@
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+}
+
+.textbook-container {
+  padding: 5px;
+  min-height: calc(100vh - 65.19px);
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  font-family: $font-main;
+  gap: 2rem;
+
+  &.marked {
+    background-image: url('../../assets/svg/puzzle.svg');
+    background-size: 50px;
+    background-blend-mode: overlay;
+  }
+}
+
+.tb-header {
+  flex: 0 0 auto;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+
+  @media screen and (max-width: 1024px) {
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .tb-group-btns {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .tb-group-btn,
+  .tb-group-hardbtn {
+    padding: 10px;
+    border-radius: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+    outline: 2px solid $color-light-xl;
+
+    &:hover {
+      background-color: $color-primary-light;
+      -webkit-box-shadow: 0px 0px 3px 3px #ffffff75;
+      -moz-box-shadow: 0px 0px 3px 3px #ffffff75;
+      box-shadow: 0px 0px 3px 3px #ffffff75;
+    }
+
+    &.pressed {
+      transform: translateY(2px);
+      outline: 2px solid $color-primary;
+      background-color: $color-primary;
+    }
+
+    &:active {
+      transform: translateY(1px);
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+    }
+  }
+
+  .tb-games-btns {
+    display: flex;
+    gap: 10px;
+  }
+
+  .tb-sprintgame-btn,
+  .tb-audiogame-btn {
+    @include button(
+      $background-color: $color-primary-light,
+      $color: $color-light-xl,
+      $width: 140px
+    );
+    font-weight: bold;
+    transition: all 0.3s;
+
+    &:hover:not(:disabled) {
+      background-color: $color-primary;
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(98%);
+    }
+
+    &:disabled {
+      cursor: default;
+      background-color: $color-dark-s;
+    }
+  }
+}
+
+.tb-page {
+  flex: 1 0 auto;
+  display: flex;
+  padding: 10px 0;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  align-content: space-around;
+  gap: 2rem;
+}
+
+.tb-card-word {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 430px;
+  height: 610px;
+  padding: 20px 20px 10px;
+  font-size: 16px;
+  border-radius: 1rem;
+  outline: 1px solid $color-primary;
+  background-color: $color-light-xl;
+  -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+
+  &:hover {
+    outline: 2px solid $color-primary;
+  }
+
+  .main-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .word-picture {
+    margin: 0 auto;
+    width: 390px;
+    height: 100%;
+    max-height: 234px;
+    border-radius: 1rem;
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    max-height: 255px;
+    overflow: auto;
+    gap: 10px;
+
+    &.unregistered {
+      max-height: 300px;
+    }
+
+    &.unregistered::after {
+      content: '🔑🔓👍';
+    }
+  }
+
+  @mixin afterSound {
+    content: '';
+    display: inline-block;
+    padding: 0 0.5rem;
+    width: 2rem;
+    height: 1.7rem;
+    background: url('../../assets/svg/volume-speaker.svg') center / contain no-repeat;
+    cursor: pointer;
+  }
+
+  .word-translate {
+    padding: 5px;
+    background-color: $color-primary-light;
+    border-radius: 1rem;
+    cursor: pointer;
+
+    &:hover:after {
+      @include afterSound;
+    }
+
+    &:hover {
+      color: $color-light-xl;
+      background-color: $color-primary;
+    }
+  }
+
+  .text-meaning,
+  .text-example {
+    padding: 5px;
+    background-color: $color-primary-light;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      color: $color-light-xl;
+      background-color: $color-primary;
+    }
+
+    &:hover::after {
+      @include afterSound;
+    }
+  }
+
+  .sound-btn {
+    margin: 0 auto;
+    width: 100px;
+    height: 60px;
+    border-radius: 1rem;
+    background: $color-primary-light url('../../assets/svg/card-word-sound-btn.svg') center / 80%
+      no-repeat;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: $color-primary;
+    }
+
+    &:active {
+      transform: scale(98%);
+    }
+  }
+
+  .btns-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .btn-hard,
+  .btn-learned {
+    @include button($background-color: $color-light-s, $color: $color-dark-xl);
+    transition: all 0.3s;
+    font-weight: bold;
+    -webkit-box-shadow: 2px 2px 2px 0px #223c5033;
+    -moz-box-shadow: 2px 2px 2px 0px #223c5033;
+    box-shadow: 2px 2px 2px 0px #223c5033;
+
+    &:hover {
+      background-color: $color-primary-light;
+    }
+
+    &.pressed {
+      color: #fff;
+      background-color: $color-primary-light;
+      transform: translateY(1px);
+    }
+
+    &:active {
+      transform: translateY(1px);
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+    }
+  }
+
+  .footer-wrapper {
+    padding-top: 10px;
+  }
+
+  .right-container,
+  .wrong-container {
+    font-size: 1.5rem;
+    font-family: $font-additional;
+    display: inline-block;
+    width: 60px;
+    user-select: none;
+  }
+
+  .right-symbol,
+  .wrong-symbol {
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 25px;
+    width: 25px;
+    text-align: center;
+    border-radius: 50%;
+    margin-right: 0.2rem;
+  }
+
+  .right-symbol {
+    background-color: #3bda2d;
+  }
+
+  .wrong-symbol {
+    background-color: #da572d;
+  }
+}
+
+.tb-pagination {
+  flex: 0 0 auto;
+  margin-top: auto;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  .tb-prevPage-btn,
+  .tb-nextPage-btn {
+    font-size: inherit;
+    font-weight: inherit;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    border-radius: 50%;
+    cursor: pointer;
+    border-radius: 50%;
+    border: solid 2px $color-dark-xl;
+
+    &:hover {
+      background-color: $color-primary-light;
+    }
+
+    &:active {
+      transform: scale(98%);
+    }
+
+    &:disabled:hover,
+    &:disabled:active {
+      background-color: transparent;
+      transform: none;
+      cursor: default;
+    }
+  }
+
+  .tb-prevPage-btn {
+    background: transparent url('../../assets/svg/card-word-arrow-left.svg') center / 70% no-repeat;
+  }
+
+  .tb-nextPage-btn {
+    background: transparent url('../../assets/svg/card-word-arrow-right.svg') center / 70% no-repeat;
+  }
+}
