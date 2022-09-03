@@ -64,6 +64,8 @@ export interface IUserWord {
   wordId?: string;
 }
 
+export type IUserStatisticsGameOption = 'audioGame' | 'sprint';
+
 export interface IUserStatistics {
   learnedWords: number;
   optional: {
@@ -84,8 +86,7 @@ export interface IUserStatistics {
       };
     };
     longStatistics: {
-      days: 
-      {
+      days: {
         date: number;
         newWords: string[];
         learnedWords: string[];
@@ -124,6 +125,15 @@ export type IGameCurrentResult = {
     ruWord: string;
     sound: string;
   }[];
+  currentSeries: number;
+  rightSeries: number;
+};
+
+export type IGameCurrentResultForStats = {
+  learnedWords: string[];
+  newWords: string[];
+  successWords: string[];
+  failWords: string[];
   currentSeries: number;
   rightSeries: number;
 };

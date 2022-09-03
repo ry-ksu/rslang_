@@ -111,7 +111,7 @@ const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
     const user = await authorization(email.value, password.value, api, localStorage);
     const userStatistics = await api.getUserStatistics({ userID: user.userId, token: user.token });
     const { learnedWords, optional } = userStatistics;
-    let currentStats: IUserStatistics = { learnedWords, optional }
+    let currentStats: IUserStatistics = { learnedWords, optional };
     const date = new Date().setHours(0, 0, 0, 0);
     if (currentStats.optional.todayStatistics.date !== date) {
       currentStats = cleanTodayStats(date, userStatistics);
@@ -121,8 +121,8 @@ const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
         token: user.token,
       });
     }
-    if (currentStats.optional.longStatistics.days.every(day => day.date !== date)) {
-      currentStats.optional.longStatistics.days.push({ date, newWords: [], learnedWords: [] })
+    if (currentStats.optional.longStatistics.days.every((day) => day.date !== date)) {
+      currentStats.optional.longStatistics.days.push({ date, newWords: [], learnedWords: [] });
     }
   } catch (err) {
     email.value = '';

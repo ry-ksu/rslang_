@@ -46,4 +46,4 @@ export const cleanTodayStats = (date: number, stats: IUserStatistics): IUserStat
   newStats.optional.todayStatistics.sprint.failWords = [];
   newStats.optional.todayStatistics.sprint.rightSeries = 0;
   return newStats;
-}
+};
