@@ -262,7 +262,7 @@ export default class ViewTextBook {
     userWrapper.classList.add('user-wrapper');
     const btnsContainer = this.getMarkedBtns({ wordGroup, wordID, userWord, cardWord });
     const footerWrapper = document.createElement('div');
-    footerWrapper.classList.add('footer-wrapper');
+    footerWrapper.classList.add('tbfooter-wrapper');
 
     const rightContainer = document.createElement('div');
     rightContainer.classList.add('right-container');
@@ -271,7 +271,7 @@ export default class ViewTextBook {
     rightSymbol.innerText = '✔';
     const rightCount = document.createElement('span');
     rightCount.classList.add('right-count');
-    rightCount.innerText = '0';
+    rightCount.innerText = `${userWord?.optional.rightAnswerCount || 0}`;
     rightContainer.append(rightSymbol, rightCount);
 
     const wrongContainer = document.createElement('div');
@@ -281,7 +281,7 @@ export default class ViewTextBook {
     wrongSymbol.innerText = '✖';
     const wrongCount = document.createElement('span');
     wrongCount.classList.add('wrong-count');
-    wrongCount.innerText = '0';
+    wrongCount.innerText = `${userWord?.optional.wrongAnswerCount || 0}`;
     wrongContainer.append(wrongSymbol, wrongCount);
 
     footerWrapper.append(rightContainer, wrongContainer);

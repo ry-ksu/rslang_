@@ -74,8 +74,8 @@ export default class ViewStatistics {
           <tr>
             <td>Новых слов</td>
             <td>${
-              todayStatistics.sprint.newWords.length + todayStatistics.audioGame.newWords.length
-            }</td>
+  todayStatistics.sprint.newWords.length + todayStatistics.audioGame.newWords.length
+}</td>
           </tr>
           <tr>
             <td>Изученных слов</td>

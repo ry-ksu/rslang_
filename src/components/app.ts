@@ -8,6 +8,7 @@ import ControllerGames from './games/controller';
 import ControllerAuthorization from './authorization/controller';
 import ControllerHeader from './header/controller';
 import ControllerMainPage from './mainPage/controller';
+import ControllerFooter from './footer/controller';
 import ControllerStatistics from './statistics/controller';
 // import ControllerTeamPage from './teamPage/controller';
 import ControllerTextBook from './textBook/controller';
@@ -22,6 +23,7 @@ export class App {
 
   controllers: {
     about: ControllerAbout;
+    footer: ControllerFooter;
     games: ControllerGames;
     header: ControllerHeader;
     mainPage: ControllerMainPage;
@@ -46,6 +48,7 @@ export class App {
 
     this.controllers = {
       about: new ControllerAbout(this.attributes),
+      footer: new ControllerFooter(),
       games: new ControllerGames(this, this.attributes),
       header: new ControllerHeader(
         this.render.bind(this),
@@ -74,13 +77,19 @@ export class App {
       this.attributes.component.className = '';
     }
 
+    if (document.querySelector('footer')) {
+      (document.querySelector('footer') as HTMLElement).remove();
+    }
+
     const LS = this.attributes.localStorage.getLS();
     const dictionary = {
       mainPage: (): void => {
         this.controllers.mainPage.getData();
+        this.controllers.footer.getData();
       },
       about: (): void => {
         this.controllers.about.getData();
+        this.controllers.footer.getData();
       },
       audioGame: (): void => {
         this.controllers.games.getData();
