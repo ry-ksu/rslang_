@@ -63,12 +63,12 @@
   position: relative;
   &::after {
     content: '';
-    width: 90%;
+    width: max(100% - 60px);
     height: 2px;
     background-color: black;
     position: absolute;
     bottom: 80px;
-    right: 42px;
+    right: 30px;
   }
 }
 
@@ -119,4 +119,17 @@
   color: hsl(236deg 93% 42%);
   filter: drop-shadow(0 0 5px hsl(336deg, 100%, 60%));
   transition: 0.5s ease-in-out;
+}
+
+@media screen and (max-width: 600px) {
+  .progressbar {
+    top: -160px;
+    left: 35%;
+    background-color: #686868;
+    border-radius: 100%;
+  }
+
+  .score {
+    top: 5px;
+  }
 }
