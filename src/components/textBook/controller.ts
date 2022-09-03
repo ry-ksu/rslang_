@@ -1,5 +1,5 @@
 import ViewTextBook from './view';
-import { IAttributes, IUserWord, IWord } from '../types/types';
+import { IAttributes, IUserStatistics, IUserWord, IWord } from '../types/types';
 import ControllerAuthorization from '../authorization/controller';
 import App from '../app';
 
@@ -108,7 +108,7 @@ export default class ControllerTextBook {
     }
   }
 
-  async getPage({ wordGroup, wordPage }: { wordGroup: number; wordPage: number }) {
+  private async getPage({ wordGroup, wordPage }: { wordGroup: number; wordPage: number }) {
     try {
       await this.checkAuthorization();
       this.attributes.localStorage.changeLS('pageTB', `${wordPage}`);
@@ -139,7 +139,7 @@ export default class ControllerTextBook {
     }
   }
 
-  async getHardGroup(): Promise<IWord[]> {
+  private async getHardGroup(): Promise<IWord[]> {
     try {
       const words: Promise<IWord>[] = [];
       await this.checkAuthorization();
@@ -160,7 +160,7 @@ export default class ControllerTextBook {
     return this.attributes.isUserAuth;
   }
 
-  async checkAuthorization(): Promise<void> {
+  private async checkAuthorization(): Promise<void> {
     try {
       await this.authorization.checkAuth();
       this.attributes.isUserAuth = true;
@@ -216,12 +216,45 @@ export default class ControllerTextBook {
         newUserWord.wordId = wordID;
         this.userWords.push(newUserWord);
       }
+      await this.updateLearnedWordsStatistics({token, userID});
     } catch (error) {
       console.error(error);
     }
   }
 
-  async getWordsForGame() {
+  private async updateLearnedWordsStatistics({ token, userID }: { token: string, userID: string }) {
+    try {
+      const allLearnedUserWords: string[] = [];
+      this.userWords.forEach((item) => {
+        if (typeof (item.wordId) === 'string' && item.optional.isLearned === true) {
+          allLearnedUserWords.push(item.wordId)
+        };
+      });
+      const currentStat = await this.attributes.wordsApi.getUserStatistics({ token, userID });
+      const longStatDaysCount: number = currentStat.optional.longStatistics.days.length;
+      const previousLongStatLearnedWords = longStatDaysCount > 1
+        ? currentStat.optional.longStatistics.days[longStatDaysCount - 2]
+        : null;
+
+      currentStat.optional.longStatistics.days[longStatDaysCount - 1].learnedWords = allLearnedUserWords;
+      currentStat.optional.todayStatistics.learnedWords = previousLongStatLearnedWords
+        ? allLearnedUserWords.filter((learnedWord) => (
+          !previousLongStatLearnedWords.learnedWords.includes(learnedWord)
+        ))
+        : allLearnedUserWords;
+
+      const updatedStat: IUserStatistics = {
+        learnedWords: currentStat.learnedWords,
+        optional: currentStat.optional
+      };
+
+      await this.attributes.wordsApi.updateUserStatistics({ userID, userStatistics: updatedStat, token });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private async getWordsForGame() {
     const getUnLearnedWords = (userWords: IUserWord[], words: IWord[]): IWord[] =>
       words.filter((word) =>
         userWords.every(
