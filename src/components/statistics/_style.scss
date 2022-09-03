@@ -2,22 +2,23 @@
   max-width: 1180px;
   min-height: calc(100vh - 65.19px);
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 5px;
+
   font-family: $font-additional;
   font-size: 1.8vw;
   font-style: italic;
   color: $color-light-xl;
   background-color: #5d8578;
 
-  @media screen and (min-width: 1000px){
+  @media screen and (min-width: 1000px) {
     font-size: 2.1rem;
   }
 
-  @media screen and (max-width: 720px){
+  @media screen and (max-width: 720px) {
     font-size: 1.3rem;
   }
 
-  .today-title {
+  .title {
     padding: 2rem 0;
     font-size: 2em;
     font-family: $font-main;
@@ -25,16 +26,16 @@
     margin: 0 auto;
     text-align: center;
 
-    @media screen and (min-width: 1000px){
+    @media screen and (min-width: 1000px) {
       font-size: 3.7rem;
     }
 
-    @media screen and (max-width: 720px){
+    @media screen and (max-width: 720px) {
       font-size: 2.5rem;
     }
   }
 
-  .today-wrapper {
+  .today-container {
     max-width: 900px;
     width: fit-content;
     margin: 0 auto;
@@ -54,7 +55,7 @@
 
   table td {
     padding: 0.3em;
-    border: 3px solid $color-light-xl; 
+    border: 3px solid $color-light-xl;
   }
 
   table th {
@@ -75,4 +76,9 @@
     border-right: 0;
   }
 
+  .long-container {
+    padding-top: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
 }

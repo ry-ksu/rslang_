@@ -92,8 +92,8 @@ export class App {
         this.controllers.textBook.getData().catch((error) => console.error(error));
       },
       statistics: () => {
-        this.controllers.statistics.getData();
-      }
+        this.controllers.statistics.getData().catch((error) => console.error(error));
+      },
     };
 
     this.controllerAuthorization
