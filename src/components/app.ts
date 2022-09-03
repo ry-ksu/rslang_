@@ -8,7 +8,7 @@ import ControllerGames from './games/controller';
 import ControllerAuthorization from './authorization/controller';
 import ControllerHeader from './header/controller';
 import ControllerMainPage from './mainPage/controller';
-// import ControllerStatistics from './statistics/controller';
+import ControllerStatistics from './statistics/controller';
 // import ControllerTeamPage from './teamPage/controller';
 import ControllerTextBook from './textBook/controller';
 
@@ -25,7 +25,7 @@ export class App {
     games: ControllerGames;
     header: ControllerHeader;
     mainPage: ControllerMainPage;
-    // statistics: ControllerStatistics;
+    statistics: ControllerStatistics;
     // teamPage: ControllerTeamPage;
     textBook: ControllerTextBook;
   };
@@ -54,7 +54,7 @@ export class App {
         this.controllerAuthorization
       ),
       mainPage: new ControllerMainPage(this.attributes),
-      // statistics: new ControllerStatistics(),
+      statistics: new ControllerStatistics(this.attributes),
       // teamPage: new ControllerTeamPage(),
       textBook: new ControllerTextBook(this),
     };
@@ -91,6 +91,9 @@ export class App {
       textbook: () => {
         this.controllers.textBook.getData().catch((error) => console.error(error));
       },
+      statistics: () => {
+        this.controllers.statistics.getData();
+      }
     };
 
     this.controllerAuthorization
