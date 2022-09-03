@@ -32,7 +32,7 @@ export default (date: number): IUserStatistics => ({
 });
 
 export const cleanTodayStats = (date: number, stats: IUserStatistics): IUserStatistics => {
-  const newStats = { ...stats }
+  const newStats = { ...stats };
   newStats.optional.todayStatistics.date = date;
   newStats.optional.todayStatistics.learnedWords = [];
 

@@ -1,6 +1,6 @@
 import LocalStorage from '../../services/store';
 import WordsApi from '../../services/wordsAPI';
-import { IUserToken, voidFn } from '../types/types';
+import { IUserStatistics, IUserToken, voidFn } from '../types/types';
 import animateCSS from './animate';
 import { AuthOption, checkValueFn, SignUpOptions } from './contracts';
 import { createHtmlEl } from './helpers';
@@ -109,17 +109,20 @@ const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
   try {
     blockButtons();
     const user = await authorization(email.value, password.value, api, localStorage);
-    let userStatistics = await api.getUserStatistics({ userID: user.userId, token: user.token })
+    const userStatistics = await api.getUserStatistics({ userID: user.userId, token: user.token });
+    const { learnedWords, optional } = userStatistics;
+    let currentStats: IUserStatistics = { learnedWords, optional }
     const date = new Date().setHours(0, 0, 0, 0);
-    if (userStatistics.optional.todayStatistics.date !== date) {
-      userStatistics = cleanTodayStats(date, userStatistics);
-      console.log(userStatistics);
-      const stats = await api.updateUserStatistics({
+    if (currentStats.optional.todayStatistics.date !== date) {
+      currentStats = cleanTodayStats(date, userStatistics);
+      await api.updateUserStatistics({
         userID: user.userId,
         userStatistics,
         token: user.token,
       });
-      console.log(stats);
+    }
+    if (currentStats.optional.longStatistics.days.every(day => day.date !== date)) {
+      currentStats.optional.longStatistics.days.push({ date, newWords: [], learnedWords: [] })
     }
   } catch (err) {
     email.value = '';
