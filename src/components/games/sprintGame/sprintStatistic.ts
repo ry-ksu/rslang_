@@ -36,4 +36,12 @@ export default class SprintStatistic {
       this.rightSeries = this.currentSeries;
     }
   }
+
+  public cleanStatistic() {
+    this.successWords = [];
+    this.newWords = [];
+    this.failWords = [];
+    this.currentSeries = 0;
+    this.rightSeries = 0;
+  }
 }

@@ -65,35 +65,34 @@ export const updateScore = (): void => {
   }
 };
 
+export const checkValueByOption: Record<CheckWordOption, (comparative: string) => Promise<string>> =
+  {
+    right: (comparator) => {
+      const audio = new Audio();
+      if (checkOnRight(comparator)) {
+        updateScore();
+        audio.src = './assets/audio/success.mp3';
+        audio.play().catch(() => console.log('err'));
+        return Promise.resolve('success');
+      }
 
-export const checkValueByOption: Record<CheckWordOption, (comparative: string) => Promise<string>> = {
-  right: (comparator) => {
-    const audio = new Audio();
-    if (checkOnRight(comparator)) {
-      updateScore();
-      audio.src = './assets/audio/success.mp3';
+      clearCombo();
+      audio.src = './assets/audio/fail.mp3';
       audio.play().catch(() => console.log('err'));
-      return Promise.resolve('success');
-    }
+      return Promise.resolve('fail');
+    },
+    wrong: (comparator) => {
+      const audio = new Audio();
+      if (checkOnWrong(comparator)) {
+        updateScore();
+        audio.src = './assets/audio/success.mp3';
+        audio.play().catch(() => console.log('err'));
+        return Promise.resolve('success');
+      }
 
-    clearCombo();
-    audio.src = './assets/audio/fail.mp3';
-    audio.play().catch(() => console.log('err'));
-    return Promise.resolve('fail');
-  },
-  wrong: (comparator) => {
-    const audio = new Audio();
-    if (checkOnWrong(comparator)) {
-      updateScore();
-      audio.src = './assets/audio/success.mp3';
+      clearCombo();
+      audio.src = './assets/audio/fail.mp3';
       audio.play().catch(() => console.log('err'));
-      return Promise.resolve('success');
-    }
-
-    clearCombo();
-    audio.src = './assets/audio/fail.mp3';
-    audio.play().catch(() => console.log('err'));
-    return Promise.resolve('fail');
-  },
-};
-
+      return Promise.resolve('fail');
+    },
+  };

@@ -5,7 +5,7 @@ import ViewGames from '../view';
 import { GamePack, GamePackValue, getGamePack } from './generateGamePack';
 import SprintStatistic from './sprintStatistic';
 import animateCircle from './animateCircle';
-import { blockButtons, checkValueByOption, CheckWordOption, uBockButtons } from './startGame';
+import { blockButtons, checkValueByOption, CheckWordOption, uBockButtons } from './gameFunctions';
 import animateCSS from '../../authorization/animate';
 
 export default class SprintController {
@@ -43,31 +43,17 @@ export default class SprintController {
   public updateWord() {
     const word = this.gamepack.get(this.index) as GamePackValue;
     this.word = word;
-    this.index += 1;
-  }
-
-  public endGame(animate: Animation, interval: NodeJS.Timer, timer?: NodeJS.Timeout) {
-    if (this.gamepack.has(this.index)) {
-      return;
-    }
-    blockButtons();
-    if (timer) {
-      clearTimeout(timer);
-    }
-    animate.pause();
-    clearInterval(interval);
-    this.viewGames.drawResults(this.gameStatistic, this.attributes.component);
-    setTimeout(() => this.controllerGames.attachStatisticEvents(this.gameStatistic), 200);
-    ;
   }
 
   public luanchGame(data: IWord[]): void {
     this.index = 0;
+    this.gameStatistic.cleanStatistic();
+
     this.gamepack = getGamePack(data)
     this.updateWord();
     renderSprintGame(this.attributes);
     updateWords(this.word.word, this.word.translation, this.word.correct);
-
+    console.log(this.gamepack)
     const animate = animateCircle();
     const progressBar = document.querySelector('.progressbar__text') as HTMLElement;
 
@@ -87,7 +73,7 @@ export default class SprintController {
       );
     }, 60000);
 
-    document.addEventListener('click', (e: Event) => {
+    (document.querySelector('.sprintGame ') as HTMLElement).addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
       if (!target.matches('.sprint__btn')) {
         return;
@@ -132,11 +118,24 @@ export default class SprintController {
       })
       .catch((err) => console.log(err));
 
-    this.endGame(animate, interval, timer)
 
     if (this.gamepack.has(this.index)) { 
       this.updateWord();
       updateWords(this.word.word, this.word.translation, this.word.correct);
+      this.index += 1;
+    } else {
+      this.endGame(animate, interval, timer);
     }
+  }
+ 
+  public endGame(animate: Animation, interval: NodeJS.Timer, timer?: NodeJS.Timeout) {
+    blockButtons();
+    if (timer) {
+      clearTimeout(timer);
+    }
+    animate.pause();
+    clearInterval(interval);
+    this.viewGames.drawResults(this.gameStatistic, this.attributes.component);
+    setTimeout(() => this.controllerGames.attachStatisticEvents(this.gameStatistic), 200);
   }
 }
