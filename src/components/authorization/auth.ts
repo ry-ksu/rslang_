@@ -6,6 +6,7 @@ import { AuthOption, checkValueFn, SignUpOptions } from './contracts';
 import { createHtmlEl } from './helpers';
 import { togglePopupAppearance } from './togglePopupState';
 import { updatePopup } from './view';
+import getUserStatistics, { cleanTodayStats } from '../statistics/getEmptyStatistics';
 
 const testValue = (comparator: RegExp, value: string): boolean => comparator.test(value);
 
@@ -76,7 +77,7 @@ const authorization = async (
   password: string,
   api: WordsApi,
   localStorage: LocalStorage
-): Promise<void> => {
+): Promise<IUserToken> => {
   try {
     const user: IUserToken = await api.signUser({ email, password });
     localStorage.changeLS('token', user.token);
@@ -92,6 +93,7 @@ const authorization = async (
         updatePopup('signIn');
       })
       .catch((err) => console.log(err));
+    return user;
   } catch (err) {
     throw new Error('Failed in authorization');
   }
@@ -106,7 +108,19 @@ const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
 
   try {
     blockButtons();
-    await authorization(email.value, password.value, api, localStorage);
+    const user = await authorization(email.value, password.value, api, localStorage);
+    let userStatistics = await api.getUserStatistics({ userID: user.userId, token: user.token })
+    const date = new Date().setHours(0, 0, 0, 0);
+    if (userStatistics.optional.todayStatistics.date !== date) {
+      userStatistics = cleanTodayStats(date, userStatistics);
+      console.log(userStatistics);
+      const stats = await api.updateUserStatistics({
+        userID: user.userId,
+        userStatistics,
+        token: user.token,
+      });
+      console.log(stats);
+    }
   } catch (err) {
     email.value = '';
     password.value = '';
@@ -132,7 +146,14 @@ const singUp = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
       email: email.value,
       password: password.value,
     });
-    await authorization(email.value, password.value, api, localStorage);
+    const date = new Date().setHours(0, 0, 0, 0);
+    const userStatistics = getUserStatistics(date);
+    const newUser = await authorization(email.value, password.value, api, localStorage);
+    await api.updateUserStatistics({
+      userID: newUser.userId,
+      userStatistics,
+      token: newUser.token,
+    });
     name.value = '';
     email.value = '';
     password.value = '';

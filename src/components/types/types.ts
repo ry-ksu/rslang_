@@ -69,28 +69,27 @@ export interface IUserStatistics {
   optional: {
     todayStatistics: {
       date: number;
-      learnedWords: number;
+      learnedWords: string[];
       audioGame: {
-        newWords: number;
-        successWords: number;
-        failWords: number;
+        newWords: string[];
+        successWords: string[];
+        failWords: string[];
         rightSeries: number;
       };
       sprint: {
-        newWords: number;
-        successWords: number;
-        failWords: number;
+        newWords: string[];
+        successWords: string[];
+        failWords: string[];
         rightSeries: number;
       };
     };
     longStatistics: {
-      days: [
-        {
-          date: number;
-          newWords: number;
-          learnedWords: number;
-        }
-      ];
+      days: 
+      {
+        date: number;
+        newWords: string[];
+        learnedWords: string[];
+      }[];
     };
   };
 }

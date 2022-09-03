@@ -17,7 +17,7 @@ export default class SprintController {
 
   gamepack: GamePack;
 
-  gameStatistic: SprintStatistic
+  gameStatistic: SprintStatistic;
 
   index = 0;
 
@@ -36,7 +36,7 @@ export default class SprintController {
       translation: '',
       correct: false,
       sound: '',
-      correctTranslation: ''
+      correctTranslation: '',
     };
   }
 
@@ -49,11 +49,11 @@ export default class SprintController {
     this.index = 0;
     this.gameStatistic.cleanStatistic();
 
-    this.gamepack = getGamePack(data)
+    this.gamepack = getGamePack(data);
     this.updateWord();
     renderSprintGame(this.attributes);
     updateWords(this.word.word, this.word.translation, this.word.correct);
-    console.log(this.gamepack)
+    console.log(this.gamepack);
     const animate = animateCircle();
     const progressBar = document.querySelector('.progressbar__text') as HTMLElement;
 
@@ -66,33 +66,32 @@ export default class SprintController {
     }, 1000);
 
     const timer = setTimeout(() => {
-      this.endGame(
-        animate,
-        interval,
-        timer
-      );
+      this.endGame(animate, interval, timer);
     }, 60000);
 
-    (document.querySelector('.sprintGame ') as HTMLElement).addEventListener('click', (e: Event) => {
-      const target = e.target as HTMLElement;
-      if (!target.matches('.sprint__btn')) {
-        return;
+    (document.querySelector('.sprintGame ') as HTMLElement).addEventListener(
+      'click',
+      (e: Event) => {
+        const target = e.target as HTMLElement;
+        if (!target.matches('.sprint__btn')) {
+          return;
+        }
+        this.updateGame(e, animate, interval, timer);
       }
-      this.updateGame(e, animate, interval, timer);
-    });
+    );
 
     document.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') {
         return;
       }
-      this.updateGame(e, animate, interval, timer)
+      this.updateGame(e, animate, interval, timer);
     });
   }
 
   public updateGame(
-    e:  Event | KeyboardEvent,
-    animate: Animation, 
-    interval: NodeJS.Timer, 
+    e: Event | KeyboardEvent,
+    animate: Animation,
+    interval: NodeJS.Timer,
     timer?: NodeJS.Timeout
   ) {
     const sprintGame = document.querySelector('.sprintGame') as HTMLElement;
@@ -125,8 +124,7 @@ export default class SprintController {
           this.gameStatistic.updateNewWords(this.word.word);
           this.gameStatistic.updateSeries();
         } else {
-          animateCSS(sprintGame, 'headShake')
-            .catch((err) => console.log(err));
+          animateCSS(sprintGame, 'headShake').catch((err) => console.log(err));
           this.gameStatistic.updateFailWords({
             enWord: this.word.word,
             ruWord: this.word.correctTranslation,
@@ -134,7 +132,7 @@ export default class SprintController {
           });
           this.gameStatistic.updateBestSeries();
         }
-        if (this.gamepack.has(this.index)) { 
+        if (this.gamepack.has(this.index)) {
           this.updateWord();
           updateWords(this.word.word, this.word.translation, this.word.correct);
           this.index += 1;
@@ -144,7 +142,7 @@ export default class SprintController {
       })
       .catch((err) => console.log(err));
   }
- 
+
   public endGame(animate: Animation, interval: NodeJS.Timer, timer?: NodeJS.Timeout) {
     blockButtons();
     if (timer) {
@@ -153,7 +151,7 @@ export default class SprintController {
     animate.pause();
     clearInterval(interval);
     setTimeout(() => {
-      this.viewGames.drawResults(this.gameStatistic, this.attributes.component)
+      this.viewGames.drawResults(this.gameStatistic, this.attributes.component);
       this.controllerGames.attachStatisticEvents(this.gameStatistic);
     }, 200);
     clearInterval(interval);
