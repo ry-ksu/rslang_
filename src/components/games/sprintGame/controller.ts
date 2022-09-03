@@ -78,20 +78,41 @@ export default class SprintController {
       if (!target.matches('.sprint__btn')) {
         return;
       }
-      this.updateGame(target, animate, interval, timer);
+      this.updateGame(e, animate, interval, timer);
+    });
+
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') {
+        return;
+      }
+      this.updateGame(e, animate, interval, timer)
     });
   }
 
   public updateGame(
-    target: HTMLElement, 
+    e:  Event | KeyboardEvent,
     animate: Animation, 
     interval: NodeJS.Timer, 
     timer?: NodeJS.Timeout
   ) {
     const sprintGame = document.querySelector('.sprintGame') as HTMLElement;
-    const wordRuElement = document.querySelector('[data-word="ru-word"]') as HTMLElement;
-    const isCorrect = wordRuElement.dataset.iscorrect as string;
-    const key = target.innerHTML as CheckWordOption;
+    const wordRuElement = document.querySelector<HTMLElement>('[data-word="ru-word"]');
+    const isCorrect = wordRuElement?.dataset.iscorrect ?? '';
+    if (isCorrect === '') {
+      return;
+    }
+
+    let key: CheckWordOption;
+    if (e instanceof KeyboardEvent) {
+      if (e.key === 'ArrowRight') {
+        key = 'right';
+      } else {
+        key = 'wrong';
+      }
+    } else {
+      const target = e.target as HTMLElement;
+      key = target.innerHTML as CheckWordOption;
+    }
 
     checkValueByOption[key](isCorrect)
       .then((res) => {
@@ -104,9 +125,7 @@ export default class SprintController {
           this.gameStatistic.updateNewWords(this.word.word);
           this.gameStatistic.updateSeries();
         } else {
-          blockButtons();
           animateCSS(sprintGame, 'headShake')
-            .then(() => uBockButtons())
             .catch((err) => console.log(err));
           this.gameStatistic.updateFailWords({
             enWord: this.word.word,
@@ -115,17 +134,15 @@ export default class SprintController {
           });
           this.gameStatistic.updateBestSeries();
         }
+        if (this.gamepack.has(this.index)) { 
+          this.updateWord();
+          updateWords(this.word.word, this.word.translation, this.word.correct);
+          this.index += 1;
+        } else {
+          this.endGame(animate, interval, timer);
+        }
       })
       .catch((err) => console.log(err));
-
-
-    if (this.gamepack.has(this.index)) { 
-      this.updateWord();
-      updateWords(this.word.word, this.word.translation, this.word.correct);
-      this.index += 1;
-    } else {
-      this.endGame(animate, interval, timer);
-    }
   }
  
   public endGame(animate: Animation, interval: NodeJS.Timer, timer?: NodeJS.Timeout) {
@@ -135,7 +152,10 @@ export default class SprintController {
     }
     animate.pause();
     clearInterval(interval);
-    this.viewGames.drawResults(this.gameStatistic, this.attributes.component);
-    setTimeout(() => this.controllerGames.attachStatisticEvents(this.gameStatistic), 200);
+    setTimeout(() => {
+      this.viewGames.drawResults(this.gameStatistic, this.attributes.component)
+      this.controllerGames.attachStatisticEvents(this.gameStatistic);
+    }, 200);
+    clearInterval(interval);
   }
 }

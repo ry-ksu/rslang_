@@ -92,7 +92,8 @@ export default class ControllerGames {
   }
 
   goToGame() {
-    this.controllerApp.render();
+    // this.controllerApp.render();
+    window.location.reload();
   }
 
   goToMainPage() {
