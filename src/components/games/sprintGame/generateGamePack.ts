@@ -8,13 +8,13 @@ export type GamePackValue = {
   correctTranslation: string;
 };
 
-export type GamePack = Map<string, GamePackValue>;
+export type GamePack = Map<number, GamePackValue>;
 
 export const getRandomInt = (max: number): number => Math.floor(Math.random() * max);
 
 export const setMapProperty = (
   map: GamePack,
-  id: string,
+  id: number,
   word: string,
   translation: string,
   flag: boolean,
@@ -43,7 +43,7 @@ export const setMapProperty = (
 export const getGamePack = (data: IWord[]): GamePack => {
   const words = [...data];
   const gamePack: GamePack = new Map();
-
+  let index = 0;
   while (gamePack.size < data.length) {
     let randomIndex = getRandomInt(data.length);
     const word = words.pop() as IWord;
@@ -51,7 +51,7 @@ export const getGamePack = (data: IWord[]): GamePack => {
     if (randomIndex % 2 === 0) {
       setMapProperty(
         gamePack,
-        word.id,
+        index,
         word.word,
         word.wordTranslate,
         true,
@@ -66,7 +66,7 @@ export const getGamePack = (data: IWord[]): GamePack => {
       }
       setMapProperty(
         gamePack,
-        word.id,
+        index,
         word.word,
         data[randomIndex].wordTranslate,
         false,
@@ -74,6 +74,7 @@ export const getGamePack = (data: IWord[]): GamePack => {
         word.wordTranslate
       );
     }
+    index += 1;
   }
   return gamePack;
 };
