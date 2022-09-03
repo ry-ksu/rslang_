@@ -1,6 +1,6 @@
 import WordsApi from '../../services/wordsAPI';
 import ControllerAuthorization from '../authorization/controller';
-import { cleanTodayStats } from '../statistics/getEmptyStatistics';
+import { cleanTodayStats } from './getEmptyStatistics';
 import {
   IGameCurrentResultForStats,
   ILocalStorage,

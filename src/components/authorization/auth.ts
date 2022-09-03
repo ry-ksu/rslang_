@@ -6,7 +6,7 @@ import { AuthOption, checkValueFn, SignUpOptions } from './contracts';
 import { createHtmlEl } from './helpers';
 import { togglePopupAppearance } from './togglePopupState';
 import { updatePopup } from './view';
-import getUserStatistics, { cleanTodayStats } from '../statistics/getEmptyStatistics';
+import getUserStatistics, { cleanTodayStats } from '../games/getEmptyStatistics';
 
 const testValue = (comparator: RegExp, value: string): boolean => comparator.test(value);
 
