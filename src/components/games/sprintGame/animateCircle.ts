@@ -8,7 +8,6 @@ export default (perSent = 100): Animation => {
     77000
   );
 
-
   animate.finished
     .then(() => {
       circle.style.strokeDashoffset = String(strokeDashoffset(perSent));

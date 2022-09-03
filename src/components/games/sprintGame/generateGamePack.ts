@@ -4,7 +4,7 @@ export type GamePackValue = {
   word: string;
   translation: string;
   correct: boolean;
-  sound: string,
+  sound: string;
   correctTranslation: string;
 };
 
@@ -27,7 +27,7 @@ export const setMapProperty = (
       translation,
       correct: flag,
       sound,
-      correctTranslation
+      correctTranslation,
     });
   } else {
     map.set(id, {
@@ -49,7 +49,15 @@ export const getGamePack = (data: IWord[]): GamePack => {
     const word = words.pop() as IWord;
 
     if (randomIndex % 2 === 0) {
-      setMapProperty(gamePack, word.id, word.word, word.wordTranslate, true, word.audio, word.wordTranslate);
+      setMapProperty(
+        gamePack,
+        word.id,
+        word.word,
+        word.wordTranslate,
+        true,
+        word.audio,
+        word.wordTranslate
+      );
     } else {
       if (data[randomIndex].word === word.word) {
         while (data[randomIndex].word !== word.word) {

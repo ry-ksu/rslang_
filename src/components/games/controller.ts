@@ -30,8 +30,8 @@ export default class ControllerGames {
     this.attributes = attributes;
     this.viewGames = new ViewGames();
     this.controllers = {
-      controllerSprintGame: new SprintController(this.attributes),
       controllerAudioGame: new ControllerAudioGame(this, this.viewGames, this.attributes),
+      controllerSprintGame: new SprintController(this, this.viewGames, this.attributes),
     };
   }
 
@@ -91,7 +91,7 @@ export default class ControllerGames {
       .catch((err) => console.log(err));
   }
 
-  goToAudioGame() {
+  goToGame() {
     this.controllerApp.render();
   }
 
@@ -136,7 +136,7 @@ export default class ControllerGames {
     );
     (document.querySelector('.game-result__btn-continue') as HTMLElement).addEventListener(
       'click',
-      this.goToAudioGame.bind(this)
+      this.goToGame.bind(this)
     );
   }
 
