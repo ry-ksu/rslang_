@@ -42,7 +42,7 @@ const mergeUserStatistics = (
       currentStatistics.optional.todayStatistics[gameOption].failWords
     )
   );
-  currentStatistics.optional.todayStatistics[gameOption].failWords.push(
+  currentStatistics.optional.todayStatistics.learnedWords.push(
     ...getThroughSetAndMerge(
       currentRes.learnedWords,
       currentStatistics.optional.todayStatistics.learnedWords
