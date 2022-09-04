@@ -5,10 +5,46 @@
   box-sizing: border-box;
 }
 
+// $color-1: #b7eee0;
+// $color-2: #eee1b7;
+// $color-3: #b7eeb7;
+// $color-4: #cab7ee;
+// $color-5: #b7e3ee;
+// $color-6: #f2f7d5;
+// $color-hard: #e2a6a6;
+
+.main_textbook[data-color='1'] {
+  background-color: $color-1;
+}
+
+.main_textbook[data-color='2'] {
+  background-color: $color-2;
+}
+
+.main_textbook[data-color='3'] {
+  background-color: $color-3;
+}
+
+.main_textbook[data-color='4'] {
+  background-color: $color-4;
+}
+
+.main_textbook[data-color='5'] {
+  background-color: $color-5;
+}
+
+.main_textbook[data-color='6'] {
+  background-color: $color-6;
+}
+
+.main_textbook[data-color='hard'] {
+  background-color: $color-hard;
+}
+
 .textbook-container {
-  padding: 5px;
+  padding: 20px;
   min-height: calc(100vh - 65.19px);
-  max-width: 1180px;
+  max-width: 1280px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -24,7 +60,6 @@
 
 .tb-header {
   flex: 0 0 auto;
-  padding: 5px;
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -117,7 +152,7 @@
   flex-direction: column;
   justify-content: space-between;
   width: 430px;
-  height: 610px;
+  height: 650px;
   padding: 20px 20px 10px;
   font-size: 16px;
   border-radius: 1rem;
@@ -129,6 +164,10 @@
 
   &:hover {
     outline: 2px solid $color-primary;
+  }
+
+  @media screen and (max-width: 450px) {
+    max-width: calc(100vw - 10px);
   }
 
   .main-wrapper {
@@ -144,17 +183,23 @@
     height: 100%;
     max-height: 234px;
     border-radius: 1rem;
+
+    @media screen and (max-width: 450px) {
+      max-width: calc(100vw - 50px);
+      height: auto;
+    }
   }
 
   .card-content {
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
-    max-height: 255px;
+    max-height: 300px;
     overflow: auto;
-    gap: 10px;
+    gap: 5px;
 
     &.unregistered {
-      max-height: 300px;
+      max-height: 350px;
     }
 
     &.unregistered::after {
@@ -162,30 +207,10 @@
     }
   }
 
-  @mixin afterSound {
-    content: '';
-    display: inline-block;
-    padding: 0 0.5rem;
-    width: 2rem;
-    height: 1.7rem;
-    background: url('../../assets/svg/volume-speaker.svg') center / contain no-repeat;
-    cursor: pointer;
-  }
-
   .word-translate {
     padding: 5px;
     background-color: $color-primary-light;
     border-radius: 1rem;
-    cursor: pointer;
-
-    &:hover:after {
-      @include afterSound;
-    }
-
-    &:hover {
-      color: $color-light-xl;
-      background-color: $color-primary;
-    }
   }
 
   .text-meaning,
@@ -193,23 +218,13 @@
     padding: 5px;
     background-color: $color-primary-light;
     border-radius: 1rem;
-    cursor: pointer;
     transition: all 0.3s;
-
-    &:hover {
-      color: $color-light-xl;
-      background-color: $color-primary;
-    }
-
-    &:hover::after {
-      @include afterSound;
-    }
   }
 
-  .sound-btn {
+  .cardsound-btn {
     margin: 0 auto;
     width: 100px;
-    height: 60px;
+    flex: 0 0 50px;
     border-radius: 1rem;
     background: $color-primary-light url('../../assets/svg/card-word-sound-btn.svg') center / 80%
       no-repeat;
@@ -257,7 +272,7 @@
     }
   }
 
-  .footer-wrapper {
+  .tbfooter-wrapper {
     padding-top: 10px;
   }
 
