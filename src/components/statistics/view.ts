@@ -112,16 +112,6 @@ export default class ViewStatistics {
       learnedWords.push(item.learnedWords.length);
     });
 
-    const learnedWordsAccum: number[] = [];
-
-    for (let i = 0; i < learnedWords.length; i += 1) {
-      if (i === 0) {
-        learnedWordsAccum.push(learnedWords[i]);
-      } else {
-        learnedWordsAccum.push(learnedWords[i] + learnedWordsAccum[i - 1]);
-      }
-    }
-
     const data = {
       labels: dates,
       datasets: [
@@ -136,7 +126,7 @@ export default class ViewStatistics {
           label: 'Изученные слова',
           color: '#3a5199',
           borderColor: '#3a5199',
-          data: learnedWordsAccum,
+          data: learnedWords,
           tension: 0.1,
         },
       ],
