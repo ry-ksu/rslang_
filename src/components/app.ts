@@ -111,6 +111,7 @@ export class App {
       },
       statistics: () => {
         this.controllers.statistics.getData().catch((error) => console.error(error));
+        this.controllers.footer.getData();
       },
     };
 

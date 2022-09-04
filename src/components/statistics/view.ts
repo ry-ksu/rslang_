@@ -19,6 +19,7 @@ export default class ViewStatistics {
   }
 
   draw({ statistics }: { statistics: IUserStatistics }) {
+    this.component.classList.add('main_statistics');
     const statisticsContainer = document.createElement('div');
     statisticsContainer.classList.add('statistics-container');
     const todayContainer = this.getTodayStatistics({ statistics });

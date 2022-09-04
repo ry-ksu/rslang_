@@ -1,14 +1,17 @@
+.main_statistics {
+  background-color: #5d8578;
+}
+
 .statistics-container {
-  max-width: 1180px;
+  max-width: 1280px;
   min-height: calc(100vh - 65.19px);
   margin: 0 auto;
-  padding: 5px;
+  padding: 20px;
 
   font-family: $font-additional;
   font-size: 1.8vw;
   font-style: italic;
   color: $color-light-xl;
-  background-color: #5d8578;
 
   @media screen and (min-width: 1000px) {
     font-size: 2.1rem;
@@ -44,6 +47,7 @@
   .today-tables {
     display: flex;
     gap: 2rem;
+    flex-wrap: wrap;
   }
 
   table {
