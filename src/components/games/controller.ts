@@ -2,11 +2,14 @@ import { IWord, IAttributes, IGameCurrentResult } from '../types/types';
 import ViewGames from './view';
 import ControllerAudioGame from './audioGame/controller';
 import App from '../app';
+import ControllerLoader from '../loader/controller';
 
 export default class ControllerGames {
   finishGameStatistic: IGameCurrentResult;
 
   controllerApp: App;
+
+  controllerLoader: ControllerLoader;
 
   viewGames: ViewGames;
 
@@ -16,7 +19,7 @@ export default class ControllerGames {
 
   attributes: IAttributes;
 
-  constructor(controllerApp: App, attributes: IAttributes) {
+  constructor(controllerApp: App, attributes: IAttributes, controllerLoader: ControllerLoader) {
     this.finishGameStatistic = {
       newWords: [],
       successWords: [],
@@ -25,6 +28,7 @@ export default class ControllerGames {
       rightSeries: 0,
     };
     this.controllerApp = controllerApp;
+    this.controllerLoader = controllerLoader;
     this.attributes = attributes;
     this.viewGames = new ViewGames();
     this.controllers = {
@@ -77,6 +81,7 @@ export default class ControllerGames {
 
   // Запрашиваем слова у сервера, передавая конкретный уровень.
   getServerWordsData(lvl: number) {
+    this.controllerLoader.showLoader();
     this.attributes.wordsApi
       .getWords({
         wordGroup: lvl,
@@ -85,6 +90,7 @@ export default class ControllerGames {
       })
       // создаем набор объектов для игры из полученных слов
       .then((result: IWord[]) => this.createGamePack(result))
+      .then(() => this.controllerLoader.hideLoader())
       .catch((err) => console.log(err));
   }
 
