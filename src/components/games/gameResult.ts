@@ -71,19 +71,12 @@ export default async (
       mergeUserStatistics(currentRes, currentStatistics, gameOption);
     }
 
-    let userWords = await api.getUserWords({ userID: LS.userId, token: LS.token });
-    userWords = userWords.filter(word => word.optional.isLearned);
-
-    const wordsRequests: Promise<IWord>[] = userWords.map(word => api.getWord({ wordID: word.wordId as string }));
-    const learnedWords: string[] = [];
+    const userWords = await api.getUserWords({ userID: LS.userId, token: LS.token });
     
-    Promise.all(wordsRequests)
-      .then(result => {
-        result.forEach(word => learnedWords.push(word.word))
-      })
-      .catch(() => { throw new Error('Error in game result, 81 string') })
+    const learnedWords: string[] = userWords
+      .filter((word) => word.optional.isLearned)
+      .map(word => word.wordId ?? '');
 
-    
     if (currentStatistics.optional.longStatistics.days.every((day) => day.date !== date)) {
       currentStatistics.optional.longStatistics.days.push({
         date,
@@ -94,20 +87,10 @@ export default async (
     } else {
       currentStatistics.optional.longStatistics.days.forEach((day) => {
         if (day.date === date) {
-          day.newWords.push(
-            ...new Set(
-              ...currentRes.newWords,
-              ...day.newWords
-            )
-          )
-          day.learnedWords.push(
-            ...new Set(
-              ...learnedWords,
-              ...day.learnedWords
-            )
-          )
+          day.newWords.push(...new Set(...currentRes.newWords, ...day.newWords));
+          day.learnedWords.push(...new Set(...learnedWords, ...day.learnedWords));
         }
-      })
+      });
     }
     await api.updateUserStatistics({
       userID: LS.userId,
