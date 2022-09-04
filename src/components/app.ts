@@ -7,19 +7,20 @@ import ControllerAbout from './about/controller';
 import ControllerGames from './games/controller';
 import ControllerAuthorization from './authorization/controller';
 import ControllerHeader from './header/controller';
+import ControllerLoader from './loader/controller';
 import ControllerMainPage from './mainPage/controller';
 import ControllerFooter from './footer/controller';
 // import ControllerStatistics from './statistics/controller';
-// import ControllerTeamPage from './teamPage/controller';
 import ControllerTextBook from './textBook/controller';
 
-// import { ILocalStorage } from './types/types';
 import '../sass/style.scss';
 
 export class App {
   attributes: IAttributes;
 
   controllerAuthorization: ControllerAuthorization;
+
+  controllerLoader: ControllerLoader;
 
   controllers: {
     about: ControllerAbout;
@@ -28,7 +29,6 @@ export class App {
     header: ControllerHeader;
     mainPage: ControllerMainPage;
     // statistics: ControllerStatistics;
-    // teamPage: ControllerTeamPage;
     textBook: ControllerTextBook;
   };
 
@@ -46,10 +46,12 @@ export class App {
       this.render.bind(this)
     );
 
+    this.controllerLoader = new ControllerLoader();
+
     this.controllers = {
       about: new ControllerAbout(this.attributes),
       footer: new ControllerFooter(),
-      games: new ControllerGames(this, this.attributes, this.controllerAuthorization),
+      games: new ControllerGames(this, this.attributes, this.controllerAuthorization, this.controllerLoader),
       header: new ControllerHeader(
         this.render.bind(this),
         this.attributes,
@@ -58,13 +60,11 @@ export class App {
       ),
       mainPage: new ControllerMainPage(this.attributes),
       // statistics: new ControllerStatistics(),
-      // teamPage: new ControllerTeamPage(),
       textBook: new ControllerTextBook(this),
     };
   }
 
   changeLSPageAndRenderThisPage(page: string) {
-    // тут следует добавить остальные параметры нужные для отрисовки
     this.attributes.localStorage.changeLS('page', page);
     this.render();
   }
@@ -75,6 +75,10 @@ export class App {
     } else {
       this.attributes.component.innerHTML = '';
       this.attributes.component.className = '';
+    }
+
+    if (!document.querySelector('.loader')) {
+      this.controllerLoader.getData();
     }
 
     if (document.querySelector('footer')) {
@@ -99,6 +103,7 @@ export class App {
       },
       textbook: () => {
         this.controllers.textBook.getData().catch((error) => console.error(error));
+        this.controllers.footer.getData();
       },
     };
 

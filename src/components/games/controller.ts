@@ -4,11 +4,14 @@ import ControllerAudioGame from './audioGame/controller';
 import SprintController from './sprintGame/controller';
 import App from '../app';
 import ControllerAuthorization from '../authorization/controller';
+import ControllerLoader from '../loader/controller';
 
 export default class ControllerGames {
   finishGameStatistic: IGameCurrentResult;
 
   controllerApp: App;
+
+  controllerLoader: ControllerLoader;
 
   viewGames: ViewGames;
 
@@ -21,7 +24,13 @@ export default class ControllerGames {
 
   attributes: IAttributes;
 
-  constructor(controllerApp: App, attributes: IAttributes, athorization: ControllerAuthorization) {
+  constructor(
+    controllerApp: App, 
+    attributes: IAttributes, 
+    athorization: ControllerAuthorization, 
+    controllerLoader: ControllerLoader
+  ) {
+  
     this.finishGameStatistic = {
       newWords: [],
       successWords: [],
@@ -30,6 +39,7 @@ export default class ControllerGames {
       rightSeries: 0,
     };
     this.controllerApp = controllerApp;
+    this.controllerLoader = controllerLoader;
     this.attributes = attributes;
     this.athorization = athorization;
     this.viewGames = new ViewGames();
@@ -89,6 +99,7 @@ export default class ControllerGames {
 
   // Запрашиваем слова у сервера, передавая конкретный уровень.
   getServerWordsData(lvl: number) {
+    this.controllerLoader.showLoader();
     this.attributes.wordsApi
       .getWords({
         wordGroup: lvl,
@@ -97,6 +108,7 @@ export default class ControllerGames {
       })
       // создаем набор объектов для игры из полученных слов
       .then((result: IWord[]) => this.createGamePack(result))
+      .then(() => this.controllerLoader.hideLoader())
       .catch((err) => console.log(err));
   }
 
