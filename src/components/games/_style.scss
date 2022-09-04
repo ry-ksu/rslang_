@@ -3,7 +3,7 @@
 .main_games {
   height: calc(100vh - 65px);
   background-color: $color-1;
-  padding-top: calc(50vh - 65px - 150px - 40px);
+  padding: calc(50vh - 65px - 150px - 40px) 10px 0;
 }
 
 .games__lvl-item {
@@ -96,12 +96,12 @@
 
 // for results
 .game-result__statistic-wrapper {
-  width: 500px;
+  max-width: 500px;
   height: 500px;
   margin: auto;
   background: $color-light-xl;
   border-radius: 20px;
-  padding: 20px 40px;
+  padding: 20px 20px 20px 40px;
   .game-result__btn-wrapper {
     display: flex;
     justify-content: flex-end;
@@ -159,8 +159,8 @@
     color: $color-dark-xl;
   }
   .word__img {
-    height: 20px;
-    width: 20px;
+    min-height: 20px;
+    min-width: 20px;
     cursor: pointer;
   }
   p:first-letter {

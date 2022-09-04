@@ -3,6 +3,9 @@
   padding-bottom: 40px;
   .about-wrapper {
     max-width: 740px;
+    @include media-tablet {
+      max-width: 520px;
+    }
     padding: 60px 20px 0;
     margin: auto;
     .about__header {
