@@ -54,7 +54,6 @@ export default class ControllerTextBook {
     // check authorization
     const { token, userId: userID } = ls;
     if (token && userID && this.isUserRegistered()) {
-      
       this.userWords = await this.attributes.wordsApi.getUserWords({ userID, token });
     }
     // load data & draw

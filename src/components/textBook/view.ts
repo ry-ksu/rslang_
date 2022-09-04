@@ -56,7 +56,7 @@ export default class ViewTextBook {
     ViewTextBook.textBookContainer = document.createElement('div');
     ViewTextBook.textBookContainer.classList.add('textbook-container');
     this.component.appendChild(ViewTextBook.textBookContainer);
-
+    this.component.classList.add('main_textbook');
     this.drawHeader({ wordGroup });
     this.drawPage({ wordGroup, words, userWords });
     this.drawPagination({ wordGroup, wordPage, maxWordPage });
@@ -88,14 +88,15 @@ export default class ViewTextBook {
           .querySelectorAll('.group-btn')
           .forEach((item) => item.classList.remove('pressed'));
         btn.classList.add('pressed');
-        this.component.style.backgroundColor = this.colors[`${i}`];
+        this.component.dataset.color = `${i + 1}`;
+
         this.controllerTextBook
           .getGroup({ wordGroup: i, wordPage: 0 })
           .catch((error) => console.error(error));
       });
       if (i === wordGroup) {
         btn.classList.add('pressed');
-        this.component.style.backgroundColor = this.colors[`${i}`];
+        this.component.dataset.color = `${i + 1}`;
       }
       tbGroupBtns.appendChild(btn);
     }
@@ -114,7 +115,7 @@ export default class ViewTextBook {
     btn.style.backgroundColor = this.colors[`${this.controllerTextBook.hardGroupIndex}`];
     if (this.controllerTextBook.hardGroupIndex === wordGroup) {
       btn.classList.add('pressed');
-      this.component.style.backgroundColor = this.colors[wordGroup];
+      this.component.dataset.color = `hard`;
     }
 
     btn.addEventListener('click', () => {
@@ -122,8 +123,7 @@ export default class ViewTextBook {
         .querySelectorAll('.group-btn')
         .forEach((item) => item.classList.remove('pressed'));
       btn.classList.add('pressed');
-      this.component.style.backgroundColor =
-        this.colors[`${this.controllerTextBook.hardGroupIndex}`];
+      this.component.dataset.color = `hard`;
       ViewTextBook.textBookContainer.classList.remove('marked');
       this.controllerTextBook
         .getGroup({ wordGroup: this.controllerTextBook.hardGroupIndex, wordPage: 0 })
@@ -218,7 +218,7 @@ export default class ViewTextBook {
     textExample.classList.add('text-example');
     textExample.innerHTML = `${word.textExample} ${word.textExampleTranslate}`;
 
-    let audios = [
+    const audios = [
       new Audio(`${this.baseURL}/${word.audio}`),
       new Audio(`${this.baseURL}/${word.audioMeaning}`),
       new Audio(`${this.baseURL}/${word.audioExample}`),
@@ -228,7 +228,7 @@ export default class ViewTextBook {
     soundButton.classList.add('cardsound-btn');
     soundButton.addEventListener('click', () => {
       playSounds(audios);
-      audios = [];
+      // audios = [];
     });
 
     cardContent.append(wordTranslate, textMeaning, textExample, soundButton);

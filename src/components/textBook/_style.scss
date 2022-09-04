@@ -5,6 +5,42 @@
   box-sizing: border-box;
 }
 
+// $color-1: #b7eee0;
+// $color-2: #eee1b7;
+// $color-3: #b7eeb7;
+// $color-4: #cab7ee;
+// $color-5: #b7e3ee;
+// $color-6: #f2f7d5;
+// $color-hard: #e2a6a6;
+
+.main_textbook[data-color='1'] {
+  background-color: $color-1;
+}
+
+.main_textbook[data-color='2'] {
+  background-color: $color-2;
+}
+
+.main_textbook[data-color='3'] {
+  background-color: $color-3;
+}
+
+.main_textbook[data-color='4'] {
+  background-color: $color-4;
+}
+
+.main_textbook[data-color='5'] {
+  background-color: $color-5;
+}
+
+.main_textbook[data-color='6'] {
+  background-color: $color-6;
+}
+
+.main_textbook[data-color='hard'] {
+  background-color: $color-hard;
+}
+
 .textbook-container {
   padding: 20px;
   min-height: calc(100vh - 65.19px);
