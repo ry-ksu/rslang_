@@ -117,7 +117,7 @@
   flex-direction: column;
   justify-content: space-between;
   width: 430px;
-  height: 610px;
+  height: 650px;
   padding: 20px 20px 10px;
   font-size: 16px;
   border-radius: 1rem;
@@ -158,9 +158,9 @@
   .card-content {
     display: flex;
     flex-direction: column;
-    max-height: 255px;
+    max-height: 295px;
     overflow: auto;
-    gap: 10px;
+    gap: 5px;
 
     &.unregistered {
       max-height: 300px;
@@ -171,30 +171,10 @@
     }
   }
 
-  @mixin afterSound {
-    content: '';
-    display: inline-block;
-    padding: 0 1rem 0;
-    width: 1rem;
-    height: 1.5rem;
-    background: url('../../assets/svg/volume-speaker.svg') center / contain no-repeat;
-    cursor: pointer;
-  }
-
   .word-translate {
     padding: 5px;
     background-color: $color-primary-light;
     border-radius: 1rem;
-    cursor: pointer;
-
-    &:before {
-      @include afterSound;
-    }
-
-    &:hover {
-      color: $color-light-xl;
-      background-color: $color-primary;
-    }
   }
 
   .text-meaning,
@@ -202,23 +182,13 @@
     padding: 5px;
     background-color: $color-primary-light;
     border-radius: 1rem;
-    cursor: pointer;
     transition: all 0.3s;
-
-    &:hover {
-      color: $color-light-xl;
-      background-color: $color-primary;
-    }
-
-    &::before {
-      @include afterSound;
-    }
   }
 
-  .sound-btn {
+  .cardsound-btn {
     margin: 0 auto;
     width: 100px;
-    height: 60px;
+    flex: 1 0 40px;
     border-radius: 1rem;
     background: $color-primary-light url('../../assets/svg/card-word-sound-btn.svg') center / 80%
       no-repeat;

@@ -1,3 +1,4 @@
+import playSounds from './playSounds'
 import { IUserWord, IWord } from '../types/types';
 import ControllerTextBook from './controller';
 
@@ -208,34 +209,29 @@ export default class ViewTextBook {
     const wordTranslate = document.createElement('p');
     wordTranslate.classList.add('word-translate');
     wordTranslate.innerText = `${word.word} - ${word.transcription} - ${word.wordTranslate}`;
-    wordTranslate.addEventListener('click', () => {
-      const audio = document.createElement('audio');
-      audio.src = `${this.baseURL}/${word.audio}`;
-      audio.play().catch((error) => console.error(error));
-      audio.remove();
-    });
 
     const textMeaning = document.createElement('p');
     textMeaning.classList.add('text-meaning');
-    textMeaning.innerHTML = `${word.textMeaning}<br>${word.textMeaningTranslate}`;
-    textMeaning.addEventListener('click', () => {
-      const audio = document.createElement('audio');
-      audio.src = `${this.baseURL}/${word.audioMeaning}`;
-      audio.play().catch((error) => console.error(error));
-      audio.remove();
-    });
+    textMeaning.innerHTML = `${word.textMeaning} ${word.textMeaningTranslate}`;
 
     const textExample = document.createElement('p');
     textExample.classList.add('text-example');
-    textExample.innerHTML = `${word.textExample}<br>${word.textExampleTranslate}`;
-    textExample.addEventListener('click', () => {
-      const audio = document.createElement('audio');
-      audio.src = `${this.baseURL}/${word.audioExample}`;
-      audio.play().catch((error) => console.error(error));
-      audio.remove();
-    });
+    textExample.innerHTML = `${word.textExample} ${word.textExampleTranslate}`;
 
-    cardContent.append(wordTranslate, textMeaning, textExample);
+    let audios = [
+      new Audio(`${this.baseURL}/${word.audio}`),
+      new Audio(`${this.baseURL}/${word.audioMeaning}`),
+      new Audio(`${this.baseURL}/${word.audioExample}`),
+    ];
+
+    const soundButton = document.createElement('button');
+    soundButton.classList.add('cardsound-btn');
+    soundButton.addEventListener('click', () => {
+      playSounds(audios);
+      audios = [];
+    })
+
+    cardContent.append(wordTranslate, textMeaning, textExample, soundButton);
     mainWrapper.append(wordPicture, cardContent);
     cardWord.append(mainWrapper);
     if (this.controllerTextBook.isUserRegistered()) {
