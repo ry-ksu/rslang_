@@ -216,39 +216,45 @@ export default class ControllerTextBook {
         newUserWord.wordId = wordID;
         this.userWords.push(newUserWord);
       }
-      await this.updateLearnedWordsStatistics({token, userID});
+      await this.updateLearnedWordsStatistics({ token, userID });
     } catch (error) {
       console.error(error);
     }
   }
 
-  private async updateLearnedWordsStatistics({ token, userID }: { token: string, userID: string }) {
+  private async updateLearnedWordsStatistics({ token, userID }: { token: string; userID: string }) {
     try {
       const allLearnedUserWords: string[] = [];
       this.userWords.forEach((item) => {
-        if (typeof (item.wordId) === 'string' && item.optional.isLearned === true) {
-          allLearnedUserWords.push(item.wordId)
-        };
+        if (typeof item.wordId === 'string' && item.optional.isLearned === true) {
+          allLearnedUserWords.push(item.wordId);
+        }
       });
       const currentStat = await this.attributes.wordsApi.getUserStatistics({ token, userID });
       const longStatDaysCount: number = currentStat.optional.longStatistics.days.length;
-      const previousLongStatLearnedWords = longStatDaysCount > 1
-        ? currentStat.optional.longStatistics.days[longStatDaysCount - 2]
-        : null;
+      const previousLongStatLearnedWords =
+        longStatDaysCount > 1
+          ? currentStat.optional.longStatistics.days[longStatDaysCount - 2]
+          : null;
 
-      currentStat.optional.longStatistics.days[longStatDaysCount - 1].learnedWords = allLearnedUserWords;
+      currentStat.optional.longStatistics.days[longStatDaysCount - 1].learnedWords =
+        allLearnedUserWords;
       currentStat.optional.todayStatistics.learnedWords = previousLongStatLearnedWords
-        ? allLearnedUserWords.filter((learnedWord) => (
-          !previousLongStatLearnedWords.learnedWords.includes(learnedWord)
-        ))
+        ? allLearnedUserWords.filter(
+            (learnedWord) => !previousLongStatLearnedWords.learnedWords.includes(learnedWord)
+          )
         : allLearnedUserWords;
 
       const updatedStat: IUserStatistics = {
         learnedWords: currentStat.learnedWords,
-        optional: currentStat.optional
+        optional: currentStat.optional,
       };
 
-      await this.attributes.wordsApi.updateUserStatistics({ userID, userStatistics: updatedStat, token });
+      await this.attributes.wordsApi.updateUserStatistics({
+        userID,
+        userStatistics: updatedStat,
+        token,
+      });
     } catch (error) {
       console.error(error);
     }

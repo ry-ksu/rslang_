@@ -84,8 +84,7 @@ export interface IUserStatistics {
       };
     };
     longStatistics: {
-      days: 
-      {
+      days: {
         date: number;
         newWords: string[];
         learnedWords: string[];

@@ -262,7 +262,7 @@ export default class ViewTextBook {
     userWrapper.classList.add('user-wrapper');
     const btnsContainer = this.getMarkedBtns({ wordGroup, wordID, userWord, cardWord });
     const footerWrapper = document.createElement('div');
-    footerWrapper.classList.add('footer-wrapper');
+    footerWrapper.classList.add('tbfooter-wrapper');
 
     const rightContainer = document.createElement('div');
     rightContainer.classList.add('right-container');
