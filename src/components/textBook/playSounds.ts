@@ -9,16 +9,16 @@ export default function playSounds(sounds: HTMLAudioElement[]) {
       sound.pause();
       paused = true;
     }
-  }
+  };
   const ended = () => {
-    if(i < sounds.length - 1) {
+    if (i < sounds.length - 1) {
       i += 1;
       paused = true;
       playPause(sounds[i]);
     }
-  }
+  };
   sounds.forEach((item) => {
     item.addEventListener('ended', ended);
-    playPause(sounds[i])
-  })
+    playPause(sounds[i]);
+  });
 }

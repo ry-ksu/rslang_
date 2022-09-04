@@ -241,8 +241,8 @@ export default class ControllerTextBook {
         allLearnedUserWords;
       currentStat.optional.todayStatistics.learnedWords = previousLongStatLearnedWords
         ? allLearnedUserWords.filter(
-          (learnedWord) => !previousLongStatLearnedWords.learnedWords.includes(learnedWord)
-        )
+            (learnedWord) => !previousLongStatLearnedWords.learnedWords.includes(learnedWord)
+          )
         : allLearnedUserWords;
 
       const updatedStat: IUserStatistics = {

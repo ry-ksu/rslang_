@@ -1,4 +1,4 @@
-import playSounds from './playSounds'
+import playSounds from './playSounds';
 import { IUserWord, IWord } from '../types/types';
 import ControllerTextBook from './controller';
 
@@ -88,14 +88,14 @@ export default class ViewTextBook {
           .querySelectorAll('.group-btn')
           .forEach((item) => item.classList.remove('pressed'));
         btn.classList.add('pressed');
-        ViewTextBook.textBookContainer.style.backgroundColor = this.colors[`${i}`];
+        this.component.style.backgroundColor = this.colors[`${i}`];
         this.controllerTextBook
           .getGroup({ wordGroup: i, wordPage: 0 })
           .catch((error) => console.error(error));
       });
       if (i === wordGroup) {
         btn.classList.add('pressed');
-        ViewTextBook.textBookContainer.style.backgroundColor = this.colors[`${i}`];
+        this.component.style.backgroundColor = this.colors[`${i}`];
       }
       tbGroupBtns.appendChild(btn);
     }
@@ -114,7 +114,7 @@ export default class ViewTextBook {
     btn.style.backgroundColor = this.colors[`${this.controllerTextBook.hardGroupIndex}`];
     if (this.controllerTextBook.hardGroupIndex === wordGroup) {
       btn.classList.add('pressed');
-      ViewTextBook.textBookContainer.style.backgroundColor = this.colors[wordGroup];
+      this.component.style.backgroundColor = this.colors[wordGroup];
     }
 
     btn.addEventListener('click', () => {
@@ -122,7 +122,7 @@ export default class ViewTextBook {
         .querySelectorAll('.group-btn')
         .forEach((item) => item.classList.remove('pressed'));
       btn.classList.add('pressed');
-      ViewTextBook.textBookContainer.style.backgroundColor =
+      this.component.style.backgroundColor =
         this.colors[`${this.controllerTextBook.hardGroupIndex}`];
       ViewTextBook.textBookContainer.classList.remove('marked');
       this.controllerTextBook
@@ -229,7 +229,7 @@ export default class ViewTextBook {
     soundButton.addEventListener('click', () => {
       playSounds(audios);
       audios = [];
-    })
+    });
 
     cardContent.append(wordTranslate, textMeaning, textExample, soundButton);
     mainWrapper.append(wordPicture, cardContent);

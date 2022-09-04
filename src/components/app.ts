@@ -103,6 +103,7 @@ export class App {
       },
       textbook: () => {
         this.controllers.textBook.getData().catch((error) => console.error(error));
+        this.controllers.footer.getData();
       },
     };
 
