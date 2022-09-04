@@ -11,7 +11,7 @@ export default class ViewMainPage {
                             на скорость реакции, где ты будешь тренировать быстроту своего мышления или
                             на распознование английской речи, где мы выберешь перевод услышанного слова.
                             Выбери уровень сложности, и попробуй!</p>
-                            <button class="additional-button">Попробуй!</button>
+                            <button class="additional-button main-block__game">Попробуй!</button>
                           </div>
                           <div class='main-block__img'></div>`;
     return mainBlock;

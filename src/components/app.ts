@@ -58,7 +58,7 @@ export class App {
         this.changeLSPageAndRenderThisPage.bind(this),
         this.controllerAuthorization
       ),
-      mainPage: new ControllerMainPage(this.attributes),
+      mainPage: new ControllerMainPage(this.attributes, this.render.bind(this)),
       // statistics: new ControllerStatistics(),
       textBook: new ControllerTextBook(this),
     };

@@ -48,6 +48,14 @@ export default class ControllerHeader {
       'click',
       this.defineLoginLogout.bind(this)
     );
+    (document.querySelector('.logo') as HTMLElement).addEventListener(
+      'click',
+      this.goToMain.bind(this)
+    )
+  }
+
+  goToMain() {
+    this.changePage('mainPage');
   }
 
   detachEvents() {

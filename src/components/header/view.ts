@@ -35,7 +35,6 @@ export default class ViewHeader {
   drawNav() {
     const nav = document.createElement('nav');
     nav.className = 'nav';
-    // тут data-атрибуты лучше, чем матчится на css-классы
     nav.innerHTML =
       '<ul>' +
       '<li data-page="mainPage">Главная</li>' +
