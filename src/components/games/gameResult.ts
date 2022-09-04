@@ -52,8 +52,7 @@ const mergeUserTodayStatistics = (
 };
 
 const getCurrentResult = (currentProgress: IGameCurrentResult) => {
-  const date = new Date().setHours(0, 0, 0, 0);
-  const currentResult = getEmptyCurrentsStatistics(date);
+  const currentResult = getEmptyCurrentsStatistics();
   currentProgress.successWords.forEach(word => {
     currentResult.newWords.push(word.id as string)
     currentResult.successWords.push(word.id as string)

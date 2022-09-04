@@ -31,7 +31,7 @@ export default (date: number): IUserStatistics => ({
   },
 });
 
-export const getEmptyCurrentsStatistics = (date: number): IGameCurrentResultForStats => ({
+export const getEmptyCurrentsStatistics = (): IGameCurrentResultForStats => ({
   learnedWords: [],
   newWords: [],
   successWords: [],

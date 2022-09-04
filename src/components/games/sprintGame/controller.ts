@@ -184,8 +184,7 @@ export default class SprintController {
         console.log(err);
       });
     }
-    // this.gamepack.has(this.index + 1)
-    if (this.index < 2) {
+    if (this.gamepack.has(this.index + 1)) {
       this.index += 1;
       this.updateWord();
       updateWords(this.word.word, this.word.translation, this.word.correct);
@@ -205,7 +204,7 @@ export default class SprintController {
       this.viewGames.drawResults(this.gameStatistic, this.attributes.component);
       this.controllerGames.attachStatisticEvents(this.gameStatistic);
       animate.cancel();
-      sendResult(this.gameStatistic, this.attributes.wordsApi, this.LS, this.athorization, 'sprint')
+      sendResult(this.gameStatistic, this.attributes.wordsApi, this.LS, this.athorization, 'sprint').catch(() => { throw new Error() })
     }, 200);
     clearInterval(interval);
   }
