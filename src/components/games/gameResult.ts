@@ -6,6 +6,7 @@ import {
   ILocalStorage,
   IUserStatistics,
   IUserStatisticsGameOption,
+  IWord,
 } from '../types/types';
 
 const dectructUserStatistics = (user: IUserStatistics): IUserStatistics => {
@@ -69,31 +70,39 @@ export default async (
       currentStatistics = cleanTodayStats(date, currentStatistics);
       mergeUserStatistics(currentRes, currentStatistics, gameOption);
     }
+
+    let userWords = await api.getUserWords({ userID: LS.userId, token: LS.token });
+    userWords = userWords.filter(word => word.optional.isLearned);
+
+    const wordsRequests: Promise<IWord>[] = userWords.map(word => api.getWord({ wordID: word.wordId as string }));
+    const learnedWords: string[] = [];
+    
+    Promise.all(wordsRequests)
+      .then(result => {
+        result.forEach(word => learnedWords.push(word.word))
+      })
+      .catch(() => { throw new Error('Error in game result, 81 string') })
+
+    
     if (currentStatistics.optional.longStatistics.days.every((day) => day.date !== date)) {
       currentStatistics.optional.longStatistics.days.push({
         date,
-        newWords: [
-          ...getThroughSetAndMerge(
-            currentStatistics.optional.todayStatistics.sprint.newWords,
-            currentStatistics.optional.todayStatistics.audioGame.newWords
-          ),
-        ],
+        newWords: currentRes.newWords,
 
-        learnedWords: [...new Set(currentStatistics.optional.todayStatistics.learnedWords)],
+        learnedWords,
       });
     } else {
       currentStatistics.optional.longStatistics.days.forEach((day) => {
         if (day.date === date) {
           day.newWords.push(
             ...new Set(
-              ...currentStatistics.optional.todayStatistics.sprint.newWords,
-              ...currentStatistics.optional.todayStatistics.audioGame.newWords,
+              ...currentRes.newWords,
               ...day.newWords
             )
           )
           day.learnedWords.push(
             ...new Set(
-              ...currentStatistics.optional.todayStatistics.learnedWords,
+              ...learnedWords,
               ...day.learnedWords
             )
           )
