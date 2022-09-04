@@ -54,10 +54,12 @@ export default class ControllerTextBook {
     // check authorization
     const { token, userId: userID } = ls;
     if (token && userID && this.isUserRegistered()) {
+      
       this.userWords = await this.attributes.wordsApi.getUserWords({ userID, token });
     }
     // load data & draw
     let words: IWord[];
+    this.app.controllerLoader.showLoader();
     if (wordGroup === this.hardGroupIndex && this.isUserRegistered()) {
       words = await this.getHardGroup();
     } else {
@@ -66,6 +68,7 @@ export default class ControllerTextBook {
         wordPage,
       });
     }
+    this.app.controllerLoader.hideLoader();
     this.wordsPage = words;
     this.viewTextBook.draw({
       words,
@@ -110,6 +113,7 @@ export default class ControllerTextBook {
 
   private async getPage({ wordGroup, wordPage }: { wordGroup: number; wordPage: number }) {
     try {
+      this.app.controllerLoader.showLoader();
       await this.checkAuthorization();
       this.attributes.localStorage.changeLS('pageTB', `${wordPage}`);
       const words = await this.attributes.wordsApi.getWords({ wordGroup, wordPage });
@@ -117,12 +121,15 @@ export default class ControllerTextBook {
       return words;
     } catch (error) {
       throw new Error('Words fetching error');
+    } finally {
+      this.app.controllerLoader.hideLoader();
     }
   }
 
   async getGroup({ wordGroup, wordPage }: { wordGroup: number; wordPage: number }): Promise<void> {
     let words: IWord[];
     try {
+      this.app.controllerLoader.showLoader();
       await this.checkAuthorization();
       if (wordGroup === this.hardGroupIndex) {
         words = await this.getHardGroup();
@@ -136,6 +143,8 @@ export default class ControllerTextBook {
       this.viewTextBook.drawPagination({ wordGroup, wordPage, maxWordPage: this.maxWordPage });
     } catch {
       throw new Error('Get words group error');
+    } finally {
+      this.app.controllerLoader.hideLoader();
     }
   }
 
@@ -241,8 +250,8 @@ export default class ControllerTextBook {
         allLearnedUserWords;
       currentStat.optional.todayStatistics.learnedWords = previousLongStatLearnedWords
         ? allLearnedUserWords.filter(
-            (learnedWord) => !previousLongStatLearnedWords.learnedWords.includes(learnedWord)
-          )
+          (learnedWord) => !previousLongStatLearnedWords.learnedWords.includes(learnedWord)
+        )
         : allLearnedUserWords;
 
       const updatedStat: IUserStatistics = {
