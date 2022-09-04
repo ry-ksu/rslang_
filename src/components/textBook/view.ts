@@ -1,3 +1,4 @@
+import playSounds from './playSounds';
 import { IUserWord, IWord } from '../types/types';
 import ControllerTextBook from './controller';
 
@@ -55,7 +56,7 @@ export default class ViewTextBook {
     ViewTextBook.textBookContainer = document.createElement('div');
     ViewTextBook.textBookContainer.classList.add('textbook-container');
     this.component.appendChild(ViewTextBook.textBookContainer);
-
+    this.component.classList.add('main_textbook');
     this.drawHeader({ wordGroup });
     this.drawPage({ wordGroup, words, userWords });
     this.drawPagination({ wordGroup, wordPage, maxWordPage });
@@ -87,14 +88,15 @@ export default class ViewTextBook {
           .querySelectorAll('.group-btn')
           .forEach((item) => item.classList.remove('pressed'));
         btn.classList.add('pressed');
-        ViewTextBook.textBookContainer.style.backgroundColor = this.colors[`${i}`];
+        this.component.dataset.color = `${i + 1}`;
+
         this.controllerTextBook
           .getGroup({ wordGroup: i, wordPage: 0 })
           .catch((error) => console.error(error));
       });
       if (i === wordGroup) {
         btn.classList.add('pressed');
-        ViewTextBook.textBookContainer.style.backgroundColor = this.colors[`${i}`];
+        this.component.dataset.color = `${i + 1}`;
       }
       tbGroupBtns.appendChild(btn);
     }
@@ -113,7 +115,7 @@ export default class ViewTextBook {
     btn.style.backgroundColor = this.colors[`${this.controllerTextBook.hardGroupIndex}`];
     if (this.controllerTextBook.hardGroupIndex === wordGroup) {
       btn.classList.add('pressed');
-      ViewTextBook.textBookContainer.style.backgroundColor = this.colors[wordGroup];
+      this.component.dataset.color = `hard`;
     }
 
     btn.addEventListener('click', () => {
@@ -121,8 +123,7 @@ export default class ViewTextBook {
         .querySelectorAll('.group-btn')
         .forEach((item) => item.classList.remove('pressed'));
       btn.classList.add('pressed');
-      ViewTextBook.textBookContainer.style.backgroundColor =
-        this.colors[`${this.controllerTextBook.hardGroupIndex}`];
+      this.component.dataset.color = `hard`;
       ViewTextBook.textBookContainer.classList.remove('marked');
       this.controllerTextBook
         .getGroup({ wordGroup: this.controllerTextBook.hardGroupIndex, wordPage: 0 })
@@ -208,34 +209,29 @@ export default class ViewTextBook {
     const wordTranslate = document.createElement('p');
     wordTranslate.classList.add('word-translate');
     wordTranslate.innerText = `${word.word} - ${word.transcription} - ${word.wordTranslate}`;
-    wordTranslate.addEventListener('click', () => {
-      const audio = document.createElement('audio');
-      audio.src = `${this.baseURL}/${word.audio}`;
-      audio.play().catch((error) => console.error(error));
-      audio.remove();
-    });
 
     const textMeaning = document.createElement('p');
     textMeaning.classList.add('text-meaning');
-    textMeaning.innerHTML = `${word.textMeaning}<br>${word.textMeaningTranslate}`;
-    textMeaning.addEventListener('click', () => {
-      const audio = document.createElement('audio');
-      audio.src = `${this.baseURL}/${word.audioMeaning}`;
-      audio.play().catch((error) => console.error(error));
-      audio.remove();
-    });
+    textMeaning.innerHTML = `${word.textMeaning} ${word.textMeaningTranslate}`;
 
     const textExample = document.createElement('p');
     textExample.classList.add('text-example');
-    textExample.innerHTML = `${word.textExample}<br>${word.textExampleTranslate}`;
-    textExample.addEventListener('click', () => {
-      const audio = document.createElement('audio');
-      audio.src = `${this.baseURL}/${word.audioExample}`;
-      audio.play().catch((error) => console.error(error));
-      audio.remove();
+    textExample.innerHTML = `${word.textExample} ${word.textExampleTranslate}`;
+
+    const audios = [
+      new Audio(`${this.baseURL}/${word.audio}`),
+      new Audio(`${this.baseURL}/${word.audioMeaning}`),
+      new Audio(`${this.baseURL}/${word.audioExample}`),
+    ];
+
+    const soundButton = document.createElement('button');
+    soundButton.classList.add('cardsound-btn');
+    soundButton.addEventListener('click', () => {
+      playSounds(audios);
+      // audios = [];
     });
 
-    cardContent.append(wordTranslate, textMeaning, textExample);
+    cardContent.append(wordTranslate, textMeaning, textExample, soundButton);
     mainWrapper.append(wordPicture, cardContent);
     cardWord.append(mainWrapper);
     if (this.controllerTextBook.isUserRegistered()) {
