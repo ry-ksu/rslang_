@@ -119,11 +119,13 @@ export type IGameCurrentResult = {
     enWord: string;
     ruWord: string;
     sound: string;
+    id?: string;
   }[];
   failWords: {
     enWord: string;
     ruWord: string;
     sound: string;
+    id?: string;
   }[];
   currentSeries: number;
   rightSeries: number;

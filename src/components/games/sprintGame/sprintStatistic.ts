@@ -2,6 +2,7 @@ type StatisticWord = {
   enWord: string;
   ruWord: string;
   sound: string;
+  id: string;
 };
 
 export default class SprintStatistic {

@@ -3,6 +3,7 @@ import ViewGames from './view';
 import ControllerAudioGame from './audioGame/controller';
 import SprintController from './sprintGame/controller';
 import App from '../app';
+import ControllerAuthorization from '../authorization/controller';
 
 export default class ControllerGames {
   finishGameStatistic: IGameCurrentResult;
@@ -11,6 +12,8 @@ export default class ControllerGames {
 
   viewGames: ViewGames;
 
+  athorization: ControllerAuthorization;
+
   controllers: {
     controllerAudioGame: ControllerAudioGame;
     controllerSprintGame: SprintController;
@@ -18,7 +21,7 @@ export default class ControllerGames {
 
   attributes: IAttributes;
 
-  constructor(controllerApp: App, attributes: IAttributes) {
+  constructor(controllerApp: App, attributes: IAttributes, athorization: ControllerAuthorization) {
     this.finishGameStatistic = {
       newWords: [],
       successWords: [],
@@ -28,10 +31,16 @@ export default class ControllerGames {
     };
     this.controllerApp = controllerApp;
     this.attributes = attributes;
+    this.athorization = athorization;
     this.viewGames = new ViewGames();
     this.controllers = {
       controllerAudioGame: new ControllerAudioGame(this, this.viewGames, this.attributes),
-      controllerSprintGame: new SprintController(this, this.viewGames, this.attributes),
+      controllerSprintGame: new SprintController(
+        this,
+        this.viewGames,
+        this.attributes,
+        this.athorization
+      ),
     };
   }
 
@@ -150,7 +159,9 @@ export default class ControllerGames {
     if (LSPage === 'audioGame') {
       this.controllers.controllerAudioGame.createGamePackForAudioGame(randomDate);
     } else if (LSPage === 'sprint') {
-      this.controllers.controllerSprintGame.luanchGame(randomDate);
+      this.controllers.controllerSprintGame.luanchGame(randomDate).catch(() => {
+        throw new Error();
+      });
     }
   }
 }

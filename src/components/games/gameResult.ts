@@ -6,7 +6,6 @@ import {
   ILocalStorage,
   IUserStatistics,
   IUserStatisticsGameOption,
-  IWord,
 } from '../types/types';
 
 const dectructUserStatistics = (user: IUserStatistics): IUserStatistics => {
@@ -72,10 +71,10 @@ export default async (
     }
 
     const userWords = await api.getUserWords({ userID: LS.userId, token: LS.token });
-    
+
     const learnedWords: string[] = userWords
       .filter((word) => word.optional.isLearned)
-      .map(word => word.wordId ?? '');
+      .map((word) => word.wordId ?? '');
 
     if (currentStatistics.optional.longStatistics.days.every((day) => day.date !== date)) {
       currentStatistics.optional.longStatistics.days.push({

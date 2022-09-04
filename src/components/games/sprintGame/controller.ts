@@ -1,4 +1,4 @@
-import { IAttributes, IWord } from '../../types/types';
+import { IAttributes, ILocalStorage, IWord } from '../../types/types';
 import { renderSprintGame, updateWords } from './view';
 import ControllerGames from '../controller';
 import ViewGames from '../view';
@@ -7,6 +7,9 @@ import SprintStatistic from './sprintStatistic';
 import animateCircle from './animateCircle';
 import { blockButtons, checkValueByOption, CheckWordOption, uBockButtons } from './gameFunctions';
 import animateCSS from '../../authorization/animate';
+import ControllerAuthorization from '../../authorization/controller';
+import updateUserWord from '../userWordActions';
+import { ComparatorToUpdateUserWord } from '../contracts';
 
 export default class SprintController {
   attributes: IAttributes;
@@ -15,9 +18,13 @@ export default class SprintController {
 
   controllerGames: ControllerGames;
 
+  athorization: ControllerAuthorization;
+
   gamepack: GamePack;
 
   gameStatistic: SprintStatistic;
+
+  LS: ILocalStorage;
 
   index = 0;
 
@@ -25,10 +32,18 @@ export default class SprintController {
 
   finish = false;
 
-  constructor(controllerGames: ControllerGames, viewGames: ViewGames, attributes: IAttributes) {
+  isAuth = false;
+
+  constructor(
+    controllerGames: ControllerGames,
+    viewGames: ViewGames,
+    attributes: IAttributes,
+    athorization: ControllerAuthorization
+  ) {
     this.attributes = attributes;
     this.viewGames = viewGames;
     this.controllerGames = controllerGames;
+    this.athorization = athorization;
     this.gamepack = new Map();
     this.gameStatistic = new SprintStatistic();
     this.word = {
@@ -37,7 +52,9 @@ export default class SprintController {
       correct: false,
       sound: '',
       correctTranslation: '',
+      id: '',
     };
+    this.LS = attributes.localStorage.getLS();
   }
 
   public updateWord() {
@@ -45,15 +62,20 @@ export default class SprintController {
     this.word = word;
   }
 
-  public luanchGame(data: IWord[]): void {
+  public async luanchGame(data: IWord[]): Promise<void> {
+    try {
+      await this.athorization.checkAuth();
+      this.isAuth = true;
+    } catch {
+      this.isAuth = false;
+    }
+
     this.index = 0;
     this.gameStatistic.cleanStatistic();
-
     this.gamepack = getGamePack(data);
     this.updateWord();
     renderSprintGame(this.attributes);
     updateWords(this.word.word, this.word.translation, this.word.correct);
-    console.log(this.gamepack);
     const animate = animateCircle();
     const progressBar = document.querySelector('.progressbar__text') as HTMLElement;
 
@@ -76,7 +98,9 @@ export default class SprintController {
         if (!target.matches('.sprint__btn')) {
           return;
         }
-        this.updateGame(e, animate, interval, timer);
+        this.updateGame(e, animate, interval, timer).catch(() => {
+          throw new Error();
+        });
       }
     );
 
@@ -84,11 +108,13 @@ export default class SprintController {
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') {
         return;
       }
-      this.updateGame(e, animate, interval, timer);
+      this.updateGame(e, animate, interval, timer).catch(() => {
+        throw new Error();
+      });
     });
   }
 
-  public updateGame(
+  public async updateGame(
     e: Event | KeyboardEvent,
     animate: Animation,
     interval: NodeJS.Timer,
@@ -113,34 +139,52 @@ export default class SprintController {
       key = target.innerHTML as CheckWordOption;
     }
 
-    checkValueByOption[key](isCorrect)
-      .then((res) => {
-        if (res === 'success') {
-          this.gameStatistic.updateSuccessWords({
-            enWord: this.word.word,
-            ruWord: this.word.correctTranslation,
-            sound: this.word.sound,
-          });
-          this.gameStatistic.updateNewWords(this.word.word);
-          this.gameStatistic.updateSeries();
-        } else {
-          animateCSS(sprintGame, 'headShake').catch((err) => console.log(err));
-          this.gameStatistic.updateFailWords({
-            enWord: this.word.word,
-            ruWord: this.word.correctTranslation,
-            sound: this.word.sound,
-          });
-          this.gameStatistic.updateBestSeries();
-        }
-        if (this.gamepack.has(this.index)) {
-          this.updateWord();
-          updateWords(this.word.word, this.word.translation, this.word.correct);
-          this.index += 1;
-        } else {
-          this.endGame(animate, interval, timer);
-        }
-      })
-      .catch((err) => console.log(err));
+    let comparator: ComparatorToUpdateUserWord;
+
+    const response = await checkValueByOption[key](isCorrect);
+
+    if (response === 'success') {
+      comparator = 'success' as ComparatorToUpdateUserWord;
+
+      this.gameStatistic.updateSuccessWords({
+        enWord: this.word.word,
+        ruWord: this.word.correctTranslation,
+        sound: this.word.sound,
+        id: this.word.id,
+      });
+      this.gameStatistic.updateNewWords(this.word.word);
+      this.gameStatistic.updateSeries();
+    } else {
+      comparator = 'failure' as ComparatorToUpdateUserWord;
+      animateCSS(sprintGame, 'headShake').catch((err) => console.log(err));
+      this.gameStatistic.updateFailWords({
+        enWord: this.word.word,
+        ruWord: this.word.correctTranslation,
+        sound: this.word.sound,
+        id: this.word.id,
+      });
+      this.gameStatistic.updateBestSeries();
+    }
+    
+    if (this.isAuth) {
+      updateUserWord(
+        this.LS.userId,
+        this.word.id,
+        this.LS.token,
+        this.attributes.wordsApi,
+        comparator
+      ).catch((err) => {
+        console.log(err);
+      });
+    }
+    
+    if (this.gamepack.has(this.index + 1)) {
+      this.index += 1;
+      this.updateWord();
+      updateWords(this.word.word, this.word.translation, this.word.correct);
+    } else {
+      this.endGame(animate, interval, timer);
+    }
   }
 
   public endGame(animate: Animation, interval: NodeJS.Timer, timer?: NodeJS.Timeout) {

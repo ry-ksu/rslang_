@@ -1,6 +1,7 @@
 import { IWord } from '../../types/types';
 
 export type GamePackValue = {
+  id: string;
   word: string;
   translation: string;
   correct: boolean;
@@ -14,7 +15,8 @@ export const getRandomInt = (max: number): number => Math.floor(Math.random() * 
 
 export const setMapProperty = (
   map: GamePack,
-  id: number,
+  index: number,
+  id: string,
   word: string,
   translation: string,
   flag: boolean,
@@ -22,7 +24,8 @@ export const setMapProperty = (
   correctTranslation: string
 ) => {
   if (flag) {
-    map.set(id, {
+    map.set(index, {
+      id,
       word,
       translation,
       correct: flag,
@@ -30,7 +33,8 @@ export const setMapProperty = (
       correctTranslation,
     });
   } else {
-    map.set(id, {
+    map.set(index, {
+      id,
       word,
       translation,
       correct: flag,
@@ -52,6 +56,7 @@ export const getGamePack = (data: IWord[]): GamePack => {
       setMapProperty(
         gamePack,
         index,
+        word.id,
         word.word,
         word.wordTranslate,
         true,
@@ -67,6 +72,7 @@ export const getGamePack = (data: IWord[]): GamePack => {
       setMapProperty(
         gamePack,
         index,
+        word.id,
         word.word,
         data[randomIndex].wordTranslate,
         false,
