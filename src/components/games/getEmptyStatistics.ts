@@ -1,4 +1,4 @@
-import { IUserStatistics } from '../types/types';
+import { IGameCurrentResultForStats, IUserStatistics } from '../types/types';
 
 export default (date: number): IUserStatistics => ({
   learnedWords: 0,
@@ -29,6 +29,14 @@ export default (date: number): IUserStatistics => ({
       ],
     },
   },
+});
+
+export const getEmptyCurrentsStatistics = (date: number): IGameCurrentResultForStats => ({
+  learnedWords: [],
+  newWords: [],
+  successWords: [],
+  failWords: [],
+  bestSeries: 0,
 });
 
 export const cleanTodayStats = (date: number, stats: IUserStatistics): IUserStatistics => {

@@ -1,7 +1,8 @@
 import WordsApi from '../../services/wordsAPI';
 import ControllerAuthorization from '../authorization/controller';
-import { cleanTodayStats } from './getEmptyStatistics';
+import { cleanTodayStats, getEmptyCurrentsStatistics } from './getEmptyStatistics';
 import {
+  IGameCurrentResult,
   IGameCurrentResultForStats,
   ILocalStorage,
   IUserStatistics,
@@ -19,7 +20,7 @@ const getThroughSetAndMerge = (arg1: string[], arg2: string[]): string[] => {
   return arr;
 };
 
-const mergeUserStatistics = (
+const mergeUserTodayStatistics = (
   currentRes: IGameCurrentResultForStats,
   currentStatistics: IUserStatistics,
   gameOption: IUserStatisticsGameOption
@@ -50,31 +51,49 @@ const mergeUserStatistics = (
   );
 };
 
+const getCurrentResult = (currentProgress: IGameCurrentResult) => {
+  const date = new Date().setHours(0, 0, 0, 0);
+  const currentResult = getEmptyCurrentsStatistics(date);
+  currentProgress.successWords.forEach(word => {
+    currentResult.newWords.push(word.id as string)
+    currentResult.successWords.push(word.id as string)
+  })
+  currentProgress.failWords.forEach(word => {
+    currentResult.newWords.push(word.id as string)
+    currentResult.failWords.push(word.id as string)
+  })
+  currentResult.bestSeries = currentProgress.rightSeries;
+  return currentResult;
+}
+
 export default async (
-  currentProgress: IGameCurrentResultForStats,
+  currentProgress: IGameCurrentResult,
   api: WordsApi,
   LS: ILocalStorage,
   auth: ControllerAuthorization,
   gameOption: IUserStatisticsGameOption
 ): Promise<void> => {
-  const currentRes = { ...currentProgress };
   const date = new Date().setHours(0, 0, 0, 0);
+  const currentRes = getCurrentResult(currentProgress);
   try {
     await auth.checkAuth();
     const userStatistics = await api.getUserStatistics({ userID: LS.userId, token: LS.token });
     let currentStatistics = dectructUserStatistics(userStatistics);
-    if (currentStatistics.optional.todayStatistics.date === date) {
-      mergeUserStatistics(currentRes, currentStatistics, gameOption);
-    } else {
-      currentStatistics = cleanTodayStats(date, currentStatistics);
-      mergeUserStatistics(currentRes, currentStatistics, gameOption);
-    }
+
+    currentRes.learnedWords = currentStatistics.optional.todayStatistics.learnedWords;
 
     const userWords = await api.getUserWords({ userID: LS.userId, token: LS.token });
 
     const learnedWords: string[] = userWords
       .filter((word) => word.optional.isLearned)
       .map((word) => word.wordId ?? '');
+    
+    if (currentStatistics.optional.todayStatistics.date === date) {
+      mergeUserTodayStatistics(currentRes, currentStatistics, gameOption);
+    } else {
+      currentStatistics = cleanTodayStats(date, currentStatistics);
+      mergeUserTodayStatistics(currentRes, currentStatistics, gameOption);
+    }
 
     if (currentStatistics.optional.longStatistics.days.every((day) => day.date !== date)) {
       currentStatistics.optional.longStatistics.days.push({

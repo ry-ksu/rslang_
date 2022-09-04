@@ -1,15 +1,16 @@
-import { IAttributes, ILocalStorage, IWord } from '../../types/types';
+import { IAttributes, ILocalStorage, IUserWord, IWord } from '../../types/types';
 import { renderSprintGame, updateWords } from './view';
 import ControllerGames from '../controller';
 import ViewGames from '../view';
 import { GamePack, GamePackValue, getGamePack } from './generateGamePack';
 import SprintStatistic from './sprintStatistic';
 import animateCircle from './animateCircle';
-import { blockButtons, checkValueByOption, CheckWordOption, uBockButtons } from './gameFunctions';
+import { blockButtons, checkValueByOption, CheckWordOption } from './gameFunctions';
 import animateCSS from '../../authorization/animate';
 import ControllerAuthorization from '../../authorization/controller';
 import updateUserWord from '../userWordActions';
 import { ComparatorToUpdateUserWord } from '../contracts';
+import sendResult from '../gameResult'
 
 export default class SprintController {
   attributes: IAttributes;
@@ -25,6 +26,8 @@ export default class SprintController {
   gameStatistic: SprintStatistic;
 
   LS: ILocalStorage;
+
+  userWords: IUserWord[] = [];
 
   index = 0;
 
@@ -65,6 +68,9 @@ export default class SprintController {
   public async luanchGame(data: IWord[]): Promise<void> {
     try {
       await this.athorization.checkAuth();
+      this.userWords = await this.attributes.wordsApi.getUserWords(
+        { userID: this.LS.userId, token: this.LS.token }
+      );
       this.isAuth = true;
     } catch {
       this.isAuth = false;
@@ -168,6 +174,7 @@ export default class SprintController {
     
     if (this.isAuth) {
       updateUserWord(
+        this.userWords,
         this.LS.userId,
         this.word.id,
         this.LS.token,
@@ -177,8 +184,8 @@ export default class SprintController {
         console.log(err);
       });
     }
-    
-    if (this.gamepack.has(this.index + 1)) {
+    // this.gamepack.has(this.index + 1)
+    if (this.index < 2) {
       this.index += 1;
       this.updateWord();
       updateWords(this.word.word, this.word.translation, this.word.correct);
@@ -197,6 +204,8 @@ export default class SprintController {
     setTimeout(() => {
       this.viewGames.drawResults(this.gameStatistic, this.attributes.component);
       this.controllerGames.attachStatisticEvents(this.gameStatistic);
+      animate.cancel();
+      sendResult(this.gameStatistic, this.attributes.wordsApi, this.LS, this.athorization, 'sprint')
     }, 200);
     clearInterval(interval);
   }

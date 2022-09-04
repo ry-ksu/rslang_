@@ -2,7 +2,7 @@ import WordsApi from '../../services/wordsAPI';
 import { IUserWord } from '../types/types';
 import { DifficultyOption, UpdateWordFn } from './contracts';
 
-const getNewUserWord = (wordId: string): IUserWord => ({
+const getNewUserWord = (): IUserWord => ({
   difficulty: 'weak',
   optional: {
     isLearned: false,
@@ -10,7 +10,6 @@ const getNewUserWord = (wordId: string): IUserWord => ({
     rightAnswerCount: 0,
     wrongAnswerCount: 0,
   },
-  wordId,
 });
 
 const updateGuessedWordFn: UpdateWordFn = (word: IUserWord, comparator: number): IUserWord => {
@@ -48,29 +47,33 @@ const updateUngussedWord = (word: IUserWord): IUserWord => {
 };
 
 export default async (
+  userWords: IUserWord[],
   userID: string,
   wordID: string,
   token: string,
   api: WordsApi,
   condition: 'success' | 'failure'
 ): Promise<void> => {
-  let word: IUserWord = getNewUserWord(wordID);
-  console.log(word)
-  console.log(wordID)
-  try {
-    word = await api.getUserWord({ userID, wordID, token });
-    console.log(word);
-  } catch {
-    api.createUserWord({ userID, wordID, userWord: word, token })
-      .then((resp) => { word = resp })
-      .catch(() => { throw new Error('can\t create word') })
+  let userWord: IUserWord = getNewUserWord();
+  let localUserWords: IUserWord[] = [];
+
+  if (userWords.length > 0) {
+    localUserWords = userWords.filter(word => word.wordId === wordID);
   }
-  return;
+  if (localUserWords.length > 0) {
+    const [ localUserWord ] = localUserWords;
+    const { optional, difficulty } = localUserWord;
+    userWord = { optional, difficulty };
+  } else {
+    const { optional, difficulty } = await api.createUserWord({ userID, wordID, userWord, token });
+    userWord = { optional, difficulty };
+  }
+
   let renewedWord: IUserWord;
   if (condition === 'success') {
-    renewedWord = updateGussedWordByOption(word);
+    renewedWord = updateGussedWordByOption(userWord);
   } else {
-    renewedWord = updateUngussedWord(word);
+    renewedWord = updateUngussedWord(userWord);
   }
   await api.updateUserWord({ userID, wordID, userWord: renewedWord, token });
 };

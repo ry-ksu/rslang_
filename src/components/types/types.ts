@@ -136,8 +136,7 @@ export type IGameCurrentResultForStats = {
   newWords: string[];
   successWords: string[];
   failWords: string[];
-  currentSeries: number;
-  rightSeries: number;
+  bestSeries: number;
 };
 
 export type IWrongWordsArray = {
