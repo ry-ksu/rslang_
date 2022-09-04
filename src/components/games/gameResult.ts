@@ -81,6 +81,24 @@ export default async (
 
         learnedWords: [...new Set(currentStatistics.optional.todayStatistics.learnedWords)],
       });
+    } else {
+      currentStatistics.optional.longStatistics.days.forEach((day) => {
+        if (day.date === date) {
+          day.newWords.push(
+            ...new Set(
+              ...currentStatistics.optional.todayStatistics.sprint.newWords,
+              ...currentStatistics.optional.todayStatistics.audioGame.newWords,
+              ...day.newWords
+            )
+          )
+          day.learnedWords.push(
+            ...new Set(
+              ...currentStatistics.optional.todayStatistics.learnedWords,
+              ...day.learnedWords
+            )
+          )
+        }
+      })
     }
     await api.updateUserStatistics({
       userID: LS.userId,
