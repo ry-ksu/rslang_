@@ -181,8 +181,12 @@ export default class ViewStatistics {
   }
 
   showInvitation() {
+    this.component.classList.add('main_statistics');
+    const statisticsContainer = document.createElement('div');
+    statisticsContainer.classList.add('statistics-container');
     const invite = document.createElement('h3');
     invite.innerHTML = `<h3>Зарегистрируйтесь для отображения статистики</h3>`;
-    this.component.append(invite);
+    statisticsContainer.append(invite);
+    this.component.append(statisticsContainer);
   }
 }

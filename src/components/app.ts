@@ -61,7 +61,7 @@ export class App {
         this.controllerAuthorization
       ),
       mainPage: new ControllerMainPage(this.attributes),
-      statistics: new ControllerStatistics(this.attributes),
+      statistics: new ControllerStatistics(this),
       // teamPage: new ControllerTeamPage(),
 
       textBook: new ControllerTextBook(this),
