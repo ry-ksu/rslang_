@@ -1,9 +1,9 @@
-import ViewLoader from "./view";
+import ViewLoader from './view';
 
 export default class ControllerLoader {
   viewLoader: ViewLoader;
 
-  constructor () {
+  constructor() {
     this.viewLoader = new ViewLoader();
   }
 

@@ -4,7 +4,7 @@ export default class ViewLoader {
     component.className = 'loader__wrapper';
     component.innerHTML = `<div class='loader'>
                             <div class="loader__gif"></div>
-                          </div>`
+                          </div>`;
     document.body.after(component);
   }
 
