@@ -167,7 +167,7 @@ export default class SprintController {
       this.gameStatistic.updateSeries();
     } else {
       comparator = 'failure' as ComparatorToUpdateUserWord;
-      animateCSS(sprintGame, 'headShake').catch((err) => console.log(err));
+      animateCSS(sprintGame, 'headShake').catch(() => console.log());
       this.gameStatistic.updateFailWords({
         enWord: this.word.word,
         ruWord: this.word.correctTranslation,
@@ -185,8 +185,8 @@ export default class SprintController {
         this.LS.token,
         this.attributes.wordsApi,
         comparator
-      ).catch((err) => {
-        console.log(err);
+      ).catch(() => {
+        console.log();
       });
     }
     this.updateWord();

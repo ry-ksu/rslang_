@@ -108,7 +108,7 @@ export default class ControllerGames {
       // создаем набор объектов для игры из полученных слов
       .then((result: IWord[]) => this.createGamePack(result))
       .then(() => this.controllerLoader.hideLoader())
-      .catch((err) => console.log(err));
+      .catch(() => console.log());
   }
 
   goToGame() {

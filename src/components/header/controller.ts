@@ -33,7 +33,7 @@ export default class ControllerHeader {
       }
       this.controllerAuthorization
         .checkAuth()
-        .catch(() => console.log('unauthorizated (header/controller.ts)'));
+        .catch(() => console.log());
     } else if ((e.target as HTMLElement).hasAttribute('data-logout')) {
       this.attributes.localStorage.deleteUserData();
       this.attributes.localStorage.changeLS('page', 'mainPage');
