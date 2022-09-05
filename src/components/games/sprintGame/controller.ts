@@ -213,7 +213,8 @@ export default class SprintController {
         this.attributes.wordsApi,
         this.LS,
         this.athorization,
-        'sprint'
+        'sprint',
+        this.userWords
       ).catch(() => {
         throw new Error();
       });
