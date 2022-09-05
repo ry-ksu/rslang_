@@ -40,7 +40,7 @@ export default class ControllerHeader {
   }
 
   attachEvents() {
-    (document.querySelector('.nav') as HTMLElement).addEventListener(
+    (document.querySelector('.menu__list') as HTMLElement).addEventListener(
       'click',
       this.goToPage.bind(this)
     );
@@ -51,7 +51,31 @@ export default class ControllerHeader {
     (document.querySelector('.logo') as HTMLElement).addEventListener(
       'click',
       this.goToMain.bind(this)
+    );
+    (document.querySelector('.menu__icon') as HTMLElement).addEventListener(
+      'click',
+      this.showBurgerMenu.bind(this)
     )
+  }
+
+  showBurgerMenu() {
+    const iconMenu = document.querySelector('.menu__icon') as HTMLElement;
+    const bodyMenu = document.querySelector('.menu__body') as HTMLElement;
+    // const header = document.querySelector('.header') as HTMLElement;
+
+    // if (!(document.querySelector('.menu__outside'))) {
+    //   const outsideMenu = document.createElement('div');
+    //   outsideMenu.className = 'menu__outside _active';
+    //   outsideMenu.append(header);
+    //   document.body.append(outsideMenu);
+    // } else {
+    //   document.body.prepend(header);
+    //   (document.querySelector('.menu__outside') as HTMLElement).remove();
+    // }
+
+    document.body.classList.toggle('_lock');
+    iconMenu.classList.toggle('_active');
+    bodyMenu.classList.toggle('_active');
   }
 
   goToMain() {
@@ -59,10 +83,10 @@ export default class ControllerHeader {
   }
 
   detachEvents() {
-    const nav = document.querySelector('.nav');
+    const nav = document.querySelector('.menu__list');
 
     if (nav) {
-      (document.querySelector('.nav') as HTMLElement).removeEventListener(
+      (document.querySelector('.menu__list') as HTMLElement).removeEventListener(
         'click',
         this.goToPage.bind(this)
       );
@@ -76,8 +100,8 @@ export default class ControllerHeader {
   }
 
   goToPage(e: Event) {
-    if (e.target instanceof HTMLElement) {
-      const page = e.target.getAttribute('data-page') as string;
+    if ((e.target as HTMLElement).getAttribute('data-page')) {
+      const page = (e.target as HTMLElement).getAttribute('data-page') as string;
       this.changePage(page);
     }
   }
