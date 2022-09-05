@@ -5,6 +5,14 @@
   // transition: 0.5s;
 }
 
+body {
+  padding-top: 65.4px;
+}
+
+body._lock {
+  overflow: hidden;
+}
+
 html {
   font-size: 10px;
   scroll-behavior: smooth;
