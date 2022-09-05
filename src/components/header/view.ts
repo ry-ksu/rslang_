@@ -10,6 +10,7 @@ export default class ViewHeader {
     const nav = this.drawNav();
     const userArea = this.drawUserArea(auth);
 
+    header.className = 'header';
     logo.className = 'logo';
     headerWrapper.className = 'header-wrapper';
     logo.innerHTML = '<h1>VICTORY</h1>';
@@ -33,19 +34,25 @@ export default class ViewHeader {
   }
 
   drawNav() {
-    const nav = document.createElement('nav');
-    nav.className = 'nav';
-    // тут data-атрибуты лучше, чем матчится на css-классы
-    nav.innerHTML =
-      '<ul>' +
-      '<li data-page="mainPage">Главная</li>' +
-      '<li data-page="about">О нас</li>' +
-      '<li data-page="textbook">Учебник</li>' +
-      // разместить игры в выпадающем меню
-      '<li data-page="audioGame">Аудиовызов</li>' +
-      '<li data-page="sprint">Спринт</li>' +
-      '<li data-page="statistics">Статистика</li>' +
-      '</ul>';
+    const nav = document.createElement('div');
+    nav.className = 'header__menu';
+    nav.innerHTML = `<div class="menu__icon">
+        <span></span>
+      </div>
+      <nav class="menu__body">
+        <ul class="menu__list">
+          <li class="menu__link" data-page="mainPage">Главная</li>
+          <li class="menu__link" data-page="about">О нас</li>
+          <li class="menu__link" data-page="textbook">Учебник</li>
+          <li class="menu__link menu__link_games" >Игры
+            <ul class="menu__sub-list">
+              <li class="menu__sub-link" data-page="audioGame">Аудиовызов</li>
+              <li class="menu__sub-link" data-page="sprint">Спринт</li>
+            </ul>
+          </li>
+          <li class="menu__link" data-page="statistics">Статистика</li>
+        </ul>
+      </nav>`;
     return nav;
   }
 }

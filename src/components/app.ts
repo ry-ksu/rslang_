@@ -63,7 +63,7 @@ export class App {
         this.changeLSPageAndRenderThisPage.bind(this),
         this.controllerAuthorization
       ),
-      mainPage: new ControllerMainPage(this.attributes),
+      mainPage: new ControllerMainPage(this.attributes, this.render.bind(this)),
       // statistics: new ControllerStatistics(),
       textBook: new ControllerTextBook(this),
     };
@@ -107,8 +107,9 @@ export class App {
         this.controllers.games.getData();
       },
       textbook: () => {
-        this.controllers.textBook.getData().catch((error) => console.error(error));
-        this.controllers.footer.getData();
+        this.controllers.textBook.getData()
+          .then(() => this.controllers.footer.getData())
+          .catch((error) => console.error(error));
       },
     };
 
