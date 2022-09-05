@@ -54,24 +54,13 @@ export default class ControllerHeader {
     );
     (document.querySelector('.menu__icon') as HTMLElement).addEventListener(
       'click',
-      this.showBurgerMenu.bind(this)
+      this.showBurgerMenu
     );
   }
 
-  showBurgerMenu() {
+  showBurgerMenu = () => {
     const iconMenu = document.querySelector('.menu__icon') as HTMLElement;
     const bodyMenu = document.querySelector('.menu__body') as HTMLElement;
-    // const header = document.querySelector('.header') as HTMLElement;
-
-    // if (!(document.querySelector('.menu__outside'))) {
-    //   const outsideMenu = document.createElement('div');
-    //   outsideMenu.className = 'menu__outside _active';
-    //   outsideMenu.append(header);
-    //   document.body.append(outsideMenu);
-    // } else {
-    //   document.body.prepend(header);
-    //   (document.querySelector('.menu__outside') as HTMLElement).remove();
-    // }
 
     document.body.classList.toggle('_lock');
     iconMenu.classList.toggle('_active');
@@ -90,7 +79,7 @@ export default class ControllerHeader {
         'click',
         this.goToPage.bind(this)
       );
-    }
+    }  
   }
 
   getData(isUserAuth: boolean) {
@@ -101,6 +90,7 @@ export default class ControllerHeader {
 
   goToPage(e: Event) {
     if ((e.target as HTMLElement).getAttribute('data-page')) {
+      (document.querySelector('body') as HTMLElement).className = '';
       const page = (e.target as HTMLElement).getAttribute('data-page') as string;
       this.changePage(page);
     }

@@ -102,8 +102,9 @@ export class App {
         this.controllers.games.getData();
       },
       textbook: () => {
-        this.controllers.textBook.getData().catch((error) => console.error(error));
-        this.controllers.footer.getData();
+        this.controllers.textBook.getData()
+          .then(() => this.controllers.footer.getData())
+          .catch((error) => console.error(error));
       },
     };
 
