@@ -88,6 +88,8 @@ export default async (
     const userStatistics = await api.getUserStatistics({ userID: LS.userId, token: LS.token });
     let currentStatistics = dectructUserStatistics(userStatistics);
 
+    console.log(currentStatistics)
+
     const learnedWords: string[] = userWords
       .filter((word) => word.optional.isLearned)
       .map((word) => word.wordId ?? '');

@@ -101,6 +101,7 @@ export type IGamePack = {
   enSound: string;
   ruRightWord: string;
   ruMixWords: string[];
+  wordId: string;
 };
 
 export type IAttributes = {
