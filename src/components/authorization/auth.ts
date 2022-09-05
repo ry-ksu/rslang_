@@ -1,11 +1,12 @@
 import LocalStorage from '../../services/store';
 import WordsApi from '../../services/wordsAPI';
-import { IUserToken, voidFn } from '../types/types';
+import { IUserStatistics, IUserToken, voidFn } from '../types/types';
 import animateCSS from './animate';
 import { AuthOption, checkValueFn, SignUpOptions } from './contracts';
 import { createHtmlEl } from './helpers';
 import { togglePopupAppearance } from './togglePopupState';
 import { updatePopup } from './view';
+import getUserStatistics, { cleanTodayStats } from '../games/getEmptyStatistics';
 
 const testValue = (comparator: RegExp, value: string): boolean => comparator.test(value);
 
@@ -76,7 +77,7 @@ const authorization = async (
   password: string,
   api: WordsApi,
   localStorage: LocalStorage
-): Promise<void> => {
+): Promise<IUserToken> => {
   try {
     const user: IUserToken = await api.signUser({ email, password });
     localStorage.changeLS('token', user.token);
@@ -92,6 +93,7 @@ const authorization = async (
         updatePopup('signIn');
       })
       .catch((err) => console.log(err));
+    return user;
   } catch (err) {
     throw new Error('Failed in authorization');
   }
@@ -106,7 +108,22 @@ const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
 
   try {
     blockButtons();
-    await authorization(email.value, password.value, api, localStorage);
+    const user = await authorization(email.value, password.value, api, localStorage);
+    const userStatistics = await api.getUserStatistics({ userID: user.userId, token: user.token });
+    const { learnedWords, optional } = userStatistics;
+    let currentStats: IUserStatistics = { learnedWords, optional };
+    const date = new Date().setHours(0, 0, 0, 0);
+    if (currentStats.optional.todayStatistics.date !== date) {
+      currentStats = cleanTodayStats(date, userStatistics);
+    }
+    if (currentStats.optional.longStatistics.days.every((day) => day.date !== date)) {
+      currentStats.optional.longStatistics.days.push({ date, newWords: [], learnedWords: [] });
+    }
+    await api.updateUserStatistics({
+      userID: user.userId,
+      userStatistics: currentStats,
+      token: user.token,
+    });
   } catch (err) {
     email.value = '';
     password.value = '';
@@ -132,7 +149,14 @@ const singUp = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
       email: email.value,
       password: password.value,
     });
-    await authorization(email.value, password.value, api, localStorage);
+    const date = new Date().setHours(0, 0, 0, 0);
+    const userStatistics = getUserStatistics(date);
+    const newUser = await authorization(email.value, password.value, api, localStorage);
+    await api.updateUserStatistics({
+      userID: newUser.userId,
+      userStatistics,
+      token: newUser.token,
+    });
     name.value = '';
     email.value = '';
     password.value = '';
@@ -168,7 +192,10 @@ export default (api: WordsApi, localStorage: LocalStorage, callback: voidFn) => 
     const option = popup.getAttribute('data') as AuthOption;
 
     authByOption[option](api, localStorage)
-      .then(() => callback())
+      .then(() => {
+        console.log('here');
+        callback();
+      })
       .catch(() => unBlockButtons());
   });
 };
