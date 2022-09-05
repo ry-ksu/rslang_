@@ -85,23 +85,13 @@ export const updateUserWordsAfterGame = async (
   token: string,
   api: WordsApi
 ) => {
-  const successWordsRequests = currentProgress.successWords.map(word => updateUserWord(
-    userWords, 
-    userID,
-    word.id as string,
-    token, 
-    api, 
-    'success'
-  ));
-  
-  const failureWordsRequests = currentProgress.successWords.map(word => updateUserWord(
-    userWords, 
-    userID,
-    word.id as string,
-    token, 
-    api, 
-    'failure'
-  ));
+  const successWordsRequests = currentProgress.successWords.map((word) =>
+    updateUserWord(userWords, userID, word.id as string, token, api, 'success')
+  );
+
+  const failureWordsRequests = currentProgress.successWords.map((word) =>
+    updateUserWord(userWords, userID, word.id as string, token, api, 'failure')
+  );
   try {
     await Promise.all(successWordsRequests);
     await Promise.all(failureWordsRequests);
@@ -109,4 +99,4 @@ export const updateUserWordsAfterGame = async (
   } catch {
     throw new Error('cant update user words');
   }
-}
+};

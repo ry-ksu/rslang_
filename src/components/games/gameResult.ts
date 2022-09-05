@@ -80,13 +80,7 @@ export default async (
   const currentRes = getCurrentResult(currentProgress);
   try {
     await auth.checkAuth();
-    await updateUserWordsAfterGame(
-      currentProgress,
-      userWords,
-      LS.userId,
-      LS.token,
-      api
-    )
+    await updateUserWordsAfterGame(currentProgress, userWords, LS.userId, LS.token, api);
     const userStatistics = await api.getUserStatistics({ userID: LS.userId, token: LS.token });
     let currentStatistics = dectructUserStatistics(userStatistics);
 
@@ -95,17 +89,15 @@ export default async (
       .map((word) => word.wordId ?? '');
 
     currentStatistics.learnedWords = learnedWords.length;
-    
+
     const longStatDaysCount: number = currentStatistics.optional.longStatistics.days.length;
     const previousLongStatLearnedWords =
       longStatDaysCount > 1
         ? currentStatistics.optional.longStatistics.days[longStatDaysCount - 2].learnedWords
         : null;
 
-    currentStatistics.optional.todayStatistics.learnedWords = previousLongStatLearnedWords ?
-      learnedWords.filter(
-        (learnedWord) => !previousLongStatLearnedWords.includes(learnedWord)
-      )
+    currentStatistics.optional.todayStatistics.learnedWords = previousLongStatLearnedWords
+      ? learnedWords.filter((learnedWord) => !previousLongStatLearnedWords.includes(learnedWord))
       : learnedWords;
 
     if (currentStatistics.optional.todayStatistics.date === date) {
@@ -132,7 +124,9 @@ export default async (
         if (day.date === date) {
           const newWords = currentRes.newWords.filter((word) => !day.newWords.includes(word));
           day.newWords.push(...newWords);
-          const currentLearnedWords = learnedWords.filter((word) => !day.learnedWords.includes(word));
+          const currentLearnedWords = learnedWords.filter(
+            (word) => !day.learnedWords.includes(word)
+          );
           day.learnedWords.push(...currentLearnedWords);
         }
       });

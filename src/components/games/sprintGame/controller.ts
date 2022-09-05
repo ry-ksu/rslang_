@@ -108,7 +108,7 @@ export default class SprintController {
           return;
         }
         this.updateGame(e, animate, interval, timer).catch(() => {
-          console.log()
+          console.log();
         });
       }
     );
@@ -118,7 +118,7 @@ export default class SprintController {
         return;
       }
       this.updateGame(e, animate, interval, timer).catch(() => {
-        console.log()
+        console.log();
       });
     });
   }
@@ -151,7 +151,6 @@ export default class SprintController {
     const response = await checkValueByOption[key](isCorrect);
 
     if (response === 'success') {
-
       this.gameStatistic.updateSuccessWords({
         enWord: this.word.word,
         ruWord: this.word.correctTranslation,
@@ -186,7 +185,6 @@ export default class SprintController {
       clearTimeout(timer);
     }
     animate.pause();
-    clearInterval(interval);
     setTimeout(() => {
       this.viewGames.drawResults(this.gameStatistic, this.attributes.component);
       this.controllerGames.attachStatisticEvents(this.gameStatistic);
@@ -197,7 +195,7 @@ export default class SprintController {
           this.LS,
           this.athorization,
           'sprint',
-          this.userWords,
+          this.userWords
         ).catch(() => {
           throw new Error();
         });
