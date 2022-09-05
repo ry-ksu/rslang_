@@ -108,12 +108,7 @@ export default class SprintController {
         if (!target.matches('.sprint__btn')) {
           return;
         }
-        this.updateGame(e)
-          .then(() => {
-            if (!this.word) {
-              this.endGame(animate, interval, timer);
-            }
-          })
+        this.updateGame(e, animate, interval, timer)
           .catch(() => {
             throw new Error();
           });
@@ -124,12 +119,7 @@ export default class SprintController {
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') {
         return;
       }
-      this.updateGame(e)
-        .then(() => {
-          if (!this.word) {
-            this.endGame(animate, interval, timer);
-          }
-        })
+      this.updateGame(e, animate, interval, timer)
         .catch(() => {
           throw new Error();
         });
@@ -138,6 +128,9 @@ export default class SprintController {
 
   public async updateGame(
     e: Event | KeyboardEvent,
+    animate: Animation, 
+    interval: NodeJS.Timer, 
+    timer?: NodeJS.Timeout
   ) {
     const sprintGame = document.querySelector('.sprintGame') as HTMLElement;
     const wordRuElement = document.querySelector<HTMLElement>('[data-word="ru-word"]');
@@ -201,6 +194,8 @@ export default class SprintController {
 
     if (this.word) {
       updateWords(this.word.word, this.word.translation, this.word.correct);
+    } else {
+      this.endGame(animate, interval, timer);
     }
   }
 

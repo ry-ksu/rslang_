@@ -57,7 +57,6 @@ export default async (
   let userWord: IUserWord = getNewUserWord();
   let localUserWords: IUserWord[] = [];
 
-  console.log(wordID,'wordID');
   if (userWords.length > 0) {
     localUserWords = userWords.filter(word => word.wordId === wordID);
   }

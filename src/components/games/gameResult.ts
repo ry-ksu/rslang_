@@ -16,8 +16,9 @@ const dectructUserStatistics = (user: IUserStatistics): IUserStatistics => {
 };
 
 const getThroughSetAndMerge = (arg1: string[], arg2: string[]): string[] => {
-  const arr = [...new Set(...arg1, ...arg2)];
-  return arr;
+  const unique = new Set([...arg1, ...arg2]);
+  console.log(unique)
+  return [...unique];
 };
 
 const mergeUserTodayStatistics = (
@@ -61,7 +62,6 @@ const getCurrentResult = (currentProgress: IGameCurrentResult) => {
     currentResult.newWords.push(word.id as string)
     currentResult.failWords.push(word.id as string)
   })
-  currentResult.bestSeries = currentProgress.rightSeries;
   return currentResult;
 }
 
@@ -82,38 +82,43 @@ export default async (
     currentRes.learnedWords = currentStatistics.optional.todayStatistics.learnedWords;
 
     const userWords = await api.getUserWords({ userID: LS.userId, token: LS.token });
-
     const learnedWords: string[] = userWords
       .filter((word) => word.optional.isLearned)
       .map((word) => word.wordId ?? '');
     
     if (currentStatistics.optional.todayStatistics.date === date) {
       mergeUserTodayStatistics(currentRes, currentStatistics, gameOption);
+      console.log(currentStatistics, 'currentStatistics')
     } else {
       currentStatistics = cleanTodayStats(date, currentStatistics);
       mergeUserTodayStatistics(currentRes, currentStatistics, gameOption);
+      console.log(currentStatistics, 'currentStatistics')
+    }
+
+    if (currentRes.bestSeries > currentStatistics.optional.todayStatistics[gameOption].rightSeries) {
+      currentStatistics.optional.todayStatistics[gameOption].rightSeries = currentRes.bestSeries;
     }
 
     if (currentStatistics.optional.longStatistics.days.every((day) => day.date !== date)) {
       currentStatistics.optional.longStatistics.days.push({
         date,
         newWords: currentRes.newWords,
-
         learnedWords,
       });
     } else {
       currentStatistics.optional.longStatistics.days.forEach((day) => {
         if (day.date === date) {
-          day.newWords.push(...new Set(...currentRes.newWords, ...day.newWords));
-          day.learnedWords.push(...new Set(...learnedWords, ...day.learnedWords));
+          day.newWords.push(...new Set([...currentRes.newWords, ...day.newWords]));
+          day.learnedWords.push(...new Set([...learnedWords, ...day.learnedWords]));
         }
       });
     }
-    await api.updateUserStatistics({
+    const res = await api.updateUserStatistics({
       userID: LS.userId,
       userStatistics: currentStatistics,
       token: LS.token,
     });
+    console.log(res)
   } catch (err) {
     console.log(err);
   }
