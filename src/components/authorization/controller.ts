@@ -20,7 +20,7 @@ export default class ControllerAuthorization {
 
   public getData(): void {
     this.renderAuth();
-    this.authorization(this.render);
+    this.authorization();
   }
 
   private renderAuth(): void {
@@ -30,8 +30,8 @@ export default class ControllerAuthorization {
     showPopup();
   }
 
-  private authorization(callback: voidFn): void {
-    authorization(this.api, this.localStoarge, callback);
+  private authorization(): void {
+    authorization(this.api, this.localStoarge);
   }
 
   public async checkAuth(): Promise<void> {

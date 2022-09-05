@@ -7,6 +7,7 @@ import {
   ILocalStorage,
   IUserStatistics,
   IUserStatisticsGameOption,
+  IUserWord,
 } from '../types/types';
 
 const dectructUserStatistics = (user: IUserStatistics): IUserStatistics => {
@@ -68,6 +69,7 @@ const getCurrentResult = (currentProgress: IGameCurrentResult) => {
     currentResult.newWords.push(word.id as string);
     currentResult.failWords.push(word.id as string);
   });
+  currentResult.bestSeries = currentProgress.rightSeries;
   return currentResult;
 };
 
@@ -76,7 +78,8 @@ export default async (
   api: WordsApi,
   LS: ILocalStorage,
   auth: ControllerAuthorization,
-  gameOption: IUserStatisticsGameOption
+  gameOption: IUserStatisticsGameOption,
+  userWords: IUserWord[]
 ): Promise<void> => {
   const date = new Date().setHours(0, 0, 0, 0);
   const currentRes = getCurrentResult(currentProgress);
@@ -85,12 +88,21 @@ export default async (
     const userStatistics = await api.getUserStatistics({ userID: LS.userId, token: LS.token });
     let currentStatistics = dectructUserStatistics(userStatistics);
 
-    currentRes.learnedWords = currentStatistics.optional.todayStatistics.learnedWords;
-
-    const userWords = await api.getUserWords({ userID: LS.userId, token: LS.token });
-    let learnedWords: string[] = userWords
+    const learnedWords: string[] = userWords
       .filter((word) => word.optional.isLearned)
       .map((word) => word.wordId ?? '');
+
+    currentStatistics.learnedWords = learnedWords.length;
+
+    const longStatDaysCount: number = currentStatistics.optional.longStatistics.days.length;
+    const previousLongStatLearnedWords =
+      longStatDaysCount > 1
+        ? currentStatistics.optional.longStatistics.days[longStatDaysCount - 2].learnedWords
+        : null;
+
+    currentStatistics.optional.todayStatistics.learnedWords = previousLongStatLearnedWords
+      ? learnedWords.filter((learnedWord) => !previousLongStatLearnedWords.includes(learnedWord))
+      : learnedWords;
 
     if (currentStatistics.optional.todayStatistics.date === date) {
       currentStatistics = mergeUserTodayStatistics(currentRes, currentStatistics, gameOption);
@@ -114,20 +126,21 @@ export default async (
     } else {
       currentStatistics.optional.longStatistics.days.forEach((day) => {
         if (day.date === date) {
-          currentRes.newWords = currentRes.newWords.filter((word) => !day.newWords.includes(word));
-          day.newWords.push(...currentRes.newWords);
-          learnedWords = learnedWords.filter((word) => !day.learnedWords.includes(word));
-          day.learnedWords.push(...learnedWords);
+          const newWords = currentRes.newWords.filter((word) => !day.newWords.includes(word));
+          day.newWords.push(...newWords);
+          const currentLearnedWords = learnedWords.filter(
+            (word) => !day.learnedWords.includes(word)
+          );
+          day.learnedWords.push(...currentLearnedWords);
         }
       });
     }
-    const res = await api.updateUserStatistics({
+    await api.updateUserStatistics({
       userID: LS.userId,
       userStatistics: currentStatistics,
       token: LS.token,
     });
-    console.log(res);
   } catch (err) {
-    console.log(err);
+    console.log();
   }
 };

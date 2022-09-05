@@ -1,7 +1,11 @@
-import { IAttributes, IGamePack, IWord, IGameCurrentResult } from '../../types/types';
+import { IAttributes, IGamePack, IWord, IGameCurrentResult, IUserWord } from '../../types/types';
 import ViewAudioGame from './view';
 import ControllerGames from '../controller';
 import ViewGames from '../view';
+import updateUserWord from '../userWordActions';
+import ControllerAuthorization from '../../authorization/controller';
+import sendResult from '../gameResult';
+import animateCSS from '../../authorization/animate';
 
 export default class ControllerAudioGame {
   controllerGames: ControllerGames;
@@ -13,14 +17,26 @@ export default class ControllerAudioGame {
     currentAudioGameStatistic: IGameCurrentResult;
   };
 
+  authorization: ControllerAuthorization;
+
+  userWords: IUserWord[] = [];
+
+  isAuth = false;
+
   view: {
     viewGames: ViewGames;
     viewAudioGame: ViewAudioGame;
   };
 
-  constructor(controllerGames: ControllerGames, viewGames: ViewGames, attributes: IAttributes) {
+  constructor(
+    controllerGames: ControllerGames,
+    viewGames: ViewGames,
+    attributes: IAttributes,
+    authorization: ControllerAuthorization
+  ) {
     this.controllerGames = controllerGames;
     this.attributes = attributes;
+    this.authorization = authorization;
     this.gameObjects = {
       gamePack: [],
       currentAudioGameStatistic: {
@@ -47,6 +63,12 @@ export default class ControllerAudioGame {
     };
     this.gameObjects.gamePack = [];
 
+    this.getUserWords()
+      .then((userWords) => {
+        this.userWords = userWords;
+      })
+      .catch(() => console.log());
+
     for (let i = 0; i < randomDate.length; i += 1) {
       const enSound = randomDate[i].audio;
       const enRightWord = randomDate[i].word;
@@ -54,6 +76,7 @@ export default class ControllerAudioGame {
       const img = randomDate[i].image;
       const ruWrongWordsArray: IWord['word'][] = [];
       const ruWrongWordsCount = 4;
+      const wordId = randomDate[i].id;
 
       for (let j = 0; j < ruWrongWordsCount; j += 1) {
         let index = Math.ceil(Math.random() * randomDate.length - 1);
@@ -73,6 +96,7 @@ export default class ControllerAudioGame {
         enSound,
         ruRightWord,
         ruMixWords,
+        wordId,
       });
     }
     this.view.viewAudioGame.draw(this.gameObjects.gamePack[0], this.attributes);
@@ -148,13 +172,24 @@ export default class ControllerAudioGame {
         ) {
           this.drawAudioGamePg();
         } else {
-          this.skipWordHandler();
+          const audioGame = document.querySelector('.audioGame') as HTMLElement;
+          animateCSS(audioGame, 'pulse')
+            .then(() => {
+              this.skipWordHandler();
+            })
+            .catch(() => console.log());
         }
       }
     }
   };
 
   skipWordHandler() {
+    const audioGame = document.querySelector('.audioGame') as HTMLElement;
+    animateCSS(audioGame, 'pulse')
+      .then(() => {
+        this.skipWord();
+      })
+      .catch(() => console.log());
     this.skipWord();
     (document.querySelector('.right ') as HTMLElement).style.background = '#e2a6a6';
   }
@@ -202,18 +237,44 @@ export default class ControllerAudioGame {
       enWord: this.gameObjects.gamePack[0].enRightWord,
       ruWord: this.gameObjects.gamePack[0].ruRightWord,
       sound: this.gameObjects.gamePack[0].enSound,
+      id: this.gameObjects.gamePack[0].wordId,
     });
+    this.updateUserWord();
   }
 
   addMistakeInStatistic() {
     this.detachEvents();
+
+    this.gameObjects.currentAudioGameStatistic.newWords.push(
+      this.gameObjects.gamePack[0].enRightWord
+    );
 
     this.gameObjects.currentAudioGameStatistic.currentSeries = 0;
     this.gameObjects.currentAudioGameStatistic.failWords.push({
       enWord: this.gameObjects.gamePack[0].enRightWord,
       ruWord: this.gameObjects.gamePack[0].ruRightWord,
       sound: this.gameObjects.gamePack[0].enSound,
+      id: this.gameObjects.gamePack[0].wordId,
     });
+    this.updateUserWord();
+  }
+
+  updateUserWord() {
+    if (this.isAuth) {
+      if (this.gameObjects.gamePack.length !== 0) {
+        const LS = this.attributes.localStorage.getLS();
+        updateUserWord(
+          this.userWords,
+          LS.userId,
+          this.gameObjects.gamePack[0].wordId,
+          LS.token,
+          this.attributes.wordsApi,
+          'success'
+        ).catch(() => {
+          throw new Error();
+        });
+      }
+    }
   }
 
   addRightAnswerInWindow() {
@@ -234,8 +295,27 @@ export default class ControllerAudioGame {
     this.attachEvents();
   }
 
+  async getUserWords() {
+    const LS = this.attributes.localStorage.getLS();
+    if (this.isAuth) {
+      const userWords = await this.attributes.wordsApi.getUserWords({
+        userID: LS.userId,
+        token: LS.token,
+      });
+      return userWords;
+    }
+    return [];
+  }
+
   drawAudioGamePg() {
     this.gameObjects.gamePack.shift();
+
+    this.authorization
+      .checkAuth()
+      .then(() => {
+        this.isAuth = true;
+      })
+      .catch(() => console.log());
 
     if (this.gameObjects.gamePack.length !== 0) {
       this.view.viewAudioGame.draw(this.gameObjects.gamePack[0], this.attributes);
@@ -248,6 +328,17 @@ export default class ControllerAudioGame {
         this.attributes.component
       );
       this.controllerGames.attachStatisticEvents(this.gameObjects.currentAudioGameStatistic);
+
+      const LS = this.attributes.localStorage.getLS();
+
+      sendResult(
+        this.gameObjects.currentAudioGameStatistic,
+        this.attributes.wordsApi,
+        LS,
+        this.authorization,
+        'audioGame',
+        this.userWords
+      ).catch(() => console.log());
     }
   }
 

@@ -133,3 +133,12 @@
     top: 5px;
   }
 }
+
+._lock main {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.main_sprint {
+  transition: 0.7s;
+}

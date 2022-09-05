@@ -43,7 +43,12 @@ export default class ControllerGames {
     this.athorization = athorization;
     this.viewGames = new ViewGames();
     this.controllers = {
-      controllerAudioGame: new ControllerAudioGame(this, this.viewGames, this.attributes),
+      controllerAudioGame: new ControllerAudioGame(
+        this,
+        this.viewGames,
+        this.attributes,
+        this.athorization
+      ),
       controllerSprintGame: new SprintController(
         this,
         this.viewGames,
@@ -108,7 +113,7 @@ export default class ControllerGames {
       // создаем набор объектов для игры из полученных слов
       .then((result: IWord[]) => this.createGamePack(result))
       .then(() => this.controllerLoader.hideLoader())
-      .catch((err) => console.log(err));
+      .catch(() => console.log());
   }
 
   goToGame() {

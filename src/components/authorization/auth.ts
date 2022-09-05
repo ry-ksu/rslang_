@@ -1,6 +1,6 @@
 import LocalStorage from '../../services/store';
 import WordsApi from '../../services/wordsAPI';
-import { IUserStatistics, IUserToken, voidFn } from '../types/types';
+import { IUserStatistics, IUserToken } from '../types/types';
 import animateCSS from './animate';
 import { AuthOption, checkValueFn, SignUpOptions } from './contracts';
 import { createHtmlEl } from './helpers';
@@ -101,7 +101,7 @@ const authorization = async (
 
 const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> => {
   if (!checkValues()) {
-    return;
+    throw new Error();
   }
   const email = document.getElementById('email') as HTMLInputElement;
   const password = document.getElementById('password') as HTMLInputElement;
@@ -136,7 +136,7 @@ const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
 
 const singUp = async (api: WordsApi, localStorage: LocalStorage): Promise<void> => {
   if (!checkValues()) {
-    return;
+    throw new Error();
   }
   const name = document.getElementById('name') as HTMLInputElement;
   const email = document.getElementById('email') as HTMLInputElement;
@@ -176,7 +176,7 @@ const authByOption: Record<
   signUp: async (api, localStorage) => singUp(api, localStorage),
 };
 
-export default (api: WordsApi, localStorage: LocalStorage, callback: voidFn) => {
+export default (api: WordsApi, localStorage: LocalStorage) => {
   document.addEventListener('click', (e: Event) => {
     const target = e.target as HTMLElement;
     if (!target.matches('.popup__btn')) {
@@ -193,8 +193,7 @@ export default (api: WordsApi, localStorage: LocalStorage, callback: voidFn) => 
 
     authByOption[option](api, localStorage)
       .then(() => {
-        console.log('here');
-        callback();
+        window.location.reload();
       })
       .catch(() => unBlockButtons());
   });

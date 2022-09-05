@@ -31,9 +31,7 @@ export default class ControllerHeader {
       if (!document.querySelector('.outside')) {
         this.controllerAuthorization.getData();
       }
-      this.controllerAuthorization
-        .checkAuth()
-        .catch(() => console.log('unauthorizated (header/controller.ts)'));
+      this.controllerAuthorization.checkAuth().catch(() => console.log());
     } else if ((e.target as HTMLElement).hasAttribute('data-logout')) {
       this.attributes.localStorage.deleteUserData();
       this.attributes.localStorage.changeLS('page', 'mainPage');
@@ -67,7 +65,7 @@ export default class ControllerHeader {
     document.body.classList.toggle('_lock');
     iconMenu.classList.toggle('_active');
     bodyMenu.classList.toggle('_active');
-  }
+  };
 
   goToMain() {
     this.changePage('mainPage');
@@ -81,7 +79,7 @@ export default class ControllerHeader {
         'click',
         this.goToPage.bind(this)
       );
-    }  
+    }
   }
 
   getData(isUserAuth: boolean) {
@@ -94,6 +92,7 @@ export default class ControllerHeader {
     if ((e.target as HTMLElement).getAttribute('data-page')) {
       (document.querySelector('body') as HTMLElement).className = '';
       const page = (e.target as HTMLElement).getAttribute('data-page') as string;
+      window.location.reload();
       this.changePage(page);
     }
   }

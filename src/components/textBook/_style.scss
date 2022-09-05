@@ -5,14 +5,6 @@
   box-sizing: border-box;
 }
 
-// $color-1: #b7eee0;
-// $color-2: #eee1b7;
-// $color-3: #b7eeb7;
-// $color-4: #cab7ee;
-// $color-5: #b7e3ee;
-// $color-6: #f2f7d5;
-// $color-hard: #e2a6a6;
-
 .main_textbook[data-color='1'] {
   background-color: $color-1;
 }
@@ -93,7 +85,6 @@
     }
 
     &.pressed {
-      transform: translateY(2px);
       outline: 2px solid $color-primary;
       background-color: $color-primary;
     }
