@@ -4,6 +4,13 @@
   @include flexible;
 }
 
+main {
+  height: calc(100vh - 65px);
+  background-color: #b7eee0;
+  padding: 0 20px;
+  padding-top: calc(50vh - 65px - 150px - 40px);
+}
+
 .sprintGame {
   background: linear-gradient(0deg, rgb(184 151 237) 0%, rgb(148, 187, 233) 100%);
   border-radius: 10px;
