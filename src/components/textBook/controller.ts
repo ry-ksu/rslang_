@@ -302,6 +302,8 @@ export default class ControllerTextBook {
   runGame(page: string) {
     this.attributes.localStorage.changeLS('page', page);
     this.attributes.component.innerHTML = '';
+    const footer = document.querySelector('footer');
+    footer?.remove();
     if (this.isUserRegistered()) {
       this.getWordsForGame()
         .then((words) => this.app.controllers.games.getData(words))
