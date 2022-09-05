@@ -55,7 +55,7 @@ export default class ControllerHeader {
     (document.querySelector('.menu__icon') as HTMLElement).addEventListener(
       'click',
       this.showBurgerMenu.bind(this)
-    )
+    );
   }
 
   showBurgerMenu() {

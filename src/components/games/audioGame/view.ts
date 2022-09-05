@@ -2,6 +2,7 @@ import { IGamePack, IAttributes } from '../../types/types';
 
 export default class ViewAudioGame {
   draw(gamePack: IGamePack, attributes: IAttributes) {
+    (document.querySelector('main') as HTMLElement).className = 'main_audioGame main_games';
     const main = attributes.component;
     const currentGamePack: IGamePack = gamePack;
     const allWords = document.createElement('div');

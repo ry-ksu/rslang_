@@ -36,8 +36,7 @@ export default class ViewHeader {
   drawNav() {
     const nav = document.createElement('div');
     nav.className = 'header__menu';
-    nav.innerHTML =
-      `<div class="menu__icon">
+    nav.innerHTML = `<div class="menu__icon">
         <span></span>
       </div>
       <nav class="menu__body">
@@ -53,7 +52,7 @@ export default class ViewHeader {
           </li>
           <li class="menu__link" data-page="statistics">Статистика</li>
         </ul>
-      </nav>`
+      </nav>`;
     return nav;
   }
 }

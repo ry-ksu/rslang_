@@ -68,7 +68,7 @@
   .header__menu {
     order: -1;
   }
-  .menu__icon._active span{
+  .menu__icon._active span {
     transform: scale(0) translate(0, -50%);
   }
   .menu__icon._active::before {
@@ -90,12 +90,12 @@
   .menu__icon span,
   .menu__icon::before,
   .menu__icon::after {
-   left: 0;
-   position: absolute; 
-   height: 10%;
-   width: 100%;
-   transition: all 0.3s;
-   background: $color-light-xl;
+    left: 0;
+    position: absolute;
+    height: 10%;
+    width: 100%;
+    transition: all 0.3s;
+    background: $color-light-xl;
   }
   .menu__icon::before,
   .menu__icon::after {
@@ -162,7 +162,6 @@
       .menu__sub-link {
         font-size: 2.4rem;
       }
-      
     }
   }
   // .menu__outside {

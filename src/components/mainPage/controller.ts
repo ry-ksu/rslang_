@@ -15,7 +15,10 @@ export default class ControllerAbout {
   }
 
   attachEvents() {
-    (document.querySelector('.main-block__game') as HTMLElement).addEventListener('click', this.goToGame.bind(this))
+    (document.querySelector('.main-block__game') as HTMLElement).addEventListener(
+      'click',
+      this.goToGame.bind(this)
+    );
   }
 
   goToGame() {
