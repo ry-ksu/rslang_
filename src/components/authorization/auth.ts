@@ -115,15 +115,15 @@ const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
     const date = new Date().setHours(0, 0, 0, 0);
     if (currentStats.optional.todayStatistics.date !== date) {
       currentStats = cleanTodayStats(date, userStatistics);
-      await api.updateUserStatistics({
-        userID: user.userId,
-        userStatistics,
-        token: user.token,
-      });
     }
     if (currentStats.optional.longStatistics.days.every((day) => day.date !== date)) {
       currentStats.optional.longStatistics.days.push({ date, newWords: [], learnedWords: [] });
     }
+    await api.updateUserStatistics({
+      userID: user.userId,
+      userStatistics: currentStats,
+      token: user.token,
+    });
   } catch (err) {
     email.value = '';
     password.value = '';
@@ -192,7 +192,10 @@ export default (api: WordsApi, localStorage: LocalStorage, callback: voidFn) => 
     const option = popup.getAttribute('data') as AuthOption;
 
     authByOption[option](api, localStorage)
-      .then(() => callback())
+      .then(() => {
+        console.log('here')
+        callback()
+      })
       .catch(() => unBlockButtons());
   });
 };

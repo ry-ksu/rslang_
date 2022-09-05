@@ -37,11 +37,13 @@ export default class SprintController {
 
   isAuth = false;
 
+  originalData: IWord[] = [];
+
   constructor(
     controllerGames: ControllerGames,
     viewGames: ViewGames,
     attributes: IAttributes,
-    athorization: ControllerAuthorization
+    athorization: ControllerAuthorization,
   ) {
     this.attributes = attributes;
     this.viewGames = viewGames;
@@ -61,13 +63,14 @@ export default class SprintController {
   }
 
   public updateWord() {
-    const word = this.gamepack.get(this.index) as GamePackValue;
-    this.word = word;
+    this.word = this.gamepack.get(this.index) as GamePackValue;
+    this.index += 1;
   }
 
   public async luanchGame(data: IWord[]): Promise<void> {
     try {
       await this.athorization.checkAuth();
+      this.originalData = data;
       this.userWords = await this.attributes.wordsApi.getUserWords(
         { userID: this.LS.userId, token: this.LS.token }
       );
@@ -80,6 +83,7 @@ export default class SprintController {
     this.gameStatistic.cleanStatistic();
     this.gamepack = getGamePack(data);
     this.updateWord();
+
     renderSprintGame(this.attributes);
     updateWords(this.word.word, this.word.translation, this.word.correct);
     const animate = animateCircle();
@@ -104,9 +108,15 @@ export default class SprintController {
         if (!target.matches('.sprint__btn')) {
           return;
         }
-        this.updateGame(e, animate, interval, timer).catch(() => {
-          throw new Error();
-        });
+        this.updateGame(e)
+          .then(() => {
+            if (!this.word) {
+              this.endGame(animate, interval, timer);
+            }
+          })
+          .catch(() => {
+            throw new Error();
+          });
       }
     );
 
@@ -114,17 +124,20 @@ export default class SprintController {
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') {
         return;
       }
-      this.updateGame(e, animate, interval, timer).catch(() => {
-        throw new Error();
-      });
+      this.updateGame(e)
+        .then(() => {
+          if (!this.word) {
+            this.endGame(animate, interval, timer);
+          }
+        })
+        .catch(() => {
+          throw new Error();
+        });
     });
   }
 
   public async updateGame(
     e: Event | KeyboardEvent,
-    animate: Animation,
-    interval: NodeJS.Timer,
-    timer?: NodeJS.Timeout
   ) {
     const sprintGame = document.querySelector('.sprintGame') as HTMLElement;
     const wordRuElement = document.querySelector<HTMLElement>('[data-word="ru-word"]');
@@ -184,12 +197,10 @@ export default class SprintController {
         console.log(err);
       });
     }
-    if (this.gamepack.has(this.index + 1)) {
-      this.index += 1;
-      this.updateWord();
+    this.updateWord();
+
+    if (this.word) {
       updateWords(this.word.word, this.word.translation, this.word.correct);
-    } else {
-      this.endGame(animate, interval, timer);
     }
   }
 
