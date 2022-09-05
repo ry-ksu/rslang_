@@ -43,7 +43,12 @@ export default class ControllerGames {
     this.athorization = athorization;
     this.viewGames = new ViewGames();
     this.controllers = {
-      controllerAudioGame: new ControllerAudioGame(this, this.viewGames, this.attributes, this.athorization),
+      controllerAudioGame: new ControllerAudioGame(
+        this,
+        this.viewGames,
+        this.attributes,
+        this.athorization
+      ),
       controllerSprintGame: new SprintController(
         this,
         this.viewGames,

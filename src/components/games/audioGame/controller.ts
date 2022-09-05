@@ -29,9 +29,9 @@ export default class ControllerAudioGame {
   };
 
   constructor(
-    controllerGames: ControllerGames, 
-    viewGames: ViewGames, 
-    attributes: IAttributes, 
+    controllerGames: ControllerGames,
+    viewGames: ViewGames,
+    attributes: IAttributes,
     authorization: ControllerAuthorization
   ) {
     this.controllerGames = controllerGames;
@@ -64,8 +64,10 @@ export default class ControllerAudioGame {
     this.gameObjects.gamePack = [];
 
     this.getUserWords()
-      .then((userWords) => { this.userWords = userWords })
-      .catch(() => console.log('cant get user words'))
+      .then((userWords) => {
+        this.userWords = userWords;
+      })
+      .catch(() => console.log());
 
     for (let i = 0; i < randomDate.length; i += 1) {
       const enSound = randomDate[i].audio;
@@ -94,7 +96,7 @@ export default class ControllerAudioGame {
         enSound,
         ruRightWord,
         ruMixWords,
-        wordId
+        wordId,
       });
     }
     this.view.viewAudioGame.draw(this.gameObjects.gamePack[0], this.attributes);
@@ -172,8 +174,10 @@ export default class ControllerAudioGame {
         } else {
           const audioGame = document.querySelector('.audioGame') as HTMLElement;
           animateCSS(audioGame, 'pulse')
-            .then(() => { this.skipWordHandler(); })
-            .catch(() => console.log('finish'))
+            .then(() => {
+              this.skipWordHandler();
+            })
+            .catch(() => console.log());
         }
       }
     }
@@ -182,8 +186,10 @@ export default class ControllerAudioGame {
   skipWordHandler() {
     const audioGame = document.querySelector('.audioGame') as HTMLElement;
     animateCSS(audioGame, 'pulse')
-      .then(() => { this.skipWord(); })
-      .catch(() => console.log('finish'))
+      .then(() => {
+        this.skipWord();
+      })
+      .catch(() => console.log());
     this.skipWord();
     (document.querySelector('.right ') as HTMLElement).style.background = '#e2a6a6';
   }
@@ -231,7 +237,7 @@ export default class ControllerAudioGame {
       enWord: this.gameObjects.gamePack[0].enRightWord,
       ruWord: this.gameObjects.gamePack[0].ruRightWord,
       sound: this.gameObjects.gamePack[0].enSound,
-      id: this.gameObjects.gamePack[0].wordId
+      id: this.gameObjects.gamePack[0].wordId,
     });
     this.updateUserWord();
   }
@@ -248,7 +254,7 @@ export default class ControllerAudioGame {
       enWord: this.gameObjects.gamePack[0].enRightWord,
       ruWord: this.gameObjects.gamePack[0].ruRightWord,
       sound: this.gameObjects.gamePack[0].enSound,
-      id: this.gameObjects.gamePack[0].wordId
+      id: this.gameObjects.gamePack[0].wordId,
     });
     this.updateUserWord();
   }
@@ -259,12 +265,14 @@ export default class ControllerAudioGame {
         const LS = this.attributes.localStorage.getLS();
         updateUserWord(
           this.userWords,
-          LS.userId, 
-          this.gameObjects.gamePack[0].wordId, 
-          LS.token, 
-          this.attributes.wordsApi, 
-          'success')
-          .catch(() => { throw new Error })
+          LS.userId,
+          this.gameObjects.gamePack[0].wordId,
+          LS.token,
+          this.attributes.wordsApi,
+          'success'
+        ).catch(() => {
+          throw new Error();
+        });
       }
     }
   }
@@ -289,15 +297,24 @@ export default class ControllerAudioGame {
 
   async getUserWords() {
     const LS = this.attributes.localStorage.getLS();
-    const userWords = await this.attributes.wordsApi.getUserWords({ userID: LS.userId, token: LS.token });
-    return userWords;
+    if (this.isAuth) {
+      const userWords = await this.attributes.wordsApi.getUserWords({
+        userID: LS.userId,
+        token: LS.token,
+      });
+      return userWords;
+    }
+    return [];
   }
 
   drawAudioGamePg() {
     this.gameObjects.gamePack.shift();
 
-    this.authorization.checkAuth()
-      .then(() => { this.isAuth = true })
+    this.authorization
+      .checkAuth()
+      .then(() => {
+        this.isAuth = true;
+      })
       .catch(() => console.log());
 
     if (this.gameObjects.gamePack.length !== 0) {
@@ -311,7 +328,9 @@ export default class ControllerAudioGame {
         this.attributes.component
       );
       this.controllerGames.attachStatisticEvents(this.gameObjects.currentAudioGameStatistic);
+
       const LS = this.attributes.localStorage.getLS();
+
       sendResult(
         this.gameObjects.currentAudioGameStatistic,
         this.attributes.wordsApi,
@@ -319,8 +338,7 @@ export default class ControllerAudioGame {
         this.authorization,
         'audioGame',
         this.userWords
-      )
-        .catch(() => console.log('Cant send result'))
+      ).catch(() => console.log());
     }
   }
 

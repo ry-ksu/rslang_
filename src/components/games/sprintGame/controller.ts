@@ -110,7 +110,7 @@ export default class SprintController {
           return;
         }
         this.updateGame(e, animate, interval, timer).catch(() => {
-          console.log()
+          console.log();
         });
       }
     );
@@ -120,7 +120,7 @@ export default class SprintController {
         return;
       }
       this.updateGame(e, animate, interval, timer).catch(() => {
-        console.log()
+        console.log();
       });
     });
   }

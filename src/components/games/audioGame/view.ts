@@ -7,7 +7,7 @@ export default class ViewAudioGame {
     if (document.querySelector('footer')) {
       (document.querySelector('footer') as HTMLElement).remove();
     }
-    
+
     const main = attributes.component;
     const currentGamePack: IGamePack = gamePack;
     const allWords = document.createElement('div');

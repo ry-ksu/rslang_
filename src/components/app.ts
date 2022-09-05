@@ -111,7 +111,8 @@ export class App {
         this.controllers.games.getData();
       },
       textbook: () => {
-        this.controllers.textBook.getData()
+        this.controllers.textBook
+          .getData()
           .then(() => this.controllers.footer.getData())
           .catch((error) => console.error(error));
       },

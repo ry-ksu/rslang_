@@ -51,13 +51,14 @@ export default class ViewStatistics {
       todayStatistics.audioGame.failWords.length
     );
 
-    const todayAllSuccessWordsPerc = todaySprintSuccessWordsPerc && todayAudioGameSuccessWordsPerc
-      ? (todaySprintSuccessWordsPerc + todayAudioGameSuccessWordsPerc) / 2
-      : todaySprintSuccessWordsPerc + todayAudioGameSuccessWordsPerc;
+    const todayAllSuccessWordsPerc =
+      todaySprintSuccessWordsPerc && todayAudioGameSuccessWordsPerc
+        ? (todaySprintSuccessWordsPerc + todayAudioGameSuccessWordsPerc) / 2
+        : todaySprintSuccessWordsPerc + todayAudioGameSuccessWordsPerc;
 
     const todaySprintRightSeries = todayStatistics.sprint.rightSeries;
     const todayAudioRightSeries = todayStatistics.audioGame.rightSeries;
-    
+
     todayContainer.innerHTML = `
       <h3 class="title">Статистика за сегодня</h3>
       <div class="today-tables">
