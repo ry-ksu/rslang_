@@ -32,16 +32,32 @@ export default class ViewStatistics {
     const todayContainer = document.createElement('div');
     todayContainer.classList.add('today-container');
     const { todayStatistics } = statistics.optional;
+
     const getRightPercentAnswers = (success: number, wrong: number) =>
-      (success * 100) / (success + wrong);
-    const sprintSuccessWordsPerc = getRightPercentAnswers(
+      Math.floor((success * 100) / (success + wrong)) || 0;
+
+    const todaySprintNewWordsCount = todayStatistics.sprint.newWords.length;
+    const todayAudioNewWordsCount = todayStatistics.audioGame.newWords.length;
+    const todayAllNewWordsCount = todaySprintNewWordsCount + todayAudioNewWordsCount;
+    const todayLearnedWordsCount = todayStatistics.learnedWords.length;
+
+    const todaySprintSuccessWordsPerc = getRightPercentAnswers(
       todayStatistics.sprint.successWords.length,
       todayStatistics.sprint.failWords.length
     );
-    const audioGameSuccessWordsPerc = getRightPercentAnswers(
+
+    const todayAudioGameSuccessWordsPerc = getRightPercentAnswers(
       todayStatistics.audioGame.successWords.length,
       todayStatistics.audioGame.failWords.length
     );
+
+    const todayAllSuccessWordsPerc = todaySprintSuccessWordsPerc && todayAudioGameSuccessWordsPerc
+      ? (todaySprintSuccessWordsPerc + todayAudioGameSuccessWordsPerc) / 2
+      : todaySprintSuccessWordsPerc + todayAudioGameSuccessWordsPerc;
+
+    const todaySprintRightSeries = todayStatistics.sprint.rightSeries;
+    const todayAudioRightSeries = todayStatistics.audioGame.rightSeries;
+    
     todayContainer.innerHTML = `
       <h3 class="title">Статистика за сегодня</h3>
       <div class="today-tables">
@@ -53,18 +69,18 @@ export default class ViewStatistics {
           </tr>
           <tr>
             <td>Новых слов</td>
-            <td>${todayStatistics.sprint.newWords.length}</td>
-            <td>${todayStatistics.audioGame.newWords.length}</td>
+            <td>${todaySprintNewWordsCount}</td>
+            <td>${todayAudioNewWordsCount}</td>
           </tr>
           <tr>
             <td>Процент правильных ответов</td>
-            <td>${Math.round(sprintSuccessWordsPerc)}%</td>
-            <td>${Math.round(audioGameSuccessWordsPerc)}%</td>
+            <td>${todaySprintSuccessWordsPerc}%</td>
+            <td>${todayAudioGameSuccessWordsPerc}%</td>
           </tr>
           <tr>
             <td>Самая длинная серия правильных ответов</td>
-            <td>${todayStatistics.sprint.rightSeries}</td>
-            <td>${todayStatistics.audioGame.rightSeries}</td>
+            <td>${todaySprintRightSeries}</td>
+            <td>${todayAudioRightSeries}</td>
           </tr>
         </table>
         <table class="today-words">
@@ -74,17 +90,15 @@ export default class ViewStatistics {
           </tr>
           <tr>
             <td>Новых слов</td>
-            <td>${
-  todayStatistics.sprint.newWords.length + todayStatistics.audioGame.newWords.length
-}</td>
+            <td>${todayAllNewWordsCount}</td>
           </tr>
           <tr>
             <td>Изученных слов</td>
-            <td>${todayStatistics.learnedWords.length}</td>
+            <td>${todayLearnedWordsCount}</td>
           </tr>
           <tr>
             <td>Процент правильных ответов</td>
-            <td>${Math.round((sprintSuccessWordsPerc + audioGameSuccessWordsPerc) / 2)}%</td>
+            <td>${todayAllSuccessWordsPerc}%</td>
           </tr>
         </table>
       </div>`;
