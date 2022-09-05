@@ -10,7 +10,8 @@ import ControllerHeader from './header/controller';
 import ControllerLoader from './loader/controller';
 import ControllerMainPage from './mainPage/controller';
 import ControllerFooter from './footer/controller';
-// import ControllerStatistics from './statistics/controller';
+import ControllerStatistics from './statistics/controller';
+// import ControllerTeamPage from './teamPage/controller';
 import ControllerTextBook from './textBook/controller';
 
 import '../sass/style.scss';
@@ -28,7 +29,8 @@ export class App {
     games: ControllerGames;
     header: ControllerHeader;
     mainPage: ControllerMainPage;
-    // statistics: ControllerStatistics;
+    statistics: ControllerStatistics;
+    // teamPage: ControllerTeamPage;
     textBook: ControllerTextBook;
   };
 
@@ -64,7 +66,9 @@ export class App {
         this.controllerAuthorization
       ),
       mainPage: new ControllerMainPage(this.attributes, this.render.bind(this)),
-      // statistics: new ControllerStatistics(),
+      statistics: new ControllerStatistics(this),
+      // teamPage: new ControllerTeamPage(),
+
       textBook: new ControllerTextBook(this),
     };
   }
@@ -110,6 +114,10 @@ export class App {
         this.controllers.textBook.getData()
           .then(() => this.controllers.footer.getData())
           .catch((error) => console.error(error));
+      },
+      statistics: () => {
+        this.controllers.statistics.getData().catch((error) => console.error(error));
+        this.controllers.footer.getData();
       },
     };
 

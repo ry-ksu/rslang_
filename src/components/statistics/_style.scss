@@ -1,0 +1,90 @@
+.main_statistics {
+  background-color: #5d8578;
+}
+
+.statistics-container {
+  max-width: 1280px;
+  min-height: calc(100vh - 65.19px);
+  margin: 0 auto;
+  padding: 20px;
+
+  font-family: $font-additional;
+  font-size: 1.8vw;
+  font-style: italic;
+  color: $color-light-xl;
+
+  @media screen and (min-width: 1000px) {
+    font-size: 2.1rem;
+  }
+
+  @media screen and (max-width: 720px) {
+    font-size: 1.3rem;
+  }
+
+  .title {
+    padding: 2rem 0;
+    font-size: 2em;
+    font-family: $font-main;
+    font-style: italic;
+    margin: 0 auto;
+    text-align: center;
+
+    @media screen and (min-width: 1000px) {
+      font-size: 3.7rem;
+    }
+
+    @media screen and (max-width: 720px) {
+      font-size: 2.5rem;
+    }
+  }
+
+  .today-container {
+    max-width: 900px;
+    width: fit-content;
+    margin: 0 auto;
+  }
+
+  .today-tables {
+    display: flex;
+    gap: 2rem;
+    @media screen and (max-width: 720px) {
+      flex-wrap: wrap;
+    }
+  }
+
+  table {
+    border-collapse: collapse;
+    margin: 0 auto;
+    outline: 2px solid $color-light-xl;
+    border-radius: 1rem;
+  }
+
+  table td {
+    padding: 0.3em;
+    border: 3px solid $color-light-xl;
+  }
+
+  table th {
+    height: 3rem;
+    padding: 0.5rem;
+  }
+
+  table tr:first-child td {
+    border-top: 0;
+  }
+  table tr td:first-child {
+    border-left: 0;
+  }
+  table tr:last-child td {
+    border-bottom: 0;
+  }
+  table tr td:last-child {
+    border-right: 0;
+  }
+
+  .long-container {
+    padding-top: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+}

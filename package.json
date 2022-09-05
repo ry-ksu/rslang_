@@ -46,6 +46,7 @@
     "webpack-dev-server": "^4.10.0"
   },
   "dependencies": {
-    "animate.css": "^4.1.1"
+    "animate.css": "^4.1.1",
+    "chart.js": "^3.9.1"
   }
 }
