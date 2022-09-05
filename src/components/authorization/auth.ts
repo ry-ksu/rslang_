@@ -193,8 +193,8 @@ export default (api: WordsApi, localStorage: LocalStorage, callback: voidFn) => 
 
     authByOption[option](api, localStorage)
       .then(() => {
-        console.log('here')
-        callback()
+        console.log('here');
+        callback();
       })
       .catch(() => unBlockButtons());
   });

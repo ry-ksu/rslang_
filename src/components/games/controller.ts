@@ -25,12 +25,11 @@ export default class ControllerGames {
   attributes: IAttributes;
 
   constructor(
-    controllerApp: App, 
-    attributes: IAttributes, 
-    athorization: ControllerAuthorization, 
+    controllerApp: App,
+    attributes: IAttributes,
+    athorization: ControllerAuthorization,
     controllerLoader: ControllerLoader
   ) {
-  
     this.finishGameStatistic = {
       newWords: [],
       successWords: [],

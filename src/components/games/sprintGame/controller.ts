@@ -10,7 +10,7 @@ import animateCSS from '../../authorization/animate';
 import ControllerAuthorization from '../../authorization/controller';
 import updateUserWord from '../userWordActions';
 import { ComparatorToUpdateUserWord } from '../contracts';
-import sendResult from '../gameResult'
+import sendResult from '../gameResult';
 
 export default class SprintController {
   attributes: IAttributes;
@@ -43,7 +43,7 @@ export default class SprintController {
     controllerGames: ControllerGames,
     viewGames: ViewGames,
     attributes: IAttributes,
-    athorization: ControllerAuthorization,
+    athorization: ControllerAuthorization
   ) {
     this.attributes = attributes;
     this.viewGames = viewGames;
@@ -71,9 +71,10 @@ export default class SprintController {
     try {
       await this.athorization.checkAuth();
       this.originalData = data;
-      this.userWords = await this.attributes.wordsApi.getUserWords(
-        { userID: this.LS.userId, token: this.LS.token }
-      );
+      this.userWords = await this.attributes.wordsApi.getUserWords({
+        userID: this.LS.userId,
+        token: this.LS.token,
+      });
       this.isAuth = true;
     } catch {
       this.isAuth = false;
@@ -108,10 +109,9 @@ export default class SprintController {
         if (!target.matches('.sprint__btn')) {
           return;
         }
-        this.updateGame(e, animate, interval, timer)
-          .catch(() => {
-            throw new Error();
-          });
+        this.updateGame(e, animate, interval, timer).catch(() => {
+          console.log()
+        });
       }
     );
 
@@ -119,17 +119,16 @@ export default class SprintController {
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') {
         return;
       }
-      this.updateGame(e, animate, interval, timer)
-        .catch(() => {
-          throw new Error();
-        });
+      this.updateGame(e, animate, interval, timer).catch(() => {
+        console.log()
+      });
     });
   }
 
   public async updateGame(
     e: Event | KeyboardEvent,
-    animate: Animation, 
-    interval: NodeJS.Timer, 
+    animate: Animation,
+    interval: NodeJS.Timer,
     timer?: NodeJS.Timeout
   ) {
     const sprintGame = document.querySelector('.sprintGame') as HTMLElement;
@@ -177,7 +176,7 @@ export default class SprintController {
       });
       this.gameStatistic.updateBestSeries();
     }
-    
+
     if (this.isAuth) {
       updateUserWord(
         this.userWords,
@@ -209,8 +208,15 @@ export default class SprintController {
     setTimeout(() => {
       this.viewGames.drawResults(this.gameStatistic, this.attributes.component);
       this.controllerGames.attachStatisticEvents(this.gameStatistic);
-      animate.cancel();
-      sendResult(this.gameStatistic, this.attributes.wordsApi, this.LS, this.athorization, 'sprint').catch(() => { throw new Error() })
+      sendResult(
+        this.gameStatistic,
+        this.attributes.wordsApi,
+        this.LS,
+        this.athorization,
+        'sprint'
+      ).catch(() => {
+        throw new Error();
+      });
     }, 200);
     clearInterval(interval);
   }

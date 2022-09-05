@@ -16,8 +16,9 @@ const dectructUserStatistics = (user: IUserStatistics): IUserStatistics => {
 };
 
 const getThroughSetAndMerge = (arg1: string[], arg2: string[]): string[] => {
-  const unique = new Set([...arg1, ...arg2]);
-  console.log(unique)
+  const unique: Set<string> = new Set();
+  arg1.forEach((word) => unique.add(word));
+  arg2.forEach((word) => unique.add(word));
   return [...unique];
 };
 
@@ -25,45 +26,50 @@ const mergeUserTodayStatistics = (
   currentRes: IGameCurrentResultForStats,
   currentStatistics: IUserStatistics,
   gameOption: IUserStatisticsGameOption
-): void => {
-  currentStatistics.optional.todayStatistics[gameOption].newWords.push(
+): IUserStatistics => {
+  const localStats = { ...currentStatistics };
+
+  localStats.optional.todayStatistics[gameOption].newWords = [
     ...getThroughSetAndMerge(
       currentRes.newWords,
       currentStatistics.optional.todayStatistics[gameOption].newWords
-    )
-  );
-  currentStatistics.optional.todayStatistics[gameOption].successWords.push(
+    ),
+  ];
+
+  localStats.optional.todayStatistics[gameOption].successWords = [
     ...getThroughSetAndMerge(
       currentRes.successWords,
       currentStatistics.optional.todayStatistics[gameOption].successWords
-    )
-  );
-  currentStatistics.optional.todayStatistics[gameOption].failWords.push(
+    ),
+  ];
+  localStats.optional.todayStatistics[gameOption].failWords = [
     ...getThroughSetAndMerge(
       currentRes.failWords,
       currentStatistics.optional.todayStatistics[gameOption].failWords
-    )
-  );
-  currentStatistics.optional.todayStatistics.learnedWords.push(
+    ),
+  ];
+
+  localStats.optional.todayStatistics.learnedWords = [
     ...getThroughSetAndMerge(
       currentRes.learnedWords,
       currentStatistics.optional.todayStatistics.learnedWords
-    )
-  );
+    ),
+  ];
+  return localStats;
 };
 
 const getCurrentResult = (currentProgress: IGameCurrentResult) => {
   const currentResult = getEmptyCurrentsStatistics();
-  currentProgress.successWords.forEach(word => {
-    currentResult.newWords.push(word.id as string)
-    currentResult.successWords.push(word.id as string)
-  })
-  currentProgress.failWords.forEach(word => {
-    currentResult.newWords.push(word.id as string)
-    currentResult.failWords.push(word.id as string)
-  })
+  currentProgress.successWords.forEach((word) => {
+    currentResult.newWords.push(word.id as string);
+    currentResult.successWords.push(word.id as string);
+  });
+  currentProgress.failWords.forEach((word) => {
+    currentResult.newWords.push(word.id as string);
+    currentResult.failWords.push(word.id as string);
+  });
   return currentResult;
-}
+};
 
 export default async (
   currentProgress: IGameCurrentResult,
@@ -82,20 +88,20 @@ export default async (
     currentRes.learnedWords = currentStatistics.optional.todayStatistics.learnedWords;
 
     const userWords = await api.getUserWords({ userID: LS.userId, token: LS.token });
-    const learnedWords: string[] = userWords
+    let learnedWords: string[] = userWords
       .filter((word) => word.optional.isLearned)
       .map((word) => word.wordId ?? '');
-    
+
     if (currentStatistics.optional.todayStatistics.date === date) {
-      mergeUserTodayStatistics(currentRes, currentStatistics, gameOption);
-      console.log(currentStatistics, 'currentStatistics')
+      currentStatistics = mergeUserTodayStatistics(currentRes, currentStatistics, gameOption);
     } else {
       currentStatistics = cleanTodayStats(date, currentStatistics);
-      mergeUserTodayStatistics(currentRes, currentStatistics, gameOption);
-      console.log(currentStatistics, 'currentStatistics')
+      currentStatistics = mergeUserTodayStatistics(currentRes, currentStatistics, gameOption);
     }
 
-    if (currentRes.bestSeries > currentStatistics.optional.todayStatistics[gameOption].rightSeries) {
+    if (
+      currentRes.bestSeries > currentStatistics.optional.todayStatistics[gameOption].rightSeries
+    ) {
       currentStatistics.optional.todayStatistics[gameOption].rightSeries = currentRes.bestSeries;
     }
 
@@ -108,8 +114,10 @@ export default async (
     } else {
       currentStatistics.optional.longStatistics.days.forEach((day) => {
         if (day.date === date) {
-          day.newWords.push(...new Set([...currentRes.newWords, ...day.newWords]));
-          day.learnedWords.push(...new Set([...learnedWords, ...day.learnedWords]));
+          currentRes.newWords = currentRes.newWords.filter((word) => !day.newWords.includes(word));
+          day.newWords.push(...currentRes.newWords);
+          learnedWords = learnedWords.filter((word) => !day.learnedWords.includes(word));
+          day.learnedWords.push(...learnedWords);
         }
       });
     }
@@ -118,7 +126,7 @@ export default async (
       userStatistics: currentStatistics,
       token: LS.token,
     });
-    console.log(res)
+    console.log(res);
   } catch (err) {
     console.log(err);
   }

@@ -41,7 +41,7 @@ export const getEmptyCurrentsStatistics = (): IGameCurrentResultForStats => ({
 
 export const cleanTodayStats = (date: number, stats: IUserStatistics): IUserStatistics => {
   const { optional, learnedWords } = stats;
-  const newStats = { learnedWords, optional }
+  const newStats = { learnedWords, optional };
   newStats.optional.todayStatistics.date = date;
   newStats.optional.todayStatistics.learnedWords = [];
 

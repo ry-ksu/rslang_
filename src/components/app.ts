@@ -51,7 +51,12 @@ export class App {
     this.controllers = {
       about: new ControllerAbout(this.attributes),
       footer: new ControllerFooter(),
-      games: new ControllerGames(this, this.attributes, this.controllerAuthorization, this.controllerLoader),
+      games: new ControllerGames(
+        this,
+        this.attributes,
+        this.controllerAuthorization,
+        this.controllerLoader
+      ),
       header: new ControllerHeader(
         this.render.bind(this),
         this.attributes,

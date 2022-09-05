@@ -58,10 +58,10 @@ export default async (
   let localUserWords: IUserWord[] = [];
 
   if (userWords.length > 0) {
-    localUserWords = userWords.filter(word => word.wordId === wordID);
+    localUserWords = userWords.filter((word) => word.wordId === wordID);
   }
   if (localUserWords.length > 0) {
-    const [ localUserWord ] = localUserWords;
+    const [localUserWord] = localUserWords;
     const { optional, difficulty } = localUserWord;
     userWord = { optional, difficulty };
   } else {
