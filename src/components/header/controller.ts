@@ -42,7 +42,7 @@ export default class ControllerHeader {
   }
 
   attachEvents() {
-    (document.querySelector('.nav') as HTMLElement).addEventListener(
+    (document.querySelector('.menu__list') as HTMLElement).addEventListener(
       'click',
       this.goToPage.bind(this)
     );
@@ -50,17 +50,38 @@ export default class ControllerHeader {
       'click',
       this.defineLoginLogout.bind(this)
     );
+    (document.querySelector('.logo') as HTMLElement).addEventListener(
+      'click',
+      this.goToMain.bind(this)
+    );
+    (document.querySelector('.menu__icon') as HTMLElement).addEventListener(
+      'click',
+      this.showBurgerMenu
+    );
+  }
+
+  showBurgerMenu = () => {
+    const iconMenu = document.querySelector('.menu__icon') as HTMLElement;
+    const bodyMenu = document.querySelector('.menu__body') as HTMLElement;
+
+    document.body.classList.toggle('_lock');
+    iconMenu.classList.toggle('_active');
+    bodyMenu.classList.toggle('_active');
+  }
+
+  goToMain() {
+    this.changePage('mainPage');
   }
 
   detachEvents() {
-    const nav = document.querySelector('.nav');
+    const nav = document.querySelector('.menu__list');
 
     if (nav) {
-      (document.querySelector('.nav') as HTMLElement).removeEventListener(
+      (document.querySelector('.menu__list') as HTMLElement).removeEventListener(
         'click',
         this.goToPage.bind(this)
       );
-    }
+    }  
   }
 
   getData(isUserAuth: boolean) {
@@ -70,8 +91,9 @@ export default class ControllerHeader {
   }
 
   goToPage(e: Event) {
-    if (e.target instanceof HTMLElement) {
-      const page = e.target.getAttribute('data-page') as string;
+    if ((e.target as HTMLElement).getAttribute('data-page')) {
+      (document.querySelector('body') as HTMLElement).className = '';
+      const page = (e.target as HTMLElement).getAttribute('data-page') as string;
       this.changePage(page);
     }
   }

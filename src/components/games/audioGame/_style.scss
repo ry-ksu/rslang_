@@ -5,6 +5,8 @@
 
 .audioGame__words {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
   text-align: center;
   p {
@@ -18,6 +20,8 @@
 
 .audioGame__words_disable {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
   text-align: center;
   p {
@@ -59,7 +63,7 @@
 .audioGame__answer {
   color: $color-primary;
   height: 50px;
-  width: 500px;
+  max-width: 500px;
   margin: auto;
   text-align: center;
   margin-top: 30px;
