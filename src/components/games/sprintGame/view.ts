@@ -12,6 +12,7 @@ export const updateWords = (enWord: string, ruWord: string, isCorrect: boolean):
 
 export const renderSprintGame = (attributes: IAttributes): void => {
   const wrapper = attributes.component;
+  wrapper.classList.add('main_sprint', 'main_games');
   const container = createHtmlEl('div', 'container');
   const sprint = createHtmlEl('section', 'sprintGame');
 

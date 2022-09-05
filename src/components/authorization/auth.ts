@@ -101,7 +101,7 @@ const authorization = async (
 
 const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> => {
   if (!checkValues()) {
-    return;
+    throw new Error();
   }
   const email = document.getElementById('email') as HTMLInputElement;
   const password = document.getElementById('password') as HTMLInputElement;
@@ -136,7 +136,7 @@ const singIn = async (api: WordsApi, localStorage: LocalStorage): Promise<void> 
 
 const singUp = async (api: WordsApi, localStorage: LocalStorage): Promise<void> => {
   if (!checkValues()) {
-    return;
+    throw new Error();
   }
   const name = document.getElementById('name') as HTMLInputElement;
   const email = document.getElementById('email') as HTMLInputElement;
