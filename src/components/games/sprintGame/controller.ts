@@ -8,7 +8,7 @@ import animateCircle from './animateCircle';
 import { blockButtons, checkValueByOption, CheckWordOption } from './gameFunctions';
 import animateCSS from '../../authorization/animate';
 import ControllerAuthorization from '../../authorization/controller';
-import updateUserWord from '../userWordActions';
+import { updateUserWord, updateUserWordsAfterGame } from '../userWordActions';
 import { ComparatorToUpdateUserWord } from '../contracts';
 import sendResult from '../gameResult';
 
@@ -177,6 +177,7 @@ export default class SprintController {
       this.gameStatistic.updateBestSeries();
     }
 
+    /*
     if (this.isAuth) {
       updateUserWord(
         this.userWords,
@@ -189,6 +190,7 @@ export default class SprintController {
         console.log(err);
       });
     }
+    */
     this.updateWord();
 
     if (this.word) {
@@ -208,15 +210,18 @@ export default class SprintController {
     setTimeout(() => {
       this.viewGames.drawResults(this.gameStatistic, this.attributes.component);
       this.controllerGames.attachStatisticEvents(this.gameStatistic);
-      sendResult(
-        this.gameStatistic,
-        this.attributes.wordsApi,
-        this.LS,
-        this.athorization,
-        'sprint'
-      ).catch(() => {
-        throw new Error();
-      });
+      if (this.isAuth) {
+        sendResult(
+          this.gameStatistic,
+          this.attributes.wordsApi,
+          this.LS,
+          this.athorization,
+          'sprint',
+          this.userWords,
+        ).catch(() => {
+          throw new Error();
+        });
+      }
     }, 200);
     clearInterval(interval);
   }

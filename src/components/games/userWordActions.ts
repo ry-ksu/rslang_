@@ -1,5 +1,5 @@
 import WordsApi from '../../services/wordsAPI';
-import { IUserWord } from '../types/types';
+import { IGameCurrentResult, IUserWord } from '../types/types';
 import { DifficultyOption, UpdateWordFn } from './contracts';
 
 const getNewUserWord = (): IUserWord => ({
@@ -46,7 +46,7 @@ const updateUngussedWord = (word: IUserWord): IUserWord => {
   return localWord;
 };
 
-export default async (
+export const updateUserWord = async (
   userWords: IUserWord[],
   userID: string,
   wordID: string,
@@ -77,3 +77,36 @@ export default async (
   }
   await api.updateUserWord({ userID, wordID, userWord: renewedWord, token });
 };
+
+export const updateUserWordsAfterGame = async (
+  currentProgress: IGameCurrentResult,
+  userWords: IUserWord[],
+  userID: string,
+  token: string,
+  api: WordsApi
+) => {
+  const successWordsRequests = currentProgress.successWords.map(word => updateUserWord(
+    userWords, 
+    userID,
+    word.id as string,
+    token, 
+    api, 
+    'success'
+  ));
+  
+  const failureWordsRequests = currentProgress.successWords.map(word => updateUserWord(
+    userWords, 
+    userID,
+    word.id as string,
+    token, 
+    api, 
+    'failure'
+  ));
+  try {
+    await Promise.all(successWordsRequests);
+    await Promise.all(failureWordsRequests);
+    return Promise.resolve('user words updated successfully');
+  } catch {
+    throw new Error('cant update user words');
+  }
+}
