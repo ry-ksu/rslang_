@@ -8,8 +8,6 @@ import animateCircle from './animateCircle';
 import { blockButtons, checkValueByOption, CheckWordOption } from './gameFunctions';
 import animateCSS from '../../authorization/animate';
 import ControllerAuthorization from '../../authorization/controller';
-import { updateUserWord, updateUserWordsAfterGame } from '../userWordActions';
-import { ComparatorToUpdateUserWord } from '../contracts';
 import sendResult from '../gameResult';
 
 export default class SprintController {
@@ -150,12 +148,9 @@ export default class SprintController {
       key = target.innerHTML as CheckWordOption;
     }
 
-    let comparator: ComparatorToUpdateUserWord;
-
     const response = await checkValueByOption[key](isCorrect);
 
     if (response === 'success') {
-      comparator = 'success' as ComparatorToUpdateUserWord;
 
       this.gameStatistic.updateSuccessWords({
         enWord: this.word.word,
@@ -166,7 +161,6 @@ export default class SprintController {
       this.gameStatistic.updateNewWords(this.word.word);
       this.gameStatistic.updateSeries();
     } else {
-      comparator = 'failure' as ComparatorToUpdateUserWord;
       animateCSS(sprintGame, 'headShake').catch((err) => console.log(err));
       this.gameStatistic.updateFailWords({
         enWord: this.word.word,
@@ -177,20 +171,6 @@ export default class SprintController {
       this.gameStatistic.updateBestSeries();
     }
 
-    /*
-    if (this.isAuth) {
-      updateUserWord(
-        this.userWords,
-        this.LS.userId,
-        this.word.id,
-        this.LS.token,
-        this.attributes.wordsApi,
-        comparator
-      ).catch((err) => {
-        console.log(err);
-      });
-    }
-    */
     this.updateWord();
 
     if (this.word) {
