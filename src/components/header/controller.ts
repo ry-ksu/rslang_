@@ -94,6 +94,7 @@ export default class ControllerHeader {
     if ((e.target as HTMLElement).getAttribute('data-page')) {
       (document.querySelector('body') as HTMLElement).className = '';
       const page = (e.target as HTMLElement).getAttribute('data-page') as string;
+      window.location.reload();
       this.changePage(page);
     }
   }

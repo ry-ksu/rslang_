@@ -1,6 +1,6 @@
 import LocalStorage from '../../services/store';
 import WordsApi from '../../services/wordsAPI';
-import { IUserStatistics, IUserToken, voidFn } from '../types/types';
+import { IUserStatistics, IUserToken } from '../types/types';
 import animateCSS from './animate';
 import { AuthOption, checkValueFn, SignUpOptions } from './contracts';
 import { createHtmlEl } from './helpers';
@@ -176,7 +176,7 @@ const authByOption: Record<
   signUp: async (api, localStorage) => singUp(api, localStorage),
 };
 
-export default (api: WordsApi, localStorage: LocalStorage, callback: voidFn) => {
+export default (api: WordsApi, localStorage: LocalStorage) => {
   document.addEventListener('click', (e: Event) => {
     const target = e.target as HTMLElement;
     if (!target.matches('.popup__btn')) {
