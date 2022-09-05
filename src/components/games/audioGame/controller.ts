@@ -5,6 +5,7 @@ import ViewGames from '../view';
 import updateUserWord from '../userWordActions';
 import ControllerAuthorization from '../../authorization/controller';
 import sendResult from '../gameResult';
+import animateCSS from '../../authorization/animate';
 
 export default class ControllerAudioGame {
   controllerGames: ControllerGames;
@@ -169,13 +170,20 @@ export default class ControllerAudioGame {
         ) {
           this.drawAudioGamePg();
         } else {
-          this.skipWordHandler();
+          const audioGame = document.querySelector('.audioGame') as HTMLElement;
+          animateCSS(audioGame, 'pulse')
+            .then(() => { this.skipWordHandler(); })
+            .catch(() => console.log('finish'))
         }
       }
     }
   };
 
   skipWordHandler() {
+    const audioGame = document.querySelector('.audioGame') as HTMLElement;
+    animateCSS(audioGame, 'pulse')
+      .then(() => { this.skipWord(); })
+      .catch(() => console.log('finish'))
     this.skipWord();
     (document.querySelector('.right ') as HTMLElement).style.background = '#e2a6a6';
   }
