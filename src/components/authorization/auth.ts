@@ -192,10 +192,7 @@ export default (api: WordsApi, localStorage: LocalStorage, callback: voidFn) => 
     const option = popup.getAttribute('data') as AuthOption;
 
     authByOption[option](api, localStorage)
-      .then(() => {
-        console.log('here');
-        callback();
-      })
+      .then(() => { window.location.reload() })
       .catch(() => unBlockButtons());
   });
 };
