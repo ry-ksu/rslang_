@@ -3,6 +3,7 @@
 .main_games {
   height: calc(100vh - 65px);
   background-color: $color-1;
+  padding: 0 20px;
   padding-top: calc(50vh - 65px - 150px - 40px);
 }
 
@@ -12,12 +13,14 @@
   margin: 10px;
   border: none;
   border-radius: 10px;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .games {
   background-color: $color-primary-light;
-  width: 800px;
-  height: 300px;
+  max-width: 800px;
   margin: auto;
   text-align: center;
   padding: 40px 20px;
@@ -165,5 +168,21 @@
   }
   p:first-letter {
     text-transform: uppercase;
+  }
+}
+
+@media screen and (max-width: 660px) {
+  .games__lvls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .games__lvl-item {
+    margin: 10px 30px;
+  }
+
+  .games__description {
+    font-size: 16px;
   }
 }

@@ -1,7 +1,9 @@
 import { IWord, IAttributes, IGameCurrentResult } from '../types/types';
 import ViewGames from './view';
 import ControllerAudioGame from './audioGame/controller';
+import SprintController from './sprintGame/controller';
 import App from '../app';
+import ControllerAuthorization from '../authorization/controller';
 import ControllerLoader from '../loader/controller';
 
 export default class ControllerGames {
@@ -13,13 +15,21 @@ export default class ControllerGames {
 
   viewGames: ViewGames;
 
+  athorization: ControllerAuthorization;
+
   controllers: {
     controllerAudioGame: ControllerAudioGame;
+    controllerSprintGame: SprintController;
   };
 
   attributes: IAttributes;
 
-  constructor(controllerApp: App, attributes: IAttributes, controllerLoader: ControllerLoader) {
+  constructor(
+    controllerApp: App,
+    attributes: IAttributes,
+    athorization: ControllerAuthorization,
+    controllerLoader: ControllerLoader
+  ) {
     this.finishGameStatistic = {
       newWords: [],
       successWords: [],
@@ -30,9 +40,16 @@ export default class ControllerGames {
     this.controllerApp = controllerApp;
     this.controllerLoader = controllerLoader;
     this.attributes = attributes;
+    this.athorization = athorization;
     this.viewGames = new ViewGames();
     this.controllers = {
       controllerAudioGame: new ControllerAudioGame(this, this.viewGames, this.attributes),
+      controllerSprintGame: new SprintController(
+        this,
+        this.viewGames,
+        this.attributes,
+        this.athorization
+      ),
     };
   }
 
@@ -94,8 +111,9 @@ export default class ControllerGames {
       .catch((err) => console.log(err));
   }
 
-  goToAudioGame() {
-    this.controllerApp.render();
+  goToGame() {
+    // this.controllerApp.render();
+    window.location.reload();
   }
 
   goToMainPage() {
@@ -139,7 +157,7 @@ export default class ControllerGames {
     );
     (document.querySelector('.game-result__btn-continue') as HTMLElement).addEventListener(
       'click',
-      this.goToAudioGame.bind(this)
+      this.goToGame.bind(this)
     );
   }
 
@@ -152,7 +170,9 @@ export default class ControllerGames {
     if (LSPage === 'audioGame') {
       this.controllers.controllerAudioGame.createGamePackForAudioGame(randomDate);
     } else if (LSPage === 'sprint') {
-      //! нужен алгоритм для спринта
+      this.controllers.controllerSprintGame.luanchGame(randomDate).catch(() => {
+        throw new Error();
+      });
     }
   }
 }

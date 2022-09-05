@@ -64,6 +64,8 @@ export interface IUserWord {
   wordId?: string;
 }
 
+export type IUserStatisticsGameOption = 'audioGame' | 'sprint';
+
 export interface IUserStatistics {
   learnedWords: number;
   optional: {
@@ -117,14 +119,24 @@ export type IGameCurrentResult = {
     enWord: string;
     ruWord: string;
     sound: string;
+    id?: string;
   }[];
   failWords: {
     enWord: string;
     ruWord: string;
     sound: string;
+    id?: string;
   }[];
   currentSeries: number;
   rightSeries: number;
+};
+
+export type IGameCurrentResultForStats = {
+  learnedWords: string[];
+  newWords: string[];
+  successWords: string[];
+  failWords: string[];
+  bestSeries: number;
 };
 
 export type IWrongWordsArray = {

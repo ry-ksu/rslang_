@@ -41,7 +41,6 @@ export default class ControllerAuthorization {
       try {
         await this.api.getUser({ userID, token });
       } catch (err) {
-        console.log('tryREfresh');
         await this.tryRefresh(userID, refreshToken);
       }
     } else {
